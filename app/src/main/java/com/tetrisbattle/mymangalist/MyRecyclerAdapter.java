@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -162,6 +163,9 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                 clipData = ClipData.newPlainText("Name", selectedName);
                 clipboardManager.setPrimaryClip(clipData);
 //                Toast.makeText(context, "copy: " + selectedName, Toast.LENGTH_SHORT).show();
+                return true;
+            } else if (item.getItemId() == R.id.popupLink) {
+                Toast.makeText(context, "Link clicked", Toast.LENGTH_SHORT).show();
                 return true;
             } else if (item.getItemId() == R.id.popupDelete) {
                 myDialog.setTitle("DELETE")

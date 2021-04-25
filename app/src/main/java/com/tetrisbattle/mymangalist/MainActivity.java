@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -43,8 +44,9 @@ public class MainActivity extends AppCompatActivity{
     };
 
     ConstraintLayout background;
+    ConstraintLayout addNew;
     EditText newName, newChapter;
-    Button addButton;
+    Button addButton, addNewButton;
     RecyclerView recyclerView;
 
     MyRecyclerAdapter myRecyclerAdapter;
@@ -60,9 +62,11 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         background = findViewById (R.id.background);
+        addNew = findViewById(R.id.addNew);
         newName = findViewById (R.id.newName);
         newChapter = findViewById (R.id.newChapter);
         addButton = findViewById (R.id.addButton);
+        addNewButton = findViewById (R.id.addNewButton);
         recyclerView = findViewById (R.id.recyclerView);
         rankButtons = new ArrayList<>(rankButtonsId.length);
 
@@ -77,6 +81,12 @@ public class MainActivity extends AppCompatActivity{
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
         myRecyclerAdapter = new MyRecyclerAdapter(this, myMangaList, myDatabaseHelper, myTable, background);
         recyclerView.setAdapter(myRecyclerAdapter);
+
+        addNewButton.setOnClickListener(v -> {
+            addNew.setVisibility(View.VISIBLE);
+            addNewButton.setVisibility(View.GONE);
+        });
+//        addNew.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -126,6 +136,8 @@ public class MainActivity extends AppCompatActivity{
                 newChapter.clearFocus();
             }
         });
+
+        Toast.makeText(this, "tää tää on toast", Toast.LENGTH_SHORT).show();
     }
 
     public void setupEditTexts() {

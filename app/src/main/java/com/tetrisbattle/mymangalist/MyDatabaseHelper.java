@@ -14,6 +14,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     String myTable;
     String name = "name";
     String chapter = "chapter";
+    String url = "url";
 
     public MyDatabaseHelper(Context context, String myTable) {
         super(context, "myAnimeListDatabase", null, 1);
@@ -22,14 +23,14 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + "myAnimeListTable" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableX" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableS" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableA" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableB" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableC" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableD" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableE" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT)");
+        db.execSQL("CREATE TABLE " + "myAnimeListTable" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "myAnimeListTableX" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "myAnimeListTableS" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "myAnimeListTableA" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "myAnimeListTableB" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "myAnimeListTableC" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "myAnimeListTableD" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "myAnimeListTableE" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
     }
 
     @Override
