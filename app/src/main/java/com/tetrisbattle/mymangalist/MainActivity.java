@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity{
             addNew.setVisibility(View.VISIBLE);
             addNewButton.setVisibility(View.GONE);
         });
-//        addNew.setVisibility(View.VISIBLE);
     }
 
     @Override
