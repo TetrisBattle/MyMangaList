@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="rankButtonTextSize">24sp</dimen>
+
+    <dimen name="myMangaListPadding">4dp</dimen>
+    <dimen name="myMangaListTextSize">22sp</dimen>
+
+    <dimen name="newMangaTextSize">18sp</dimen>
+    <dimen name="newMangaButtonTextSize">16sp</dimen>
+</resources>

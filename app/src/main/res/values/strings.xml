@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">MyMangaList</string>
+    <string name="rankButtonXText">X</string>
+    <string name="rankButtonSText">S</string>
+    <string name="rankButtonAText">A</string>
+    <string name="rankButtonBText">B</string>
+    <string name="rankButtonCText">C</string>
+    <string name="rankButtonDText">D</string>
+    <string name="rankButtonEText">E</string>
+    <string name="planToReadButtonText">\?</string>
+
+    <string name="newMangaNameHint">Name</string>
+    <string name="newMangaChapterHint">Chapter</string>
+    <string name="addButtonText">Add</string>
+
+    <string name="myMangaListSampleId">303</string>
+    <string name="myMangaListSampleName">Name</string>
+    <string name="myMangaListSampleChapter">1465</string>
+</resources>
