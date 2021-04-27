@@ -1,18 +1,22 @@
 package com.tetrisbattle.mymangalist;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -44,10 +48,11 @@ public class MainActivity extends AppCompatActivity{
     };
 
     ConstraintLayout background;
-    ConstraintLayout addNew;
-    EditText newName, newChapter;
-    Button addButton, addNewButton;
+    ConstraintLayout addNewMangaView;
+    EditText newUrl, newName, newChapter;
+    Button addButton, cancelButton;
     RecyclerView recyclerView;
+    ImageButton settings;
 
     MyRecyclerAdapter myRecyclerAdapter;
     MyDatabaseHelper myDatabaseHelper;
@@ -61,14 +66,16 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        background = findViewById (R.id.background);
-        addNew = findViewById(R.id.addNew);
-        newName = findViewById (R.id.newName);
-        newChapter = findViewById (R.id.newChapter);
-        addButton = findViewById (R.id.addButton);
-        addNewButton = findViewById (R.id.addNewButton);
-        recyclerView = findViewById (R.id.recyclerView);
+        background = findViewById(R.id.background);
+        addNewMangaView = findViewById(R.id.addNewMangaView);
+        newUrl = findViewById(R.id.newUrl);
+        newName = findViewById(R.id.newName);
+        newChapter = findViewById(R.id.newChapter);
+        addButton = findViewById(R.id.addButton);
+        cancelButton = findViewById(R.id.cancelButton);
+        recyclerView = findViewById(R.id.recyclerView);
         rankButtons = new ArrayList<>(rankButtonsId.length);
+        settings = findViewById(R.id.settings);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         myDatabaseHelper = new MyDatabaseHelper(this, myTable);
@@ -81,12 +88,6 @@ public class MainActivity extends AppCompatActivity{
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
         myRecyclerAdapter = new MyRecyclerAdapter(this, myMangaList, myDatabaseHelper, myTable, background);
         recyclerView.setAdapter(myRecyclerAdapter);
-
-        addNewButton.setOnClickListener(v -> {
-            addNew.setVisibility(View.VISIBLE);
-            addNewButton.setVisibility(View.GONE);
-        });
-//        addNew.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -116,34 +117,56 @@ public class MainActivity extends AppCompatActivity{
             rankButtons.add(rankButton);
         }
 
+        settings.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(this, v);
+            MenuInflater inflater = popupMenu.getMenuInflater();
+            inflater.inflate(R.menu.settings_popup, popupMenu.getMenu());
+            popupMenu.show();
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.popupAddNewManga) {
+                    addNewMangaView.setVisibility(View.VISIBLE);
+                    newName.requestFocus();
+                    return true;
+                } else if (item.getItemId() == R.id.popupAddList) {
+                    Toast.makeText(this, "AddList: empty", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.popupCopyList) {
+                    Toast.makeText(this, "CopyList: empty", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
         addButton.setOnClickListener(v -> {
             if (newName.getText().toString().equals("")) {
                 Toast.makeText(this, "Name can't be empty", Toast.LENGTH_SHORT).show();
-            } else if (newChapter.getText().toString().equals("")) {
-                //Toast.makeText(MainActivity.this, "Chapter can't be empty", Toast.LENGTH_SHORT).show();
-                myDatabaseHelper.insertData(String.valueOf(newName.getText()), "");
-                refresh();
-                newName.setText("");
-                newChapter.setText("");
-                newName.clearFocus();
-                newChapter.clearFocus();
             } else {
-                myDatabaseHelper.insertData(String.valueOf(newName.getText()), String.valueOf(newChapter.getText()));
+                myDatabaseHelper.insertData(String.valueOf(newName.getText()), String.valueOf(newChapter.getText()), String.valueOf(newUrl.getText()));
                 refresh();
+                background.requestFocus();
+                addNewMangaView.setVisibility(View.GONE);
                 newName.setText("");
                 newChapter.setText("");
-                newName.clearFocus();
-                newChapter.clearFocus();
+                newUrl.setText("");
             }
         });
 
-        Toast.makeText(this, "tää tää on toast", Toast.LENGTH_SHORT).show();
+        cancelButton.setOnClickListener(v -> {
+            background.requestFocus();
+            addNewMangaView.setVisibility(View.GONE);
+            newName.setText("");
+            newChapter.setText("");
+            newUrl.setText("");
+        });
     }
 
     public void setupEditTexts() {
         newName.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                newName.clearFocus();
+                newChapter.requestFocus();
                 return true;
             }
             return false;
@@ -166,6 +189,20 @@ public class MainActivity extends AppCompatActivity{
         newChapter.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 inputMethodManager.hideSoftInputFromWindow(newChapter.getWindowToken(), 0); // hide keyboard
+            }
+        });
+
+        newUrl.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                newName.requestFocus();
+                return true;
+            }
+            return false;
+        });
+
+        newUrl.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                inputMethodManager.hideSoftInputFromWindow(newUrl.getWindowToken(), 0); // hide keyboard
             }
         });
     }

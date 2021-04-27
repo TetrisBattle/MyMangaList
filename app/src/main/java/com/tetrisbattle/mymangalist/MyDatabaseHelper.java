@@ -42,25 +42,48 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         this.myTable = myTable;
     }
 
-    public void insertData(String newMangaName, String newMangaChapter) {
+    public void insertData(String newName, String newChapter, String newUrl) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(name, newMangaName);
-        contentValues.put(chapter, newMangaChapter);
+        contentValues.put(name, newName);
+        contentValues.put(chapter, newChapter);
+        contentValues.put(url, newUrl);
         db.insert(myTable, null, contentValues);
     }
 
-    public void updateData(String newMangaName, String newMangaChapter, int selectedId) {
+    public void updateName(String newName, int selectedId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(name, newMangaName);
-        contentValues.put(chapter, newMangaChapter);
+        contentValues.put(name, newName);
+        db.update(myTable, contentValues, "id = ?", new String[] {String.valueOf(selectedId)});
+    }
+
+    public void updateChapter(String newChapter, int selectedId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(chapter, newChapter);
+        db.update(myTable, contentValues, "id = ?", new String[] {String.valueOf(selectedId)});
+    }
+
+    public void updateUrl(String newUrl, int selectedId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(url, newUrl);
         db.update(myTable, contentValues, "id = ?", new String[] {String.valueOf(selectedId)});
     }
 
     public void deleteData(int selectedId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(myTable, "id = ?", new String[] { String.valueOf(selectedId) });
+    }
+
+    public String getUrl(int selectedId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String queryString = "SELECT url FROM " + myTable + " WHERE id = " + selectedId;
+
+        Cursor cursor = db.rawQuery(queryString, null);
+        cursor.moveToFirst();
+        return cursor.getString(0);
     }
 
 //    public void deleteData(MyMangaListModel pos) {
@@ -72,8 +95,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     // create list of objects from database
     public List<MyManga> getMyMangaList() {
         ArrayList<MyManga> myMangaList = new ArrayList<>();
-        String queryString = "SELECT * FROM " + myTable + " ORDER BY " + name;
         SQLiteDatabase db = this.getReadableDatabase();
+        String queryString = "SELECT * FROM " + myTable + " ORDER BY " + name;
         Cursor cursor = db.rawQuery(queryString, null);
 
         while (cursor.moveToNext()) {

@@ -23,7 +23,7 @@
         android:textSize="@dimen/rankButtonTextSize"
         app:cornerRadius="0dp"
         app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@+id/rankButtonS"
+        app:layout_constraintEnd_toStartOf="@id/rankButtonS"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,8 +39,8 @@
         android:textSize="@dimen/rankButtonTextSize"
         app:cornerRadius="0dp"
         app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@+id/rankButtonA"
-        app:layout_constraintStart_toEndOf="@+id/rankButtonX"
+        app:layout_constraintEnd_toStartOf="@id/rankButtonA"
+        app:layout_constraintStart_toEndOf="@id/rankButtonX"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -55,8 +55,8 @@
         android:textSize="@dimen/rankButtonTextSize"
         app:cornerRadius="0dp"
         app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@+id/rankButtonB"
-        app:layout_constraintStart_toEndOf="@+id/rankButtonS"
+        app:layout_constraintEnd_toStartOf="@id/rankButtonB"
+        app:layout_constraintStart_toEndOf="@id/rankButtonS"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -71,8 +71,8 @@
         android:textSize="@dimen/rankButtonTextSize"
         app:cornerRadius="0dp"
         app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@+id/rankButtonC"
-        app:layout_constraintStart_toEndOf="@+id/rankButtonA"
+        app:layout_constraintEnd_toStartOf="@id/rankButtonC"
+        app:layout_constraintStart_toEndOf="@id/rankButtonA"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -87,8 +87,8 @@
         android:textSize="@dimen/rankButtonTextSize"
         app:cornerRadius="0dp"
         app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toEndOf="@+id/rankButtonD"
-        app:layout_constraintStart_toEndOf="@+id/rankButtonB"
+        app:layout_constraintEnd_toEndOf="@id/rankButtonD"
+        app:layout_constraintStart_toEndOf="@id/rankButtonB"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -103,8 +103,8 @@
         android:textSize="@dimen/rankButtonTextSize"
         app:cornerRadius="0dp"
         app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@+id/rankButtonE"
-        app:layout_constraintStart_toEndOf="@+id/rankButtonC"
+        app:layout_constraintEnd_toStartOf="@id/rankButtonE"
+        app:layout_constraintStart_toEndOf="@id/rankButtonC"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -120,7 +120,7 @@
         app:cornerRadius="0dp"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="@id/planToReadButton"
-        app:layout_constraintStart_toEndOf="@+id/rankButtonD"
+        app:layout_constraintStart_toEndOf="@id/rankButtonD"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -135,9 +135,24 @@
         android:textSize="@dimen/rankButtonTextSize"
         app:cornerRadius="0dp"
         app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/rankButtonE"
+        app:layout_constraintEnd_toStartOf="@id/settings"
+        app:layout_constraintStart_toEndOf="@id/rankButtonE"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/settings"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        android:src="@drawable/ic_baseline_settings_24"
+        android:textColor="@color/white"
+        android:textSize="@dimen/rankButtonTextSize"
+        app:cornerRadius="0dp"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/planToReadButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -146,10 +161,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rankButtonS" />
+        app:layout_constraintTop_toBottomOf="@id/rankButtonS" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/addNew"
+        android:id="@+id/addNewMangaView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/black"
@@ -159,10 +174,9 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <EditText
-            android:id="@+id/newLink"
+            android:id="@+id/newUrl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_weight="3"
             android:hint="Url"
             android:textSize="@dimen/newMangaTextSize"
             android:textColorHint="@color/white"
@@ -179,7 +193,7 @@
             android:id="@+id/newName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintHorizontal_weight="2"
             android:hint="@string/newMangaNameHint"
             android:textSize="@dimen/newMangaTextSize"
             android:textColorHint="@color/white"
@@ -208,27 +222,42 @@
             app:layout_constraintStart_toEndOf="@+id/newName" />
 
         <Button
-            android:id="@+id/addButton"
+            android:id="@+id/cancelButton"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorCancelButton"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:text="Cancel"
+            android:textSize="@dimen/newMangaButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintBottom_toTopOf="@id/addButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/newChapter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="1" />
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorAddButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
             android:text="@string/addButtonText"
             android:textSize="@dimen/newMangaButtonTextSize"
             app:cornerRadius="0dp"
-            android:backgroundTint="@color/colorAddButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/newChapter" />
+            app:layout_constraintStart_toEndOf="@+id/newChapter"
+            app:layout_constraintTop_toBottomOf="@id/cancelButton"
+            app:layout_constraintVertical_weight="1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Button
-        android:id="@+id/addNewButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
