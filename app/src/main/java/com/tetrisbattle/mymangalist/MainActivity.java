@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuInflater;
@@ -144,23 +146,27 @@ public class MainActivity extends AppCompatActivity{
             } else {
                 myDatabaseHelper.insertData(String.valueOf(newName.getText()), String.valueOf(newChapter.getText()), String.valueOf(newUrl.getText()));
                 refresh();
+                background.requestFocus();
+                addNewMangaView.setVisibility(View.GONE);
                 newName.setText("");
                 newChapter.setText("");
-                newName.clearFocus();
-                newChapter.clearFocus();
-                addNewMangaView.setVisibility(View.GONE);
+                newUrl.setText("");
             }
         });
 
         cancelButton.setOnClickListener(v -> {
+            background.requestFocus();
             addNewMangaView.setVisibility(View.GONE);
+            newName.setText("");
+            newChapter.setText("");
+            newUrl.setText("");
         });
     }
 
     public void setupEditTexts() {
         newName.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                newName.clearFocus();
+                newChapter.requestFocus();
                 return true;
             }
             return false;
@@ -183,6 +189,20 @@ public class MainActivity extends AppCompatActivity{
         newChapter.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 inputMethodManager.hideSoftInputFromWindow(newChapter.getWindowToken(), 0); // hide keyboard
+            }
+        });
+
+        newUrl.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                newName.requestFocus();
+                return true;
+            }
+            return false;
+        });
+
+        newUrl.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                inputMethodManager.hideSoftInputFromWindow(newUrl.getWindowToken(), 0); // hide keyboard
             }
         });
     }

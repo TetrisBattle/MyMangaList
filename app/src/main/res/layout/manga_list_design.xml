@@ -86,6 +86,27 @@
                 app:layout_constraintEnd_toEndOf="@+id/chapter"
                 app:layout_constraintStart_toStartOf="parent" />
 
+            <EditText
+                android:id="@+id/changeUrl"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/myMangaListPadding"
+                android:autofillHints="Name"
+                android:visibility="gone"
+                android:selectAllOnFocus="true"
+                android:background="@color/colorChangeUrl"
+                android:hint="https://website.com/manga"
+                android:inputType="textUri|textMultiLine"
+                android:padding="4dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/colorChangeUrlHint"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/name"
+                app:layout_constraintHorizontal_weight="5"
+                app:layout_constraintStart_toStartOf="@id/name"
+                app:layout_constraintTop_toTopOf="@id/name" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

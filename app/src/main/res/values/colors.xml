@@ -18,6 +18,9 @@
     <color name="colorCancelButton">#850303</color>
     <color name="colorAddButton">#004501</color>
 
+    <color name="colorChangeUrl">#004E4E</color>
+    <color name="colorChangeUrlHint">#7A7A7A</color>
+
     <color name="colorPrimary">#850303</color>
     <color name="colorSecondary">#021380</color>
     <color name="colorBackground">#011B1B</color>

@@ -3,6 +3,9 @@ package com.tetrisbattle.mymangalist;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -19,6 +22,8 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOError;
+import java.io.IOException;
 import java.util.List;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
@@ -100,7 +105,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             background.requestFocus();
             selectedId = data.get(position).id;
             selectedName = String.valueOf(holder.name.getText());
-            showPopupMenu(v, myDatabaseHelper.getUrl(selectedId));
+            showPopupMenu(v, holder, myDatabaseHelper.getUrl(selectedId));
             return true;
         });
 
@@ -123,6 +128,14 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                 inputMethodManager.hideSoftInputFromWindow(holder.chapter.getWindowToken(), 0); // hide keyboard
             }
         });
+
+        holder.changeUrl.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                holder.changeUrl.setVisibility(View.GONE);
+                myDatabaseHelper.updateUrl(String.valueOf(holder.changeUrl.getText()), selectedId);
+                holder.changeUrl.setText("");
+            }
+        });
     }
 
     @Override
@@ -136,6 +149,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         EditText name;
         EditText chapter;
         View footer;
+        EditText changeUrl;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -143,6 +157,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             name = itemView.findViewById(R.id.name);
             chapter = itemView.findViewById(R.id.chapter);
             footer = itemView.findViewById(R.id.footer);
+            changeUrl = itemView.findViewById(R.id.changeUrl);
         }
     }
 
@@ -150,7 +165,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         this.data = data;
     }
 
-    public void showPopupMenu(View v, String url) {
+    public void showPopupMenu(View v, MyViewHolder holder, String url) {
         PopupMenu popupMenu = new PopupMenu(context, v);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.popup_menu, popupMenu.getMenu());
@@ -166,12 +181,22 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                 clipboardManager.setPrimaryClip(clipData);
 //                Toast.makeText(context, "copy: " + selectedName, Toast.LENGTH_SHORT).show();
                 return true;
-            } else if (item.getItemId() == R.id.popupLink) {
+            } else if (item.getItemId() == R.id.popupGoToLink) {
                 if (url.equals("")) {
                     Toast.makeText(context, "Link to website is not provided", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "Go to: " + url, Toast.LENGTH_SHORT).show();
+                    try {
+                        Intent browse = new Intent( Intent.ACTION_VIEW, Uri.parse(url));
+                        context.startActivity( browse );
+                    } catch (Exception exception) {
+                        Toast.makeText(context, "Url is not available", Toast.LENGTH_SHORT).show();
+                    }
                 }
+                return true;
+            } else if (item.getItemId() == R.id.popupChangeLink) {
+                holder.changeUrl.setVisibility(View.VISIBLE);
+                holder.changeUrl.setText(myDatabaseHelper.getUrl(selectedId));
+                holder.changeUrl.requestFocus();
                 return true;
             } else if (item.getItemId() == R.id.popupDelete) {
                 myDialog.setTitle("DELETE")
