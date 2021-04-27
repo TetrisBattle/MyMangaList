@@ -164,11 +164,11 @@
         app:layout_constraintTop_toBottomOf="@id/rankButtonS" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/addNew"
+        android:id="@+id/addNewMangaView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/black"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -177,7 +177,6 @@
             android:id="@+id/newUrl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_weight="3"
             android:hint="Url"
             android:textSize="@dimen/newMangaTextSize"
             android:textColorHint="@color/white"
@@ -194,7 +193,7 @@
             android:id="@+id/newName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintHorizontal_weight="2"
             android:hint="@string/newMangaNameHint"
             android:textSize="@dimen/newMangaTextSize"
             android:textColorHint="@color/white"
@@ -223,19 +222,42 @@
             app:layout_constraintStart_toEndOf="@+id/newName" />
 
         <Button
-            android:id="@+id/addButton"
+            android:id="@+id/cancelButton"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorCancelButton"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:text="Cancel"
+            android:textSize="@dimen/newMangaButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintBottom_toTopOf="@id/addButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/newChapter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="1" />
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorAddButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
             android:text="@string/addButtonText"
             android:textSize="@dimen/newMangaButtonTextSize"
             app:cornerRadius="0dp"
-            android:backgroundTint="@color/colorAddButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/newChapter" />
+            app:layout_constraintStart_toEndOf="@+id/newChapter"
+            app:layout_constraintTop_toBottomOf="@id/cancelButton"
+            app:layout_constraintVertical_weight="1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

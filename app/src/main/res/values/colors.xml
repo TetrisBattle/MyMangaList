@@ -15,7 +15,8 @@
     <color name="colorName">#FF018786</color>
     <color name="colorChapter">#FF018786</color>
 
-    <color name="colorAddButton">#850303</color>
+    <color name="colorCancelButton">#850303</color>
+    <color name="colorAddButton">#004501</color>
 
     <color name="colorPrimary">#850303</color>
     <color name="colorSecondary">#021380</color>

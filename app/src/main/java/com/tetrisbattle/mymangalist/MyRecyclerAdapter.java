@@ -67,7 +67,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
         holder.id.setOnClickListener(v -> {
             background.requestFocus();
-//            Toast.makeText(context, holder.name.getText(), Toast.LENGTH_SHORT).show();
             Toast.makeText(context, holder.chapter.getText(), Toast.LENGTH_SHORT).show();
         });
 

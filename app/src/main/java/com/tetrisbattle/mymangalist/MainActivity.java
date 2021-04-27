@@ -46,9 +46,9 @@ public class MainActivity extends AppCompatActivity{
     };
 
     ConstraintLayout background;
-    ConstraintLayout addNew;
+    ConstraintLayout addNewMangaView;
     EditText newUrl, newName, newChapter;
-    Button addButton;
+    Button addButton, cancelButton;
     RecyclerView recyclerView;
     ImageButton settings;
 
@@ -65,11 +65,12 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         background = findViewById(R.id.background);
-        addNew = findViewById(R.id.addNew);
+        addNewMangaView = findViewById(R.id.addNewMangaView);
         newUrl = findViewById(R.id.newUrl);
         newName = findViewById(R.id.newName);
         newChapter = findViewById(R.id.newChapter);
         addButton = findViewById(R.id.addButton);
+        cancelButton = findViewById(R.id.cancelButton);
         recyclerView = findViewById(R.id.recyclerView);
         rankButtons = new ArrayList<>(rankButtonsId.length);
         settings = findViewById(R.id.settings);
@@ -122,7 +123,8 @@ public class MainActivity extends AppCompatActivity{
 
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.popupAddNewManga) {
-                    addNew.setVisibility(View.VISIBLE);
+                    addNewMangaView.setVisibility(View.VISIBLE);
+                    newName.requestFocus();
                     return true;
                 } else if (item.getItemId() == R.id.popupAddList) {
                     Toast.makeText(this, "AddList: empty", Toast.LENGTH_SHORT).show();
@@ -146,8 +148,12 @@ public class MainActivity extends AppCompatActivity{
                 newChapter.setText("");
                 newName.clearFocus();
                 newChapter.clearFocus();
-                addNew.setVisibility(View.GONE);
+                addNewMangaView.setVisibility(View.GONE);
             }
+        });
+
+        cancelButton.setOnClickListener(v -> {
+            addNewMangaView.setVisibility(View.GONE);
         });
     }
 
