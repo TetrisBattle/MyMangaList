@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity{
 
     ConstraintLayout background;
     ConstraintLayout addNew;
-    EditText newName, newChapter;
+    EditText newUrl, newName, newChapter;
     Button addButton, addNewButton;
     RecyclerView recyclerView;
 
@@ -61,13 +61,14 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        background = findViewById (R.id.background);
+        background = findViewById(R.id.background);
         addNew = findViewById(R.id.addNew);
-        newName = findViewById (R.id.newName);
-        newChapter = findViewById (R.id.newChapter);
-        addButton = findViewById (R.id.addButton);
-        addNewButton = findViewById (R.id.addNewButton);
-        recyclerView = findViewById (R.id.recyclerView);
+        newUrl = findViewById(R.id.newUrl);
+        newName = findViewById(R.id.newName);
+        newChapter = findViewById(R.id.newChapter);
+        addButton = findViewById(R.id.addButton);
+        addNewButton = findViewById(R.id.addNewButton);
+        recyclerView = findViewById(R.id.recyclerView);
         rankButtons = new ArrayList<>(rankButtonsId.length);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -135,8 +136,6 @@ public class MainActivity extends AppCompatActivity{
                 newChapter.clearFocus();
             }
         });
-
-        Toast.makeText(this, "tää tää on toast", Toast.LENGTH_SHORT).show();
     }
 
     public void setupEditTexts() {
