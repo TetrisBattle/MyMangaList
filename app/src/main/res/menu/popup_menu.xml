@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/popupCopy"
-        android:title="Copy"/>
+        android:title="Copy name"/>
     <item android:id="@+id/popupLink"
         android:title="Go to website"/>
     <item android:id="@+id/popupDelete"

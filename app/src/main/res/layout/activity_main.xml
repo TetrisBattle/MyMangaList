@@ -135,17 +135,15 @@
         android:textSize="@dimen/rankButtonTextSize"
         app:cornerRadius="0dp"
         app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@id/Settings"
+        app:layout_constraintEnd_toStartOf="@id/settings"
         app:layout_constraintStart_toEndOf="@id/rankButtonE"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/Settings"
+        android:id="@+id/settings"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:backgroundTint="@color/black"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
+        android:background="@color/black"
         android:src="@drawable/ic_baseline_settings_24"
         android:textColor="@color/white"
         android:textSize="@dimen/rankButtonTextSize"
@@ -239,13 +237,5 @@
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/newChapter" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Button
-        android:id="@+id/addNewButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

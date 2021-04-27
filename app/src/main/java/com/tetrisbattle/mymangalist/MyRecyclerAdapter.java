@@ -30,11 +30,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     MyDatabaseHelper myDatabaseHelper;
     String myTable;
     ConstraintLayout background;
+
     InputMethodManager inputMethodManager;
+    AlertDialog.Builder myDialog;
+
     int selectedId;
     String selectedName;
     String selectedChapter;
-    AlertDialog.Builder myDialog;
 
     public MyRecyclerAdapter(Context context, List<MyManga> myManga, MyDatabaseHelper myDatabaseHelper, String myTable, ConstraintLayout background) {
         this.context = context;
@@ -66,6 +68,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         holder.id.setOnClickListener(v -> {
             background.requestFocus();
 //            Toast.makeText(context, holder.name.getText(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, holder.chapter.getText(), Toast.LENGTH_SHORT).show();
         });
 
         holder.name.setOnKeyListener((v, keyCode, event) -> {
@@ -82,7 +85,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                 selectedName = String.valueOf(holder.name.getText());
             } else {
                 if (!String.valueOf(holder.name.getText()).equals(selectedName)){
-                    myDatabaseHelper.updateData(String.valueOf(holder.name.getText()), String.valueOf(holder.chapter.getText()), selectedId);
+                    myDatabaseHelper.updateName(String.valueOf(holder.name.getText()), selectedId);
 
 //                data.get(position).name = String.valueOf(holder.name.getText());
 //                notifyItemChanged(position); // remake item at pos
@@ -98,7 +101,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             background.requestFocus();
             selectedId = data.get(position).id;
             selectedName = String.valueOf(holder.name.getText());
-            showPopupMenu(v);
+            showPopupMenu(v, myDatabaseHelper.getUrl(selectedId));
             return true;
         });
 
@@ -116,7 +119,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                 selectedChapter = String.valueOf(holder.chapter.getText());
             } else {
                 if (!String.valueOf(holder.chapter.getText()).equals(selectedChapter)){
-                    myDatabaseHelper.updateData(String.valueOf(holder.name.getText()), String.valueOf(holder.chapter.getText()), selectedId);
+                    myDatabaseHelper.updateChapter(String.valueOf(holder.chapter.getText()), selectedId);
                 }
                 inputMethodManager.hideSoftInputFromWindow(holder.chapter.getWindowToken(), 0); // hide keyboard
             }
@@ -148,7 +151,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         this.data = data;
     }
 
-    public void showPopupMenu(View v) {
+    public void showPopupMenu(View v, String url) {
         PopupMenu popupMenu = new PopupMenu(context, v);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.popup_menu, popupMenu.getMenu());
@@ -165,7 +168,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 //                Toast.makeText(context, "copy: " + selectedName, Toast.LENGTH_SHORT).show();
                 return true;
             } else if (item.getItemId() == R.id.popupLink) {
-                Toast.makeText(context, "Link clicked", Toast.LENGTH_SHORT).show();
+                if (url.equals("")) {
+                    Toast.makeText(context, "Link to website is not provided", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Go to: " + url, Toast.LENGTH_SHORT).show();
+                }
                 return true;
             } else if (item.getItemId() == R.id.popupDelete) {
                 myDialog.setTitle("DELETE")
