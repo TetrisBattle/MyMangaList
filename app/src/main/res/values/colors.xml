@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="colorBackgroundTitle">#021380</color>
     <color name="colorRankButton">#000000</color>
     <color name="colorRankButtonSelected">#850303</color>
 
