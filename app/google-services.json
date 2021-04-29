@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "96654937348",
+    "firebase_url": "https://mymangalist-7849f-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "mymangalist-7849f",
+    "storage_bucket": "mymangalist-7849f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96654937348:android:80b72737ad44dc6e901451",
+        "android_client_info": {
+          "package_name": "com.tetrisbattle.mymangalist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "96654937348-hbn06sa521ah4p2iss0oftpcc9qttai0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeFgs8Pj0r0_whtIHVV1fQipC7bkfn0Ww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "96654937348-hbn06sa521ah4p2iss0oftpcc9qttai0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
