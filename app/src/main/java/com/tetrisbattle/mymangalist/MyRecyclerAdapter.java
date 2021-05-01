@@ -42,6 +42,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     int selectedId;
     String selectedName;
     String selectedChapter;
+    String selectedUrl;
 
     public MyRecyclerAdapter(Context context, List<MyManga> myManga, MyDatabaseHelper myDatabaseHelper, String myTable, ConstraintLayout background) {
         this.context = context;
@@ -72,15 +73,12 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
         holder.id.setOnClickListener(v -> {
             background.requestFocus();
-            Toast.makeText(context, holder.chapter.getText(), Toast.LENGTH_SHORT).show();
-        });
-
-        holder.name.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                holder.name.clearFocus();
-                return true;
-            }
-            return false;
+//            ClipboardManager clipboardManager;
+//            clipboardManager = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
+//
+//            ClipData clipData;
+//            clipData = ClipData.newPlainText("Name", selectedName);
+//            clipboardManager.setPrimaryClip(clipData);
         });
 
         holder.name.setOnFocusChangeListener((v, hasFocus) -> {
@@ -101,20 +99,20 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             }
         });
 
+        holder.name.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                holder.name.clearFocus();
+                return true;
+            }
+            return false;
+        });
+
         holder.name.setOnLongClickListener(v -> {
             background.requestFocus();
             selectedId = data.get(position).id;
             selectedName = String.valueOf(holder.name.getText());
             showPopupMenu(v, holder, myDatabaseHelper.getUrl(selectedId));
             return true;
-        });
-
-        holder.chapter.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                holder.chapter.clearFocus();
-                return true;
-            }
-            return false;
         });
 
         holder.chapter.setOnFocusChangeListener((v, hasFocus) -> {
@@ -129,12 +127,30 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
             }
         });
 
+        holder.chapter.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                holder.chapter.clearFocus();
+                return true;
+            }
+            return false;
+        });
+
         holder.changeUrl.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
+                if (!String.valueOf(holder.changeUrl.getText()).equals(selectedUrl)){
+                    myDatabaseHelper.updateUrl(String.valueOf(holder.changeUrl.getText()), selectedId);
+                }
                 holder.changeUrl.setVisibility(View.GONE);
-                myDatabaseHelper.updateUrl(String.valueOf(holder.changeUrl.getText()), selectedId);
-                holder.changeUrl.setText("");
+                inputMethodManager.hideSoftInputFromWindow(holder.changeUrl.getWindowToken(), 0); // hide keyboard
             }
+        });
+
+        holder.changeUrl.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                holder.changeUrl.clearFocus();
+                return true;
+            }
+            return false;
         });
     }
 
@@ -189,14 +205,16 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                         Intent browse = new Intent( Intent.ACTION_VIEW, Uri.parse(url));
                         context.startActivity( browse );
                     } catch (Exception exception) {
-                        Toast.makeText(context, "Url is not available", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Website is not available", Toast.LENGTH_SHORT).show();
                     }
                 }
                 return true;
             } else if (item.getItemId() == R.id.popupChangeLink) {
                 holder.changeUrl.setVisibility(View.VISIBLE);
-                holder.changeUrl.setText(myDatabaseHelper.getUrl(selectedId));
+                selectedUrl = myDatabaseHelper.getUrl(selectedId);
+                holder.changeUrl.setText(selectedUrl);
                 holder.changeUrl.requestFocus();
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0); // show keyboard
                 return true;
             } else if (item.getItemId() == R.id.popupDelete) {
                 myDialog.setTitle("DELETE")

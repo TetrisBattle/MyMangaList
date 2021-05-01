@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,20 +18,21 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     String url = "url";
 
     public MyDatabaseHelper(Context context, String myTable) {
-        super(context, "myAnimeListDatabase", null, 1);
+        super(context, "myMangaListDatabase", null, 1);
         this.myTable = myTable;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + "myAnimeListTable" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableX" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableS" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableA" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableB" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableC" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableD" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableE" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "rankS" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "rankA" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "rankB" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "rankC" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "rankD" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "rankE" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "rankF" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "special" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        db.execSQL("CREATE TABLE " + "planToRead" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
     }
 
     @Override

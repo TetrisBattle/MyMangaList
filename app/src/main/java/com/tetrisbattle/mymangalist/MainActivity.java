@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,7 +29,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
-    private static final String[] rankButtonsName = {
+    private static final String[] pageNames = {
             "rankS",
             "rankA",
             "rankB",
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity{
     };
 
     private List<Button> rankButtons;
-    private static final int[] rankButtonsId = {
+    private static final int[] pageIds = {
             R.id.rankButtonS,
             R.id.rankButtonA,
             R.id.rankButtonB,
@@ -61,10 +62,9 @@ public class MainActivity extends AppCompatActivity{
     ImageButton settings;
 
     MyRecyclerAdapter myRecyclerAdapter;
-//    MyDatabaseHelper myDatabaseHelper;
+    MyDatabaseHelper myDatabaseHelper;
 
-//    String myTable = "rankS";
-    int activeButton = 0;
+    int activePage = 0;
     InputMethodManager inputMethodManager;
 
     FirebaseDatabase db;
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity{
         addButton = findViewById(R.id.addButton);
         cancelButton = findViewById(R.id.cancelButton);
         recyclerView = findViewById(R.id.recyclerView);
-        rankButtons = new ArrayList<>(rankButtonsId.length);
+        rankButtons = new ArrayList<>(pageIds.length);
         settings = findViewById(R.id.settings);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -101,19 +101,21 @@ public class MainActivity extends AppCompatActivity{
         inflater = popupSettings.getMenuInflater();
         inflater.inflate(R.menu.settings_popup, popupSettings.getMenu());
 
-        currentUser = getCurrentUser();
-//        myDatabaseHelper = new MyDatabaseHelper(this, myTable);
+//        login();
+        myDatabaseHelper = new MyDatabaseHelper(this, pageNames[activePage]);
 
         setupButtons();
         setupEditTexts();
 
-        rankButtons.get(activeButton).callOnClick();
+        List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
+        myRecyclerAdapter = new MyRecyclerAdapter(this, myMangaList, myDatabaseHelper, pageNames[activePage], background);
+        recyclerView.setAdapter(myRecyclerAdapter);
 
-//        List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
-//        myRecyclerAdapter = new MyRecyclerAdapter(this, myMangaList, myDatabaseHelper, myTable, background);
-//        recyclerView.setAdapter(myRecyclerAdapter);
+        rankButtons.get(activePage).callOnClick();
 
 
+//        ref = db.getReference("users/" + currentUser + "/myMangaList/" + rankButtonsName[activeButton] + "/testAdd");
+//        ref.child("aaa").setValue("toimi perkele");
 
 //        ref = db.getReference("users/" + currentUser + "/myMangaList/" + myTables[activeButton]);
 //        ref.setValue("test");
@@ -167,33 +169,44 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void backgroundClick(View v) {
-        background.requestFocus();
+//        background.requestFocus();
+
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0); // hide keyboard
+        getCurrentFocus().clearFocus();
     }
 
-    public String getCurrentUser() {
+    public void login() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
         if (firebaseUser == null) {
-            firebaseAuth.signInAnonymously();
+            firebaseAuth.signInAnonymously().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    currentUser = String.valueOf(firebaseAuth.getCurrentUser());
+                    Log.d("myTest", "new user: " + currentUser);
+                } else {
+                    Toast.makeText(MainActivity.this, "No internet connection!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            currentUser = firebaseUser.getUid();
+            Log.d("myTest", "already signed in: " + currentUser);
+            //firebaseAuth.signOut();
         }
-
-        return firebaseUser.getUid();
     }
 
     public void setupButtons() {
-        for (int i=0; i<rankButtonsId.length; i++) {
-            Button rankButton = findViewById(rankButtonsId[i]);
+        for (int i = 0; i< pageIds.length; i++) {
+            Button rankButton = findViewById(pageIds[i]);
             int finalI = i;
             rankButton.setOnClickListener(v -> {
                 background.requestFocus();
-                rankButtons.get(activeButton).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
+                rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
                 rankButton.setBackgroundColor(getResources().getColor(R.color.colorRankButtonSelected, null));
 
-                activeButton = finalI;
-//                myTable = myTables[finalI];
-//                myDatabaseHelper.setTable(myTable);
-//                refresh();
+                activePage = finalI;
+                myDatabaseHelper.setTable(pageNames[activePage]);
+                refresh();
             });
             rankButtons.add(rankButton);
         }
@@ -223,7 +236,18 @@ public class MainActivity extends AppCompatActivity{
             if (newName.getText().toString().equals("")) {
                 Toast.makeText(this, "Name can't be empty", Toast.LENGTH_SHORT).show();
             } else {
-//                myDatabaseHelper.insertData(String.valueOf(newName.getText()), String.valueOf(newChapter.getText()), String.valueOf(newUrl.getText()));
+                /*ref = db.getReference("users/" + currentUser + "/myMangaList/" +
+                        pageNames[activePage] + "/" + newName.getText());
+
+                if (!String.valueOf(newChapter.getText()).equals(""))
+                    ref.child("chapter").setValue(String.valueOf(newChapter.getText()));
+                else ref.child("chapter").setValue("");
+
+                if (!String.valueOf(newUrl.getText()).equals(""))
+                    ref.child("url").setValue(String.valueOf(newUrl.getText()));
+                else ref.child("url").setValue("");*/
+
+                myDatabaseHelper.insertData(String.valueOf(newName.getText()), String.valueOf(newChapter.getText()), String.valueOf(newUrl.getText()));
                 refresh();
                 background.requestFocus();
                 addNewMangaView.setVisibility(View.GONE);
@@ -253,13 +277,14 @@ public class MainActivity extends AppCompatActivity{
 
         newName.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                inputMethodManager.hideSoftInputFromWindow(newName.getWindowToken(), 0); // hide keyboard
+                background.requestFocus();
             }
         });
 
         newChapter.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                newChapter.clearFocus();
+                background.requestFocus();
+                inputMethodManager.hideSoftInputFromWindow(newChapter.getWindowToken(), 0); // hide keyboard
                 return true;
             }
             return false;
@@ -267,7 +292,7 @@ public class MainActivity extends AppCompatActivity{
 
         newChapter.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                inputMethodManager.hideSoftInputFromWindow(newChapter.getWindowToken(), 0); // hide keyboard
+                background.requestFocus();
             }
         });
 
@@ -281,14 +306,14 @@ public class MainActivity extends AppCompatActivity{
 
         newUrl.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                inputMethodManager.hideSoftInputFromWindow(newUrl.getWindowToken(), 0); // hide keyboard
+                background.requestFocus();
             }
         });
     }
 
     public void refresh() {
-//        List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
-//        myRecyclerAdapter.setMangaList(myMangaList);
-//        myRecyclerAdapter.notifyDataSetChanged();
+        List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
+        myRecyclerAdapter.setMangaList(myMangaList);
+        myRecyclerAdapter.notifyDataSetChanged();
     }
 }

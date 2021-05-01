@@ -1,0 +1,16 @@
+MyMangaList
+
+current state:
+    data saving on add button is succesfull
+
+Consider:
+    MyMangaList offline use?
+        can't access firebase database in offline
+
+TODO:
+    database json model
+    firebase database get public/private list
+
+inProgress:
+    sql takas:
+        changeUrl onEnter pressed ei toimi oikein
