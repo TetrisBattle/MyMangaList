@@ -193,6 +193,23 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    public void publishPublic(String publicListName) {
+        login();
+
+        List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
+        for (int i=0; i<myMangaListDb.size(); i++) {
+            List<MyManga> myMangaList = myMangaListDb.get(i);
+            for (int j=0; j<myMangaList.size(); j++) {
+                MyManga myManga = myMangaList.get(j);
+
+                ref = db.getReference("publicMangaLists/" + publicListName +
+                        "/" + pageNames[i] + "/" + myManga.name);
+
+                ref.child("chapter").setValue(myManga.chapter);
+            }
+        }
+    }
+
     public void setupButtons() {
         for (int i = 0; i< pageIds.length; i++) {
             Button rankButton = findViewById(pageIds[i]);
@@ -300,21 +317,7 @@ public class MainActivity extends AppCompatActivity{
                     inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0); // show keyboard
                     return true;
                 } else if (item.getItemId() == R.id.popupExport) {
-                    login();
-
-                    List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
-                    for (int i=0; i<myMangaListDb.size(); i++) {
-                        List<MyManga> myMangaList = myMangaListDb.get(i);
-                        for (int j=0; j<myMangaList.size(); j++) {
-                            MyManga myManga = myMangaList.get(j);
-
-                            ref = db.getReference("users/" + currentUser +
-                                    "/myMangaList/" + pageNames[i] + "/" + myManga.name);
-
-                            if (myManga.chapter.equals("")) ref.child("chapter").setValue("");
-                            else ref.child("chapter").setValue(myManga.chapter);
-                        }
-                    }
+                    publishPublic("Test public");
 
                     return true;
                 } else if (item.getItemId() == R.id.popupImport) {
