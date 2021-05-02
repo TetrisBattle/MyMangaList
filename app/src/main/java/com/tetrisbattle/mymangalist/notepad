@@ -4,13 +4,13 @@ current state:
     data saving on add button is succesfull
 
 Consider:
-    MyMangaList offline use?
-        can't access firebase database in offline
+    settings or popup menu for extra tabs and url
 
 TODO:
-    database json model
+    export
+    import
     firebase database get public/private list
 
 inProgress:
-    sql takas:
-        changeUrl onEnter pressed ei toimi oikein
+    add url to firebase
+    publish logic (public/private)

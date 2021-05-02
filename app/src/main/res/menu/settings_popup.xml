@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/popupAddNewManga"
         android:title="Add New Manga"/>
-    <item android:id="@+id/popupAddList"
-        android:title="Add New List"/>
-    <item android:id="@+id/popupCopyList"
-        android:title="Copy List"/>
+    <item android:id="@+id/popupExport"
+        android:title="Publish"/>
+    <item android:id="@+id/popupImport"
+        android:title="Get List"/>
 </menu>

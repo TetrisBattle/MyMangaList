@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -106,6 +105,7 @@ public class MainActivity extends AppCompatActivity{
 
         setupButtons();
         setupEditTexts();
+        setupSettings();
 
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
         myRecyclerAdapter = new MyRecyclerAdapter(this, myMangaList, myDatabaseHelper, pageNames[activePage], background);
@@ -169,8 +169,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void backgroundClick(View v) {
-//        background.requestFocus();
-
         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0); // hide keyboard
         getCurrentFocus().clearFocus();
     }
@@ -190,7 +188,7 @@ public class MainActivity extends AppCompatActivity{
             });
         } else {
             currentUser = firebaseUser.getUid();
-            Log.d("myTest", "already signed in: " + currentUser);
+//            Log.d("myTest", "already signed in: " + currentUser);
             //firebaseAuth.signOut();
         }
     }
@@ -211,31 +209,11 @@ public class MainActivity extends AppCompatActivity{
             rankButtons.add(rankButton);
         }
 
-        settings.setOnClickListener(v -> {
-            popupSettings.show();
-
-            popupSettings.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.popupAddNewManga) {
-                    addNewMangaView.setVisibility(View.VISIBLE);
-                    newName.requestFocus();
-                    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0); // show keyboard
-                    return true;
-                } else if (item.getItemId() == R.id.popupAddList) {
-                    Toast.makeText(this, "AddList: empty", Toast.LENGTH_SHORT).show();
-                    return true;
-                } else if (item.getItemId() == R.id.popupCopyList) {
-                    Toast.makeText(this, "CopyList: empty", Toast.LENGTH_SHORT).show();
-                    return true;
-                } else {
-                    return false;
-                }
-            });
-        });
-
         addButton.setOnClickListener(v -> {
             if (newName.getText().toString().equals("")) {
                 Toast.makeText(this, "Name can't be empty", Toast.LENGTH_SHORT).show();
             } else {
+                // add to firebase
                 /*ref = db.getReference("users/" + currentUser + "/myMangaList/" +
                         pageNames[activePage] + "/" + newName.getText());
 
@@ -308,6 +286,44 @@ public class MainActivity extends AppCompatActivity{
             if (!hasFocus) {
                 background.requestFocus();
             }
+        });
+    }
+
+    public void setupSettings() {
+        settings.setOnClickListener(v -> {
+            popupSettings.show();
+
+            popupSettings.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.popupAddNewManga) {
+                    addNewMangaView.setVisibility(View.VISIBLE);
+                    newName.requestFocus();
+                    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0); // show keyboard
+                    return true;
+                } else if (item.getItemId() == R.id.popupExport) {
+                    login();
+
+                    List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
+                    for (int i=0; i<myMangaListDb.size(); i++) {
+                        List<MyManga> myMangaList = myMangaListDb.get(i);
+                        for (int j=0; j<myMangaList.size(); j++) {
+                            MyManga myManga = myMangaList.get(j);
+
+                            ref = db.getReference("users/" + currentUser +
+                                    "/myMangaList/" + pageNames[i] + "/" + myManga.name);
+
+                            if (myManga.chapter.equals("")) ref.child("chapter").setValue("");
+                            else ref.child("chapter").setValue(myManga.chapter);
+                        }
+                    }
+
+                    return true;
+                } else if (item.getItemId() == R.id.popupImport) {
+                    Toast.makeText(this, "import: empty", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else {
+                    return false;
+                }
+            });
         });
     }
 

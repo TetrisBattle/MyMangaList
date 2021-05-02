@@ -17,6 +17,18 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     String chapter = "chapter";
     String url = "url";
 
+    String[] tables = {
+            "rankS",
+            "rankA",
+            "rankB",
+            "rankC",
+            "rankD",
+            "rankE",
+            "rankF",
+            "special",
+            "planToRead"
+    };
+
     public MyDatabaseHelper(Context context, String myTable) {
         super(context, "myMangaListDatabase", null, 1);
         this.myTable = myTable;
@@ -24,15 +36,10 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + "rankS" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "rankA" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "rankB" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "rankC" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "rankD" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "rankE" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "rankF" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "special" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "planToRead" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        for(String table : tables) {
+            db.execSQL("CREATE TABLE " + table + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+            Log.d("myTest", "test: " + table);
+        }
     }
 
     @Override
@@ -113,5 +120,32 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return myMangaList;
+    }
+
+    public List<ArrayList<MyManga>> getMyMangaListDb() {
+        ArrayList<ArrayList<MyManga>> myMangalistDb = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        for(String table : tables) {
+            ArrayList<MyManga> myMangaList = new ArrayList<>();
+            String queryString = "SELECT * FROM " + table + " ORDER BY " + name;
+            cursor = db.rawQuery(queryString, null);
+
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(0);
+                String mangaName = cursor.getString(1);
+                String mangaChapter = cursor.getString(2);
+
+                MyManga myManga = new MyManga(id, mangaName, mangaChapter);
+                myMangaList.add(myManga);
+            }
+
+            myMangalistDb.add(myMangaList);
+        }
+
+        cursor.close();
+        db.close();
+        return myMangalistDb;
     }
 }
