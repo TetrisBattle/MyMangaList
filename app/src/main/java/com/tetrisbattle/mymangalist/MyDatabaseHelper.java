@@ -92,7 +92,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery(queryString, null);
         cursor.moveToFirst();
-        return cursor.getString(0);
+        String myUrl = cursor.getString(0);
+
+        cursor.close();
+        db.close();
+
+        return myUrl;
     }
 
 //    public void deleteData(MyMangaListModel pos) {
@@ -112,8 +117,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             int id = cursor.getInt(0);
             String mangaName = cursor.getString(1);
             String mangaChapter = cursor.getString(2);
+            String mangaUrl = cursor.getString(3);
 
-            MyManga myManga = new MyManga(id, mangaName, mangaChapter);
+            MyManga myManga = new MyManga(id, mangaName, mangaChapter, mangaUrl);
             myMangaList.add(myManga);
         }
 
@@ -136,8 +142,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 int id = cursor.getInt(0);
                 String mangaName = cursor.getString(1);
                 String mangaChapter = cursor.getString(2);
+                String mangaUrl = cursor.getString(3);
 
-                MyManga myManga = new MyManga(id, mangaName, mangaChapter);
+                MyManga myManga = new MyManga(id, mangaName, mangaChapter, mangaUrl);
                 myMangaList.add(myManga);
             }
 

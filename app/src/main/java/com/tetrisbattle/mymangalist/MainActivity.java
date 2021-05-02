@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity{
                         "/" + pageNames[i] + "/" + myManga.name);
 
                 ref.child("chapter").setValue(myManga.chapter);
+                ref.child("url").setValue(myManga.url);
             }
         }
     }
