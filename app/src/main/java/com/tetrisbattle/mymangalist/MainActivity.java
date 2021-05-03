@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -28,6 +29,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
+    //region variables
     private static final String[] pageNames = {
             "rankS",
             "rankA",
@@ -60,19 +62,19 @@ public class MainActivity extends AppCompatActivity{
     RecyclerView recyclerView;
     ImageButton settings;
 
+    PopupMenu popupSettings;
+    MenuInflater inflater;
+    InputMethodManager inputMethodManager;
+    SharedPreferences sharedPreferences;
+
     MyRecyclerAdapter myRecyclerAdapter;
     MyDatabaseHelper myDatabaseHelper;
-
-    int activePage = 0;
-    InputMethodManager inputMethodManager;
-
     FirebaseDatabase db;
     DatabaseReference ref;
 
-    PopupMenu popupSettings;
-    MenuInflater inflater;
-
     String currentUser;
+    int activePage = 0;
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,19 +95,20 @@ public class MainActivity extends AppCompatActivity{
         rankButtons = new ArrayList<>(pageIds.length);
         settings = findViewById(R.id.settings);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
         popupSettings = new PopupMenu(this, settings);
         inflater = popupSettings.getMenuInflater();
         inflater.inflate(R.menu.settings_popup, popupSettings.getMenu());
 
-//        login();
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         myDatabaseHelper = new MyDatabaseHelper(this, pageNames[activePage]);
 
+        login();
         setupButtons();
         setupEditTexts();
         setupSettings();
+        setupFromSharedPrefs();
 
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
         myRecyclerAdapter = new MyRecyclerAdapter(this, myMangaList, myDatabaseHelper, pageNames[activePage], background);
@@ -114,11 +117,6 @@ public class MainActivity extends AppCompatActivity{
         rankButtons.get(activePage).callOnClick();
 
 
-//        ref = db.getReference("users/" + currentUser + "/myMangaList/" + rankButtonsName[activeButton] + "/testAdd");
-//        ref.child("aaa").setValue("toimi perkele");
-
-//        ref = db.getReference("users/" + currentUser + "/myMangaList/" + myTables[activeButton]);
-//        ref.setValue("test");
 
 //        ref = db.getReference("thien/myMangaList/S");
 ////        Log.d("myTest", "test: " + ref);
@@ -131,33 +129,7 @@ public class MainActivity extends AppCompatActivity{
 //
 //            @Override
 //            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
-//        ref = db.getReference("publicMangaLists/kupla/publisher");
-//        ref = db.getReference().child("test/name2/imaginary/something");
-//        Log.d("myTest", "test: " + ref);
-//        ref.child("test/name2/something2").setValue("new test");
-//
-//        ref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                // This method is called once with the initial value and again
-//                // whenever data at this location is updated.
-//                String value = snapshot.getValue(String.class);
-//                Log.d("myTest", "test: " + value);
-//
-//                if (value == null) {
-//                    Log.d("myTest", "test: " + "null");
-//                } else {
-//                    Log.d("myTest", "test: " + "not null");
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Log.d("myTest", "Firebase error");
+//                  Log.d("myTest", "Firebase error");
 //            }
 //        });
     }
@@ -190,24 +162,6 @@ public class MainActivity extends AppCompatActivity{
             currentUser = firebaseUser.getUid();
 //            Log.d("myTest", "already signed in: " + currentUser);
             //firebaseAuth.signOut();
-        }
-    }
-
-    public void publishPublic(String publicListName) {
-        login();
-
-        List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
-        for (int i=0; i<myMangaListDb.size(); i++) {
-            List<MyManga> myMangaList = myMangaListDb.get(i);
-            for (int j=0; j<myMangaList.size(); j++) {
-                MyManga myManga = myMangaList.get(j);
-
-                ref = db.getReference("publicMangaLists/" + publicListName +
-                        "/" + pageNames[i] + "/" + myManga.name);
-
-                ref.child("chapter").setValue(myManga.chapter);
-                ref.child("url").setValue(myManga.url);
-            }
         }
     }
 
@@ -329,6 +283,31 @@ public class MainActivity extends AppCompatActivity{
                 }
             });
         });
+    }
+
+    public void setupFromSharedPrefs() {
+//        sharedPreferences.getStringSet()
+
+//        boolean isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putBoolean("isFirstLaunch", false);
+//        editor.apply();
+    }
+
+    public void publishPublic(String publicListName) {
+        List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
+        for (int i=0; i<myMangaListDb.size(); i++) {
+            List<MyManga> myMangaList = myMangaListDb.get(i);
+            for (int j=0; j<myMangaList.size(); j++) {
+                MyManga myManga = myMangaList.get(j);
+
+                ref = db.getReference("publicMangaLists/" + publicListName +
+                        "/" + pageNames[i] + "/" + myManga.name);
+
+                ref.child("chapter").setValue(myManga.chapter);
+                ref.child("url").setValue(myManga.url);
+            }
+        }
     }
 
     public void refresh() {

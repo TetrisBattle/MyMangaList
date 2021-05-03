@@ -5,5 +5,5 @@
     <item android:id="@+id/popupExport"
         android:title="Publish"/>
     <item android:id="@+id/popupImport"
-        android:title="Get List"/>
+        android:title="Subscribe"/>
 </menu>

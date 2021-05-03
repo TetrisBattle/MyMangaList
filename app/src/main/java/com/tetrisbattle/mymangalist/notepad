@@ -1,8 +1,5 @@
 MyMangaList
 
-current state:
-    data saving on add button is succesfull
-
 Consider:
     settings or popup menu for extra tabs and url
     when to log in?
@@ -12,6 +9,11 @@ TODO:
     import
     firebase database get public/private list
 
+current state:
+    data saving to firebase
+
 inProgress:
-    add url to firebase
     publish logic (public/private)
+        new page?
+
+    subsribed list in shared prefs?
