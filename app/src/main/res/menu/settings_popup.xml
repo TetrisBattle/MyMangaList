@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/popupAddNewManga"
-        android:title="Add New Manga"/>
-    <item android:id="@+id/popupExport"
-        android:title="Publish"/>
-    <item android:id="@+id/popupImport"
-        android:title="Subscribe"/>
+    <group android:checkableBehavior="all">
+        <item android:id="@+id/popupPlanToRead" android:title="Plan To Read"/>
+        <item android:id="@+id/popupSpecial" android:title="Special"/>
+    </group>
+
+    <item android:id="@+id/popupExport" android:title="Publish"/>
+    <item android:id="@+id/popupImport" android:title="Subscribe"/>
 </menu>

@@ -18,9 +18,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/counter"
@@ -28,7 +26,6 @@
                 android:layout_height="0dp"
                 android:background="@color/colorId"
                 android:gravity="center"
-                android:padding="@dimen/myMangaListPadding"
                 android:text="1"
                 android:textColor="@color/white"
                 android:textSize="@dimen/myMangaListTextSize"
@@ -49,11 +46,13 @@
                 android:text="Solo Leveling"
                 android:hint="Name"
                 android:inputType="textMultiLine|textVisiblePassword"
-                android:padding="4dp"
+                android:padding="@dimen/myMangaListPadding"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
                 android:textSize="@dimen/myMangaListTextSize"
                 android:textStyle="bold"
+                android:layout_marginLeft="@dimen/myMangaListMargin"
+                android:layout_marginRight="@dimen/myMangaListMargin"
                 app:layout_constraintEnd_toStartOf="@id/chapter"
                 app:layout_constraintHorizontal_weight="5"
                 app:layout_constraintStart_toEndOf="@+id/counter"
@@ -67,9 +66,8 @@
                 android:background="@color/colorChapter"
                 android:gravity="center"
                 android:inputType="number"
-                android:padding="@dimen/myMangaListPadding"
                 android:selectAllOnFocus="true"
-                android:text="103"
+                android:text="1234"
                 android:labelFor="@id/chapter"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
@@ -77,7 +75,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/name"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_weight="1.2"
+                app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@id/name"
                 app:layout_constraintTop_toTopOf="@+id/name" />
 

@@ -26,11 +26,9 @@
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:padding="8dp"
             android:background="#000000"
             android:text="@string/app_name"
-            android:textAlignment="center"
             android:textColor="@color/white"
             android:autoSizeTextType="uniform"
             app:layout_constraintBottom_toBottomOf="@id/menuBar"
@@ -49,6 +47,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/rankButtonTextSize"
             app:cornerRadius="0dp"
+            android:visibility="gone"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/planToReadButton"
@@ -65,6 +64,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/rankButtonTextSize"
             app:cornerRadius="0dp"
+            android:visibility="gone"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/settings"
@@ -313,5 +313,19 @@
             app:layout_constraintTop_toBottomOf="@id/cancelButton"
             app:layout_constraintVertical_weight="1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/addNewMangaButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintHeight_percent="0.07"
+        android:layout_margin="20dp"
+        android:scaleType="fitCenter"
+        android:background="@drawable/round_shape"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_add_24"
+        android:contentDescription="Add new manga" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity{
     ConstraintLayout background;
     ConstraintLayout addNewMangaView;
     EditText newUrl, newName, newChapter;
+    ImageButton addNewMangaButton;
     Button addButton, cancelButton;
     RecyclerView recyclerView;
     ImageButton settings;
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity{
         newUrl = findViewById(R.id.newUrl);
         newName = findViewById(R.id.newName);
         newChapter = findViewById(R.id.newChapter);
+        addNewMangaButton = findViewById(R.id.addNewMangaButton);
         addButton = findViewById(R.id.addButton);
         cancelButton = findViewById(R.id.cancelButton);
         recyclerView = findViewById(R.id.recyclerView);
@@ -108,13 +111,12 @@ public class MainActivity extends AppCompatActivity{
         setupButtons();
         setupEditTexts();
         setupSettings();
-        setupFromSharedPrefs();
 
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
         myRecyclerAdapter = new MyRecyclerAdapter(this, myMangaList, myDatabaseHelper, pageNames[activePage], background);
         recyclerView.setAdapter(myRecyclerAdapter);
 
-        rankButtons.get(activePage).callOnClick();
+        setupFromSharedPrefs();
 
 
 
@@ -170,6 +172,10 @@ public class MainActivity extends AppCompatActivity{
             Button rankButton = findViewById(pageIds[i]);
             int finalI = i;
             rankButton.setOnClickListener(v -> {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("currentPage", finalI);
+                editor.apply();
+
                 background.requestFocus();
                 rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
                 rankButton.setBackgroundColor(getResources().getColor(R.color.colorRankButtonSelected, null));
@@ -181,26 +187,21 @@ public class MainActivity extends AppCompatActivity{
             rankButtons.add(rankButton);
         }
 
+        addNewMangaButton.setOnClickListener(v -> {
+            addNewMangaButton.setVisibility(View.INVISIBLE);
+            addNewMangaView.setVisibility(View.VISIBLE);
+            newName.requestFocus();
+        });
+
         addButton.setOnClickListener(v -> {
             if (newName.getText().toString().equals("")) {
                 Toast.makeText(this, "Name can't be empty", Toast.LENGTH_SHORT).show();
             } else {
-                // add to firebase
-                /*ref = db.getReference("users/" + currentUser + "/myMangaList/" +
-                        pageNames[activePage] + "/" + newName.getText());
-
-                if (!String.valueOf(newChapter.getText()).equals(""))
-                    ref.child("chapter").setValue(String.valueOf(newChapter.getText()));
-                else ref.child("chapter").setValue("");
-
-                if (!String.valueOf(newUrl.getText()).equals(""))
-                    ref.child("url").setValue(String.valueOf(newUrl.getText()));
-                else ref.child("url").setValue("");*/
-
                 myDatabaseHelper.insertData(String.valueOf(newName.getText()), String.valueOf(newChapter.getText()), String.valueOf(newUrl.getText()));
                 refresh();
                 background.requestFocus();
-                addNewMangaView.setVisibility(View.GONE);
+                addNewMangaView.setVisibility(View.INVISIBLE);
+                addNewMangaButton.setVisibility(View.VISIBLE);
                 newName.setText("");
                 newChapter.setText("");
                 newUrl.setText("");
@@ -209,7 +210,8 @@ public class MainActivity extends AppCompatActivity{
 
         cancelButton.setOnClickListener(v -> {
             background.requestFocus();
-            addNewMangaView.setVisibility(View.GONE);
+            addNewMangaView.setVisibility(View.INVISIBLE);
+            addNewMangaButton.setVisibility(View.VISIBLE);
             newName.setText("");
             newChapter.setText("");
             newUrl.setText("");
@@ -266,11 +268,52 @@ public class MainActivity extends AppCompatActivity{
             popupSettings.show();
 
             popupSettings.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.popupAddNewManga) {
-                    addNewMangaView.setVisibility(View.VISIBLE);
-                    newName.requestFocus();
-                    inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0); // show keyboard
-                    return true;
+                if (item.getItemId() == R.id.popupPlanToRead) {
+                    item.setChecked(!item.isChecked());
+
+                    if (item.isChecked()) {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("showPlanToReadPage", true);
+                        editor.apply();
+                        rankButtons.get(rankButtons.size()-1).setVisibility(View.VISIBLE);
+                    } else {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("showPlanToReadPage", false);
+                        editor.apply();
+                        rankButtons.get(rankButtons.size()-1).setVisibility(View.GONE);
+
+                        if (activePage == rankButtons.size()-1) {
+                            rankButtons.get(0).callOnClick();
+                        }
+                    }
+
+                    // prevent popup menu from closing
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                    item.setActionView(new View(this));
+                    return false;
+                } else if (item.getItemId() == R.id.popupSpecial) {
+                    item.setChecked(!item.isChecked());
+
+                    if (item.isChecked()) {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("showSpecialPage", true);
+                        editor.apply();
+                        rankButtons.get(rankButtons.size()-2).setVisibility(View.VISIBLE);
+                    } else {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("showSpecialPage", false);
+                        editor.apply();
+                        rankButtons.get(rankButtons.size()-2).setVisibility(View.GONE);
+
+                        if (activePage == rankButtons.size()-2) {
+                            rankButtons.get(0).callOnClick();
+                        }
+                    }
+
+                    // prevent popup menu from closing
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                    item.setActionView(new View(this));
+                    return false;
                 } else if (item.getItemId() == R.id.popupExport) {
                     publishPublic("Test public");
 
@@ -288,10 +331,20 @@ public class MainActivity extends AppCompatActivity{
     public void setupFromSharedPrefs() {
 //        sharedPreferences.getStringSet()
 
-//        boolean isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putBoolean("isFirstLaunch", false);
-//        editor.apply();
+        boolean showPlanToReadPage = sharedPreferences.getBoolean("showPlanToReadPage", false);
+        boolean showSpecialPage = sharedPreferences.getBoolean("showSpecialPage", false);
+        int currentPage = sharedPreferences.getInt("currentPage", 0);
+
+        if (showPlanToReadPage) {
+            rankButtons.get(rankButtons.size()-1).setVisibility(View.VISIBLE);
+            popupSettings.getMenu().getItem(0).setChecked(true);
+        }
+        if (showSpecialPage) {
+            rankButtons.get(rankButtons.size()-2).setVisibility(View.VISIBLE);
+            popupSettings.getMenu().getItem(1).setChecked(true);
+        }
+
+        rankButtons.get(currentPage).callOnClick();
     }
 
     public void publishPublic(String publicListName) {
