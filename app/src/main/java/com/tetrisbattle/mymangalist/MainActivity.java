@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity{
         setupButtons();
         setupEditTexts();
         setupSettings();
-        setupFromSharedPrefs();
 
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
         myRecyclerAdapter = new MyRecyclerAdapter(this, myMangaList, myDatabaseHelper, pageNames[activePage], background);
