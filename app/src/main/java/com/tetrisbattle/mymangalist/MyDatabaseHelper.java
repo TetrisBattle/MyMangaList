@@ -151,7 +151,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             myMangalistDb.add(myMangaList);
         }
 
-        cursor.close();
+        if (cursor != null) cursor.close();
         db.close();
         return myMangalistDb;
     }

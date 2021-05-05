@@ -119,23 +119,6 @@ public class MainActivity extends AppCompatActivity{
         recyclerView.setAdapter(myRecyclerAdapter);
 
         setupFromSharedPrefs();
-
-
-
-//        ref = db.getReference("thien/myMangaList/S");
-////        Log.d("myTest", "test: " + ref);
-//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                MyManga asd = snapshot.getValue(MyManga.class);
-//                Log.d("myTest", "test: " + asd.chapter);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                  Log.d("myTest", "Firebase error");
-//            }
-//        });
     }
 
     @Override
@@ -164,7 +147,7 @@ public class MainActivity extends AppCompatActivity{
             });
         } else {
             currentUser = firebaseUser.getUid();
-//            Log.d("myTest", "already signed in: " + currentUser);
+            //Log.d("myTest", "already signed in: " + currentUser);
             //firebaseAuth.signOut();
         }
     }
@@ -350,14 +333,20 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void publishPublic(String publicListName) {
+        ref = db.getReference("publishedMangaLists/" + publicListName + "/" + "owner");
+        ref.setValue(currentUser);
+
+        ref = db.getReference("publishedMangaLists/" + publicListName + "/owner");
+        ref.setValue(currentUser);
+
         List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
         for (int i=0; i<myMangaListDb.size(); i++) {
             List<MyManga> myMangaList = myMangaListDb.get(i);
             for (int j=0; j<myMangaList.size(); j++) {
                 MyManga myManga = myMangaList.get(j);
 
-                ref = db.getReference("publicMangaLists/" + publicListName +
-                        "/" + pageNames[i] + "/" + myManga.name);
+                ref = db.getReference("publishedMangaLists/" + publicListName +
+                        "/myMangaList/" + pageNames[i] + "/" + myManga.name);
 
                 ref.child("chapter").setValue(myManga.chapter);
                 ref.child("url").setValue(myManga.url);
