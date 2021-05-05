@@ -5,7 +5,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -22,8 +21,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.IOError;
-import java.io.IOException;
 import java.util.List;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
@@ -37,7 +34,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     ConstraintLayout background;
 
     InputMethodManager inputMethodManager;
-    AlertDialog.Builder myDialog;
+    AlertDialog.Builder deleteDialog;
 
     int selectedId;
     String selectedName;
@@ -51,7 +48,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         this.myTable = myTable;
         this.background = background;
         inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        myDialog = new AlertDialog.Builder(context);
+        deleteDialog = new AlertDialog.Builder(context);
     }
 
     @NonNull
@@ -217,7 +214,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                 inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0); // show keyboard
                 return true;
             } else if (item.getItemId() == R.id.popupDelete) {
-                myDialog.setTitle("DELETE")
+                deleteDialog.setTitle("DELETE")
                         .setMessage("Are you sure you want to delete " + selectedName + " from the list?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             myDatabaseHelper.deleteData(selectedId);
@@ -225,7 +222,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                             notifyDataSetChanged();
                         })
                         .setNegativeButton("No", (dialog, which) -> {});
-                myDialog.show();
+                deleteDialog.show();
                 return true;
             } else {
                 return false;
