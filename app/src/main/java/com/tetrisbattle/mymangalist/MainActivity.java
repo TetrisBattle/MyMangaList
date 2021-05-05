@@ -229,14 +229,13 @@ public class MainActivity extends AppCompatActivity{
 
         newName.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                background.requestFocus();
+                newName.clearFocus();
             }
         });
 
         newChapter.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                background.requestFocus();
-                inputMethodManager.hideSoftInputFromWindow(newChapter.getWindowToken(), 0); // hide keyboard
+                newChapter.clearFocus();
                 return true;
             }
             return false;
@@ -244,7 +243,8 @@ public class MainActivity extends AppCompatActivity{
 
         newChapter.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                background.requestFocus();
+                inputMethodManager.hideSoftInputFromWindow(newChapter.getWindowToken(), 0); // hide keyboard
+                newChapter.clearFocus();
             }
         });
 
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity{
 
         newUrl.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                background.requestFocus();
+                newUrl.clearFocus();
             }
         });
     }
