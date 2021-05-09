@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -63,9 +64,9 @@ public class MainActivity extends AppCompatActivity{
     ImageButton addNewMangaButton;
     Button addButton, cancelButton;
     RecyclerView recyclerView;
-    ImageButton settings;
+    ImageButton settingsIcon;
 
-    PopupMenu popupSettings;
+    PopupMenu settingsIconPopupMenu;
     MenuInflater inflater;
     InputMethodManager inputMethodManager;
     SharedPreferences sharedPreferences;
@@ -77,12 +78,14 @@ public class MainActivity extends AppCompatActivity{
 
     String currentUser;
     int activePage = 0;
+
+    int testCounter = 0;
     //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         db = FirebaseDatabase.getInstance();
@@ -98,11 +101,11 @@ public class MainActivity extends AppCompatActivity{
         cancelButton = findViewById(R.id.cancelButton);
         recyclerView = findViewById(R.id.recyclerView);
         rankButtons = new ArrayList<>(pageIds.length);
-        settings = findViewById(R.id.settings);
+        settingsIcon = findViewById(R.id.settingsIcon);
 
-        popupSettings = new PopupMenu(this, settings);
-        inflater = popupSettings.getMenuInflater();
-        inflater.inflate(R.menu.settings_popup, popupSettings.getMenu());
+        settingsIconPopupMenu = new PopupMenu(this, settingsIcon);
+        inflater = settingsIconPopupMenu.getMenuInflater();
+        inflater.inflate(R.menu.settings_popup, settingsIconPopupMenu.getMenu());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -119,6 +122,7 @@ public class MainActivity extends AppCompatActivity{
         recyclerView.setAdapter(myRecyclerAdapter);
 
         setupFromSharedPrefs();
+        Log.d("myTest", "test: " + "main");
     }
 
     @Override
@@ -130,28 +134,10 @@ public class MainActivity extends AppCompatActivity{
     public void backgroundClick(View v) {
         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0); // hide keyboard
         getCurrentFocus().clearFocus();
+        //Log.d("myTest", "test: " + ++testCounter);
     }
 
-    public void login() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-
-        if (firebaseUser == null) {
-            firebaseAuth.signInAnonymously().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    currentUser = String.valueOf(firebaseAuth.getCurrentUser());
-                    Log.d("myTest", "new user: " + currentUser);
-                } else {
-                    Toast.makeText(MainActivity.this, "No internet connection!", Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            currentUser = firebaseUser.getUid();
-            //Log.d("myTest", "already signed in: " + currentUser);
-            //firebaseAuth.signOut();
-        }
-    }
-
+    //region setup
     public void setupButtons() {
         for (int i = 0; i< pageIds.length; i++) {
             Button rankButton = findViewById(pageIds[i]);
@@ -161,9 +147,13 @@ public class MainActivity extends AppCompatActivity{
                 editor.putInt("currentPage", finalI);
                 editor.apply();
 
+                if (addNewMangaView.getVisibility() == View.VISIBLE) {
+                    cancelButton.callOnClick();
+                }
+
                 background.requestFocus();
                 rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
-                rankButton.setBackgroundColor(getResources().getColor(R.color.colorRankButtonSelected, null));
+                rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
                 activePage = finalI;
                 myDatabaseHelper.setTable(pageNames[activePage]);
@@ -184,7 +174,7 @@ public class MainActivity extends AppCompatActivity{
             } else {
                 myDatabaseHelper.insertData(String.valueOf(newName.getText()), String.valueOf(newChapter.getText()), String.valueOf(newUrl.getText()));
                 refresh();
-                background.requestFocus();
+                background.callOnClick();
                 addNewMangaView.setVisibility(View.INVISIBLE);
                 addNewMangaButton.setVisibility(View.VISIBLE);
                 newName.setText("");
@@ -194,7 +184,7 @@ public class MainActivity extends AppCompatActivity{
         });
 
         cancelButton.setOnClickListener(v -> {
-            background.requestFocus();
+            background.callOnClick();
             addNewMangaView.setVisibility(View.INVISIBLE);
             addNewMangaButton.setVisibility(View.VISIBLE);
             newName.setText("");
@@ -212,25 +202,13 @@ public class MainActivity extends AppCompatActivity{
             return false;
         });
 
-        newName.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                newName.clearFocus();
-            }
-        });
-
         newChapter.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                inputMethodManager.hideSoftInputFromWindow(newChapter.getWindowToken(), 0); // hide keyboard
                 newChapter.clearFocus();
                 return true;
             }
             return false;
-        });
-
-        newChapter.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                inputMethodManager.hideSoftInputFromWindow(newChapter.getWindowToken(), 0); // hide keyboard
-                newChapter.clearFocus();
-            }
         });
 
         newUrl.setOnKeyListener((v, keyCode, event) -> {
@@ -240,19 +218,13 @@ public class MainActivity extends AppCompatActivity{
             }
             return false;
         });
-
-        newUrl.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                newUrl.clearFocus();
-            }
-        });
     }
 
     public void setupSettings() {
-        settings.setOnClickListener(v -> {
-            popupSettings.show();
+        settingsIcon.setOnClickListener(v -> {
+            settingsIconPopupMenu.show();
 
-            popupSettings.setOnMenuItemClickListener(item -> {
+            settingsIconPopupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.popupPlanToRead) {
                     item.setChecked(!item.isChecked());
 
@@ -299,12 +271,15 @@ public class MainActivity extends AppCompatActivity{
                     item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
                     item.setActionView(new View(this));
                     return false;
-                } else if (item.getItemId() == R.id.popupExport) {
-                    publishPublic("Test public");
-
-                    return true;
                 } else if (item.getItemId() == R.id.popupImport) {
                     Toast.makeText(this, "import: empty", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (item.getItemId() == R.id.popupSettings) {
+                    //publishPublic("Test public");
+                    Intent intent = new Intent(this, SettingsActivity.class);
+                    //intent.putExtra("Name", name);
+                    startActivity(intent);
+
                     return true;
                 } else {
                     return false;
@@ -322,20 +297,46 @@ public class MainActivity extends AppCompatActivity{
 
         if (showPlanToReadPage) {
             rankButtons.get(rankButtons.size()-1).setVisibility(View.VISIBLE);
-            popupSettings.getMenu().getItem(0).setChecked(true);
+            settingsIconPopupMenu.getMenu().getItem(0).setChecked(true);
         }
+
         if (showSpecialPage) {
             rankButtons.get(rankButtons.size()-2).setVisibility(View.VISIBLE);
-            popupSettings.getMenu().getItem(1).setChecked(true);
+            settingsIconPopupMenu.getMenu().getItem(1).setChecked(true);
         }
 
         rankButtons.get(currentPage).callOnClick();
     }
+    //endregion
+
+    //region functions
+    public void login() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+        if (firebaseUser == null) {
+            firebaseAuth.signInAnonymously().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    currentUser = String.valueOf(firebaseAuth.getCurrentUser());
+                    Log.d("myTest", "new user: " + currentUser);
+                } else {
+                    Toast.makeText(MainActivity.this, "No internet connection!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            currentUser = firebaseUser.getUid();
+            //Log.d("myTest", "already signed in: " + currentUser);
+            //firebaseAuth.signOut();
+        }
+    }
+
+    public void refresh() {
+        List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
+        myRecyclerAdapter.setMangaList(myMangaList);
+        myRecyclerAdapter.notifyDataSetChanged();
+    }
 
     public void publishPublic(String publicListName) {
-        ref = db.getReference("publishedMangaLists/" + publicListName + "/" + "owner");
-        ref.setValue(currentUser);
-
         ref = db.getReference("publishedMangaLists/" + publicListName + "/owner");
         ref.setValue(currentUser);
 
@@ -353,10 +354,5 @@ public class MainActivity extends AppCompatActivity{
             }
         }
     }
-
-    public void refresh() {
-        List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
-        myRecyclerAdapter.setMangaList(myMangaList);
-        myRecyclerAdapter.notifyDataSetChanged();
-    }
+    //endregion
 }

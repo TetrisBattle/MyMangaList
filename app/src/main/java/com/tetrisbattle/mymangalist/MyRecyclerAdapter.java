@@ -69,7 +69,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         holder.chapter.setText(data.get(position).chapter);
 
         holder.id.setOnClickListener(v -> {
-            background.requestFocus();
+            background.callOnClick();
 //            ClipboardManager clipboardManager;
 //            clipboardManager = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
 //
@@ -92,7 +92,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                     data = myDatabaseHelper.getMyMangaList();
                     notifyDataSetChanged();
                 }
-                inputMethodManager.hideSoftInputFromWindow(holder.name.getWindowToken(), 0); // hide keyboard
             }
         });
 
@@ -105,7 +104,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         });
 
         holder.name.setOnLongClickListener(v -> {
-            background.requestFocus();
+            background.callOnClick();
             selectedId = data.get(position).id;
             selectedName = String.valueOf(holder.name.getText());
             showPopupMenu(v, holder, myDatabaseHelper.getUrl(selectedId));
@@ -120,7 +119,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                 if (!String.valueOf(holder.chapter.getText()).equals(selectedChapter)){
                     myDatabaseHelper.updateChapter(String.valueOf(holder.chapter.getText()), selectedId);
                 }
-                inputMethodManager.hideSoftInputFromWindow(holder.chapter.getWindowToken(), 0); // hide keyboard
             }
         });
 
@@ -138,7 +136,6 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                     myDatabaseHelper.updateUrl(String.valueOf(holder.changeUrl.getText()), selectedId);
                 }
                 holder.changeUrl.setVisibility(View.GONE);
-                inputMethodManager.hideSoftInputFromWindow(holder.changeUrl.getWindowToken(), 0); // hide keyboard
             }
         });
 

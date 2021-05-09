@@ -5,6 +5,6 @@
         <item android:id="@+id/popupSpecial" android:title="Special"/>
     </group>
 
-    <item android:id="@+id/popupExport" android:title="Publish"/>
     <item android:id="@+id/popupImport" android:title="Subscribe"/>
+    <item android:id="@+id/popupSettings" android:title="Settings"/>
 </menu>
