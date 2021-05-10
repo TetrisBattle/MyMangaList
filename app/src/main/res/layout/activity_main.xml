@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintVertical_weight="1"
-        app:layout_constraintBottom_toTopOf="@id/rankButtons"
+        app:layout_constraintBottom_toTopOf="@+id/rankButtons"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -31,7 +31,7 @@
             android:text="@string/app_name"
             android:textColor="@color/white"
             android:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toBottomOf="@id/menuBar"
+            app:layout_constraintBottom_toBottomOf="@+id/menuBar"
             app:layout_constraintEnd_toStartOf="@+id/specialButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -67,7 +67,7 @@
             android:visibility="gone"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/settingsIcon"
+            app:layout_constraintEnd_toStartOf="@+id/settingsIcon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
@@ -93,7 +93,7 @@
         app:layout_constraintVertical_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/menuBar">
+        app:layout_constraintTop_toBottomOf="@+id/menuBar">
 
         <Button
             android:id="@+id/rankButtonS"
@@ -107,7 +107,7 @@
             android:textSize="@dimen/rankButtonTextSize"
             app:cornerRadius="0dp"
             app:layout_constraintDimensionRatio="1"
-            app:layout_constraintEnd_toStartOf="@id/rankButtonA"
+            app:layout_constraintEnd_toStartOf="@+id/rankButtonA"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -123,8 +123,8 @@
             android:textSize="@dimen/rankButtonTextSize"
             app:cornerRadius="0dp"
             app:layout_constraintDimensionRatio="1"
-            app:layout_constraintEnd_toStartOf="@id/rankButtonB"
-            app:layout_constraintStart_toEndOf="@id/rankButtonS"
+            app:layout_constraintEnd_toStartOf="@+id/rankButtonB"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonS"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
@@ -139,8 +139,8 @@
             android:textSize="@dimen/rankButtonTextSize"
             app:cornerRadius="0dp"
             app:layout_constraintDimensionRatio="1"
-            app:layout_constraintEnd_toStartOf="@id/rankButtonC"
-            app:layout_constraintStart_toEndOf="@id/rankButtonA"
+            app:layout_constraintEnd_toStartOf="@+id/rankButtonC"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonA"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
@@ -155,8 +155,8 @@
             android:textSize="@dimen/rankButtonTextSize"
             app:cornerRadius="0dp"
             app:layout_constraintDimensionRatio="1"
-            app:layout_constraintEnd_toEndOf="@id/rankButtonD"
-            app:layout_constraintStart_toEndOf="@id/rankButtonB"
+            app:layout_constraintEnd_toEndOf="@+id/rankButtonD"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonB"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
@@ -171,8 +171,8 @@
             android:textSize="@dimen/rankButtonTextSize"
             app:cornerRadius="0dp"
             app:layout_constraintDimensionRatio="1"
-            app:layout_constraintEnd_toStartOf="@id/rankButtonE"
-            app:layout_constraintStart_toEndOf="@id/rankButtonC"
+            app:layout_constraintEnd_toStartOf="@+id/rankButtonE"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonC"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
@@ -187,8 +187,8 @@
             android:textSize="@dimen/rankButtonTextSize"
             app:cornerRadius="0dp"
             app:layout_constraintDimensionRatio="1"
-            app:layout_constraintEnd_toStartOf="@id/rankButtonF"
-            app:layout_constraintStart_toEndOf="@id/rankButtonD"
+            app:layout_constraintEnd_toStartOf="@+id/rankButtonF"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonD"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
@@ -204,7 +204,7 @@
             app:cornerRadius="0dp"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/rankButtonE"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonE"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -215,7 +215,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rankButtons" />
+        app:layout_constraintTop_toBottomOf="@+id/rankButtons" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/addNewMangaView"
@@ -233,7 +233,7 @@
             android:layout_height="wrap_content"
             android:hint="Url"
             android:textSize="@dimen/newMangaTextSize"
-            android:textColorHint="@color/white"
+            android:textColorHint="@color/colorHint"
             android:inputType="textUri|textMultiLine|textVisiblePassword"
             android:textColor="@color/white"
             android:autofillHints="Name"
@@ -241,7 +241,7 @@
             android:paddingEnd="10dp"
             app:layout_constraintBottom_toTopOf="@+id/newName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/newChapter" />
+            app:layout_constraintEnd_toEndOf="@+id/newChapter" />
 
         <EditText
             android:id="@+id/newName"
@@ -250,7 +250,7 @@
             app:layout_constraintHorizontal_weight="2"
             android:hint="Name"
             android:textSize="@dimen/newMangaTextSize"
-            android:textColorHint="@color/white"
+            android:textColorHint="@color/colorHint"
             android:inputType="textMultiLine|textVisiblePassword"
             android:textColor="@color/white"
             android:autofillHints="Name"
@@ -266,9 +266,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintHorizontal_weight="1"
             android:hint="Chapter"
+            android:textColorHint="@color/colorHint"
             android:textSize="@dimen/newMangaTextSize"
             android:inputType="number"
-            android:textColorHint="@color/white"
             android:textColor="@color/white"
             android:autofillHints="Chapter"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -288,7 +288,7 @@
             android:text="Cancel"
             android:textSize="@dimen/newMangaButtonTextSize"
             app:cornerRadius="0dp"
-            app:layout_constraintBottom_toTopOf="@id/addButton"
+            app:layout_constraintBottom_toTopOf="@+id/addButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/newChapter"
@@ -312,18 +312,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/newChapter"
-            app:layout_constraintTop_toBottomOf="@id/cancelButton"
+            app:layout_constraintTop_toBottomOf="@+id/cancelButton"
             app:layout_constraintVertical_weight="1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageButton
         android:id="@+id/addNewMangaButton"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintHeight_percent="0.07"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_margin="20dp"
-        android:scaleType="fitCenter"
         android:background="@drawable/round_shape"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

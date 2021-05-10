@@ -105,12 +105,13 @@ public class MainActivity extends AppCompatActivity{
 
         settingsIconPopupMenu = new PopupMenu(this, settingsIcon);
         inflater = settingsIconPopupMenu.getMenuInflater();
-        inflater.inflate(R.menu.settings_popup, settingsIconPopupMenu.getMenu());
+        inflater.inflate(R.menu.popup_settings, settingsIconPopupMenu.getMenu());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        myDatabaseHelper = new MyDatabaseHelper(this, pageNames[activePage]);
+        myDatabaseHelper = new MyDatabaseHelper(this);
+        myDatabaseHelper.setTable(pageNames[activePage]);
 
         login();
         setupButtons();
@@ -277,7 +278,7 @@ public class MainActivity extends AppCompatActivity{
                 } else if (item.getItemId() == R.id.popupSettings) {
                     //publishPublic("Test public");
                     Intent intent = new Intent(this, SettingsActivity.class);
-                    //intent.putExtra("Name", name);
+                    intent.putExtra("currentUser", currentUser);
                     startActivity(intent);
 
                     return true;

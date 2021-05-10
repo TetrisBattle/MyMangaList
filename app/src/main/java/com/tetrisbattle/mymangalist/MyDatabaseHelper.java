@@ -29,9 +29,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "planToRead"
     };
 
-    public MyDatabaseHelper(Context context, String myTable) {
+    public MyDatabaseHelper(Context context) {
         super(context, "myMangaListDatabase", null, 1);
-        this.myTable = myTable;
     }
 
     @Override
