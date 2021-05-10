@@ -6,7 +6,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -17,8 +16,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -44,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
     RadioButton publicList, privateList;
     ConstraintLayout nameLayout;
     ConstraintLayout passwordLayout;
-    EditText name, password;
+    EditText listName, password;
     Button saveButton;
 
     SharedPreferences sharedPreferences;
@@ -65,7 +62,7 @@ public class SettingsActivity extends AppCompatActivity {
         privateList = findViewById(R.id.privateList);
         nameLayout = findViewById(R.id.nameLayout);
         passwordLayout = findViewById(R.id.passwordLayout);
-        name = findViewById(R.id.name);
+        listName = findViewById(R.id.listName);
         password = findViewById(R.id.password);
         saveButton = findViewById(R.id.saveButton);
 
@@ -122,29 +119,40 @@ public class SettingsActivity extends AppCompatActivity {
 
         saveButton.setOnClickListener(v -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            if (publish.isChecked()) {
+                if (listName.getText().toString().equals(""))
+                Toast.makeText(this, "List name can't be empty", Toast.LENGTH_SHORT).show();
+                else {
+                    String previousListName = sharedPreferences.getString("listName", "");
+                    String newListName = String.valueOf(listName.getText());
+                    boolean previousPrivateList = sharedPreferences.getBoolean("privateList", false);
+
+                    if (!previousListName.equals(newListName)) {
+                        deleteList();
+                        editor.putString("listName", newListName);
+                    } else if (previousPrivateList != privateList.isChecked()) {
+                        deleteList();
+                    }
+
+                    if (publicList.isChecked()) publishPublicList(newListName);
+                    else publishPrivateList(newListName, String.valueOf(password.getText()));
+                }
+            } else {
+                deleteList();
+            }
+
             editor.putBoolean("publish", publish.isChecked());
             editor.putBoolean("privateList", privateList.isChecked());
             if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
             else editor.putString("password", "");
-
-            if (publish.isChecked() && name.getText().toString().equals("")) {
-                Toast.makeText(this, "Name can't be empty", Toast.LENGTH_SHORT).show();
-            } else {
-                editor.putString("name", String.valueOf(name.getText()));
-                if (publicList.isChecked()) {
-                    publishPublicList(String.valueOf(name.getText()));
-                } else {
-                    publishPrivateList(String.valueOf(name.getText()), String.valueOf(password.getText()));
-                }
-            }
-
             editor.apply();
         });
     }
 
     public void setupFromSharedPrefs() {
-        String sharedPrefsName = sharedPreferences.getString("name", "");
-        name.setText(sharedPrefsName);
+        String sharedPrefsListName = sharedPreferences.getString("listName", "");
+        listName.setText(sharedPrefsListName);
 
         boolean sharedPrefsPublish = sharedPreferences.getBoolean("publish", false);
 
@@ -177,7 +185,7 @@ public class SettingsActivity extends AppCompatActivity {
                 MyManga myManga = myMangaList.get(j);
 
                 ref = db.getReference("publishedMangaLists/publicLists/" + listName +
-                        "/myMangaList/" + pageNames[i] + "/" + myManga.name);
+                        "/" + pageNames[i] + "/" + myManga.name);
 
                 ref.child("chapter").setValue(myManga.chapter);
                 ref.child("url").setValue(myManga.url);
@@ -201,11 +209,22 @@ public class SettingsActivity extends AppCompatActivity {
                 MyManga myManga = myMangaList.get(j);
 
                 ref = db.getReference("publishedMangaLists/privateLists/" + listName +
-                        "/myMangaList/" + pageNames[i] + "/" + myManga.name);
+                        "/" + pageNames[i] + "/" + myManga.name);
 
                 ref.child("chapter").setValue(myManga.chapter);
                 ref.child("url").setValue(myManga.url);
             }
         }
+    }
+
+    public void deleteList() {
+        String listName = sharedPreferences.getString("listName", "");
+        boolean sharedPrefsPrivateList = sharedPreferences.getBoolean("privateList", false);
+        Log.d("myTest", "test: " + sharedPrefsPrivateList);
+
+        if (sharedPrefsPrivateList) ref = db.getReference("publishedMangaLists/privateLists/" + listName);
+        else ref = db.getReference("publishedMangaLists/publicLists/" + listName);
+
+        ref.removeValue();
     }
 }

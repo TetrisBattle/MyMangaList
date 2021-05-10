@@ -164,7 +164,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             id = itemView.findViewById(R.id.counter);
-            name = itemView.findViewById(R.id.name);
+            name = itemView.findViewById(R.id.listName);
             chapter = itemView.findViewById(R.id.chapter);
             footer = itemView.findViewById(R.id.footer);
             changeUrl = itemView.findViewById(R.id.changeUrl);

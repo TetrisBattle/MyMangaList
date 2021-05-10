@@ -276,11 +276,9 @@ public class MainActivity extends AppCompatActivity{
                     Toast.makeText(this, "import: empty", Toast.LENGTH_SHORT).show();
                     return true;
                 } else if (item.getItemId() == R.id.popupSettings) {
-                    //publishPublic("Test public");
                     Intent intent = new Intent(this, SettingsActivity.class);
                     intent.putExtra("currentUser", currentUser);
                     startActivity(intent);
-
                     return true;
                 } else {
                     return false;
@@ -335,25 +333,6 @@ public class MainActivity extends AppCompatActivity{
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
         myRecyclerAdapter.setMangaList(myMangaList);
         myRecyclerAdapter.notifyDataSetChanged();
-    }
-
-    public void publishPublic(String publicListName) {
-        ref = db.getReference("publishedMangaLists/" + publicListName + "/owner");
-        ref.setValue(currentUser);
-
-        List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
-        for (int i=0; i<myMangaListDb.size(); i++) {
-            List<MyManga> myMangaList = myMangaListDb.get(i);
-            for (int j=0; j<myMangaList.size(); j++) {
-                MyManga myManga = myMangaList.get(j);
-
-                ref = db.getReference("publishedMangaLists/" + publicListName +
-                        "/myMangaList/" + pageNames[i] + "/" + myManga.name);
-
-                ref.child("chapter").setValue(myManga.chapter);
-                ref.child("url").setValue(myManga.url);
-            }
-        }
     }
     //endregion
 }

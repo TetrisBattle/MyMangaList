@@ -30,14 +30,14 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/myMangaListTextSize"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/name"
-                app:layout_constraintEnd_toStartOf="@+id/name"
+                app:layout_constraintBottom_toBottomOf="@+id/listName"
+                app:layout_constraintEnd_toStartOf="@+id/listName"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/name" />
+                app:layout_constraintTop_toTopOf="@+id/listName" />
 
             <EditText
-                android:id="@+id/name"
+                android:id="@+id/listName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/myMangaListPadding"
@@ -73,18 +73,18 @@
                 android:textColorHint="@color/white"
                 android:textSize="@dimen/myMangaListTextSize"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/name"
+                app:layout_constraintBottom_toBottomOf="@+id/listName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/name"
-                app:layout_constraintTop_toTopOf="@+id/name" />
+                app:layout_constraintStart_toEndOf="@+id/listName"
+                app:layout_constraintTop_toTopOf="@+id/listName" />
 
             <View
                 android:id="@+id/footer"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:onClick="backgroundClick"
-                app:layout_constraintTop_toBottomOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/listName"
                 app:layout_constraintEnd_toEndOf="@+id/chapter"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -104,10 +104,10 @@
                 android:textColorHint="@color/colorHint"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/name"
+                app:layout_constraintEnd_toEndOf="@+id/listName"
                 app:layout_constraintHorizontal_weight="5"
-                app:layout_constraintStart_toStartOf="@+id/name"
-                app:layout_constraintTop_toTopOf="@+id/name" />
+                app:layout_constraintStart_toStartOf="@+id/listName"
+                app:layout_constraintTop_toTopOf="@+id/listName" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
