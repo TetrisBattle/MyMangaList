@@ -3,9 +3,13 @@ package com.tetrisbattle.mymangalist;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -22,7 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsActivity extends AppCompatActivity {
+public class PublishActivity extends AppCompatActivity {
 
     private static final String[] pageNames = {
             "rankS",
@@ -37,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
     };
 
     CheckBox publish;
-    RadioGroup publishMode;
+    RadioGroup publishGroup;
     RadioButton publicList, privateList;
     ConstraintLayout nameLayout;
     ConstraintLayout passwordLayout;
@@ -54,10 +58,10 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_publish);
 
         publish = findViewById(R.id.publish);
-        publishMode = findViewById(R.id.publishMode);
+        publishGroup = findViewById(R.id.publishGroup);
         publicList = findViewById(R.id.publicList);
         privateList = findViewById(R.id.privateList);
         nameLayout = findViewById(R.id.nameLayout);
@@ -74,15 +78,15 @@ public class SettingsActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         animationAppear = AnimationUtils.loadAnimation(this, R.anim.animation_appear);
         animationDisappear = AnimationUtils.loadAnimation(this, R.anim.animation_disappear);
-        //publishMode.setAnimation(animationAppear);
+        //publishGroup.setAnimation(animationAppear);
         //passwordLayout.setAnimation(animationAppear);
 
         setupFromSharedPrefs();
 
         publish.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                publishMode.setVisibility(View.VISIBLE);
-                publishMode.startAnimation(animationAppear);
+                publishGroup.setVisibility(View.VISIBLE);
+                publishGroup.startAnimation(animationAppear);
 
                 nameLayout.startAnimation(animationAppear);
                 nameLayout.setVisibility(View.VISIBLE);
@@ -93,8 +97,8 @@ public class SettingsActivity extends AppCompatActivity {
                     password.setText("");
                 }
             } else {
-                publishMode.startAnimation(animationDisappear);
-                publishMode.setVisibility(View.INVISIBLE);
+                publishGroup.startAnimation(animationDisappear);
+                publishGroup.setVisibility(View.INVISIBLE);
 
                 nameLayout.startAnimation(animationDisappear);
                 nameLayout.setVisibility(View.INVISIBLE);
@@ -118,36 +122,52 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         saveButton.setOnClickListener(v -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+            if (isNetworkAvailable()) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
 
-            if (publish.isChecked()) {
-                if (listName.getText().toString().equals(""))
-                Toast.makeText(this, "List name can't be empty", Toast.LENGTH_SHORT).show();
-                else {
-                    String previousListName = sharedPreferences.getString("listName", "");
-                    String newListName = String.valueOf(listName.getText());
-                    boolean previousPrivateList = sharedPreferences.getBoolean("privateList", false);
-
-                    if (!previousListName.equals(newListName)) {
-                        deleteList();
-                        editor.putString("listName", newListName);
-                    } else if (previousPrivateList != privateList.isChecked()) {
-                        deleteList();
+                if (publish.isChecked()) {
+                    if (listName.getText().toString().equals("")) {
+                        Toast toast = Toast.makeText(this, "List name can't be empty", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.BOTTOM, 0, 400);
+                        toast.show();
                     }
 
-                    if (publicList.isChecked()) publishPublicList(newListName);
-                    else publishPrivateList(newListName, String.valueOf(password.getText()));
-                }
-            } else {
-                deleteList();
-            }
+                    else {
+                        String previousListName = sharedPreferences.getString("listName", "");
+                        String newListName = String.valueOf(listName.getText());
+                        boolean previousPrivateList = sharedPreferences.getBoolean("privateList", false);
 
-            editor.putBoolean("publish", publish.isChecked());
-            editor.putBoolean("privateList", privateList.isChecked());
-            if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
-            else editor.putString("password", "");
-            editor.apply();
+                        if (!previousListName.equals(newListName)) {
+                            deleteList();
+                            editor.putString("listName", newListName);
+                        } else if (previousPrivateList != privateList.isChecked()) {
+                            deleteList();
+                        }
+
+                        if (publicList.isChecked()) publishPublicList(newListName);
+                        else publishPrivateList(newListName, String.valueOf(password.getText()));
+                    }
+                } else {
+                    deleteList();
+                }
+
+                editor.putBoolean("publish", publish.isChecked());
+                editor.putBoolean("privateList", privateList.isChecked());
+                if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
+                else editor.putString("password", "");
+                editor.apply();
+            } else {
+                Toast toast = Toast.makeText(this, "Internet is not available", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM, 0, 400);
+                toast.show();
+            }
         });
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public void setupFromSharedPrefs() {
@@ -158,7 +178,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         if(sharedPrefsPublish) {
             publish.setChecked(true);
-            publishMode.setVisibility(View.VISIBLE);
+            publishGroup.setVisibility(View.VISIBLE);
             nameLayout.setVisibility(View.VISIBLE);
 
             boolean sharedPrefsPrivateList = sharedPreferences.getBoolean("privateList", false);

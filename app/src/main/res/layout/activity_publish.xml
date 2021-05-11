@@ -7,10 +7,10 @@
     android:animateLayoutChanges="false"
     android:background="@color/colorBackground"
     tools:ignore="HardcodedText"
-    tools:context=".SettingsActivity">
+    tools:context=".PublishActivity">
 
     <TextView
-        android:id="@+id/settingsTitle"
+        android:id="@+id/publishTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -33,10 +33,10 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settingsTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/publishTitle" />
 
     <RadioGroup
-        android:id="@+id/publishMode"
+        android:id="@+id/publishGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
@@ -70,7 +70,7 @@
         android:layout_marginTop="80dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/publishMode">
+        app:layout_constraintTop_toBottomOf="@+id/publishGroup">
 
         <TextView
             android:id="@+id/nameText"

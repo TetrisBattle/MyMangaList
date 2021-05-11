@@ -272,13 +272,13 @@ public class MainActivity extends AppCompatActivity{
                     item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
                     item.setActionView(new View(this));
                     return false;
-                } else if (item.getItemId() == R.id.popupImport) {
-                    Toast.makeText(this, "import: empty", Toast.LENGTH_SHORT).show();
-                    return true;
-                } else if (item.getItemId() == R.id.popupSettings) {
-                    Intent intent = new Intent(this, SettingsActivity.class);
+                } else if (item.getItemId() == R.id.popupPublish) {
+                    Intent intent = new Intent(this, PublishActivity.class);
                     intent.putExtra("currentUser", currentUser);
                     startActivity(intent);
+                    return true;
+                } else if (item.getItemId() == R.id.popupImport) {
+                    Toast.makeText(this, "import: empty", Toast.LENGTH_SHORT).show();
                     return true;
                 } else {
                     return false;
