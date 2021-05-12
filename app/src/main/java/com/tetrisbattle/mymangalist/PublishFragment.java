@@ -95,6 +95,11 @@ public class PublishFragment extends Fragment {
         setupFromSharedPrefs();
         setupFunctions();
 
+//        publishPublicList("testPublic");
+//        publishPublicList("testPublic2");
+//        publishPrivateList("testPrivate", "password");
+//        publishPrivateList("testPrivate2", "password2");
+
         return view;
     }
 
@@ -209,8 +214,8 @@ public class PublishFragment extends Fragment {
     }
 
     public void publishPublicList(String listName) {
-        ref = db.getReference("publishedMangaLists/publicLists/" + listName + "/owner");
-        ref.setValue(currentUser);
+        db.getReference("publishedMangaListNames/publicLists/" + listName + "/owner").setValue(currentUser);
+        db.getReference("publishedMangaLists/publicLists/" + listName + "/owner").setValue(currentUser);
 
         MyDatabaseHelper myDatabaseHelper = new MyDatabaseHelper(getContext());
 
@@ -230,11 +235,9 @@ public class PublishFragment extends Fragment {
     }
 
     public void publishPrivateList(String listName, String password) {
-        ref = db.getReference("publishedMangaLists/privateLists/" + listName + "/owner");
-        ref.setValue(currentUser);
-
-        ref = db.getReference("publishedMangaLists/privateLists/" + listName + "/password");
-        ref.setValue(password);
+        db.getReference("publishedMangaListNames/privateLists/" + listName + "/owner").setValue(currentUser);
+        db.getReference("publishedMangaLists/privateLists/" + listName + "/owner").setValue(currentUser);
+        db.getReference("publishedMangaLists/privateLists/" + listName + "/password").setValue(password);
 
         MyDatabaseHelper myDatabaseHelper = new MyDatabaseHelper(getContext());
 
@@ -256,11 +259,13 @@ public class PublishFragment extends Fragment {
     public void deleteList() {
         String listName = sharedPreferences.getString("listName", "");
         boolean sharedPrefsPrivateList = sharedPreferences.getBoolean("privateList", false);
-        Log.d("myTest", "test: " + sharedPrefsPrivateList);
 
-        if (sharedPrefsPrivateList) ref = db.getReference("publishedMangaLists/privateLists/" + listName);
-        else ref = db.getReference("publishedMangaLists/publicLists/" + listName);
-
-        ref.removeValue();
+        if (sharedPrefsPrivateList) {
+            db.getReference("publishedMangaListNames/privateLists/" + listName).removeValue();
+            db.getReference("publishedMangaLists/privateLists/" + listName).removeValue();
+        } else {
+            db.getReference("publishedMangaListNames/publicLists/" + listName).removeValue();
+            db.getReference("publishedMangaLists/publicLists/" + listName).removeValue();
+        }
     }
 }

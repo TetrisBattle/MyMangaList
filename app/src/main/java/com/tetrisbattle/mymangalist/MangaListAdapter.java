@@ -25,7 +25,7 @@ import java.util.List;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
 
-public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder> {
+public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyViewHolder> {
 
     Context context;
     List<MyManga> data;
@@ -41,7 +41,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     String selectedChapter;
     String selectedUrl;
 
-    public MyRecyclerAdapter(Context context, List<MyManga> myManga, MyDatabaseHelper myDatabaseHelper, String myTable, ConstraintLayout background) {
+    public MangaListAdapter(Context context, List<MyManga> myManga, MyDatabaseHelper myDatabaseHelper, String myTable, ConstraintLayout background) {
         this.context = context;
         this.data = myManga;
         this.myDatabaseHelper = myDatabaseHelper;

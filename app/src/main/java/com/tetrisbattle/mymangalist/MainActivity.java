@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -84,9 +83,7 @@ public class MainActivity extends AppCompatActivity{
         setupSettings();
         setupFromSharedPrefs();
 
-        replaceFragment(new ListFragment(background, pageNames[activePage]));
-
-        Log.d("myTest", "test: " + "main");
+        replaceFragment(new MangaListFragment(background, pageNames[activePage]));
     }
 
     @Override
@@ -144,7 +141,7 @@ public class MainActivity extends AppCompatActivity{
                 rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
                 activePage = finalI;
-                replaceFragment(new ListFragment(background, pageNames[activePage]));
+                replaceFragment(new MangaListFragment(background, pageNames[activePage]));
             });
             rankButtons.add(rankButton);
         }
@@ -202,14 +199,11 @@ public class MainActivity extends AppCompatActivity{
                     item.setActionView(new View(this));
                     return false;
                 } else if (item.getItemId() == R.id.popupPublish) {
-//                    Intent intent = new Intent(this, PublishActivity.class);
-//                    intent.putExtra("currentUser", currentUser);
-//                    startActivity(intent);
                     rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
                     replaceFragment(new PublishFragment(currentUser));
                     return true;
-                } else if (item.getItemId() == R.id.popupImport) {
-                    Toast.makeText(this, "import: empty", Toast.LENGTH_SHORT).show();
+                } else if (item.getItemId() == R.id.popupSubscribe) {
+                    replaceFragment(new SubscribeFragment());
                     return true;
                 } else {
                     return false;

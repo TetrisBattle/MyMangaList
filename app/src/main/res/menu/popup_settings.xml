@@ -9,5 +9,5 @@
     </group>
 
     <item android:id="@+id/popupPublish" android:title="Publish"/>
-    <item android:id="@+id/popupImport" android:title="Subscribe"/>
+    <item android:id="@+id/popupSubscribe" android:title="Subscribe"/>
 </menu>

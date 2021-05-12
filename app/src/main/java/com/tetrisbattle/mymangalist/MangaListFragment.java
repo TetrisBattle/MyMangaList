@@ -24,10 +24,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
-public class ListFragment extends Fragment {
+public class MangaListFragment extends Fragment {
 
     View view;
-    RecyclerView recyclerView;
+    RecyclerView mangaListView;
     ConstraintLayout addNewMangaView;
     ImageButton addNewMangaButton;
     EditText newUrl, newName, newChapter;
@@ -37,23 +37,23 @@ public class ListFragment extends Fragment {
     MyDatabaseHelper myDatabaseHelper;
     FirebaseDatabase db;
     DatabaseReference ref;
-    MyRecyclerAdapter myRecyclerAdapter;
+    MangaListAdapter mangaListAdapter;
 
     ConstraintLayout background;
     String table;
 
-    public ListFragment(ConstraintLayout background, String table) {
+    public MangaListFragment(ConstraintLayout background, String table) {
         this.background = background;
         this.table = table;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_list, container, false);
+        view = inflater.inflate(R.layout.fragment_manga_list, container, false);
 
         requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        recyclerView = view.findViewById(R.id.recyclerView);
+        mangaListView = view.findViewById(R.id.mangaListView);
         addNewMangaView = view.findViewById(R.id.addNewMangaView);
         addNewMangaButton = view.findViewById(R.id.addNewMangaButton);
         newUrl = view.findViewById(R.id.newUrl);
@@ -62,7 +62,6 @@ public class ListFragment extends Fragment {
         addButton = view.findViewById(R.id.addButton);
         cancelButton = view.findViewById(R.id.cancelButton);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         myDatabaseHelper = new MyDatabaseHelper(getContext());
         myDatabaseHelper.setTable(table);
@@ -70,8 +69,9 @@ public class ListFragment extends Fragment {
         ref = db.getReference();
 
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
-        myRecyclerAdapter = new MyRecyclerAdapter(requireContext(), myMangaList, myDatabaseHelper, table, background);
-        recyclerView.setAdapter(myRecyclerAdapter);
+        mangaListAdapter = new MangaListAdapter(requireContext(), myMangaList, myDatabaseHelper, table, background);
+        mangaListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mangaListView.setAdapter(mangaListAdapter);
 
         setupNewMangaFunction();
 
@@ -80,8 +80,8 @@ public class ListFragment extends Fragment {
 
     public void refresh() {
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
-        myRecyclerAdapter.setMangaList(myMangaList);
-        myRecyclerAdapter.notifyDataSetChanged();
+        mangaListAdapter.setMangaList(myMangaList);
+        mangaListAdapter.notifyDataSetChanged();
     }
 
     public void setupNewMangaFunction() {
