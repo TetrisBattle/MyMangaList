@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -28,7 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -71,6 +71,8 @@ public class PublishFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_publish, container, false);
 
+        requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         publish = view.findViewById(R.id.publish);
         publishGroup = view.findViewById(R.id.publishGroup);
         publicList = view.findViewById(R.id.publicList);
@@ -84,7 +86,7 @@ public class PublishFragment extends Fragment {
         db = FirebaseDatabase.getInstance();
         ref = db.getReference();
 
-        sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        sharedPreferences = requireContext().getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         animationAppear = AnimationUtils.loadAnimation(getContext(), R.anim.animation_appear);
         animationDisappear = AnimationUtils.loadAnimation(getContext(), R.anim.animation_disappear);
         //publishGroup.setAnimation(animationAppear);
@@ -97,7 +99,7 @@ public class PublishFragment extends Fragment {
     }
 
     public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) Objects.requireNonNull(getContext()).getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

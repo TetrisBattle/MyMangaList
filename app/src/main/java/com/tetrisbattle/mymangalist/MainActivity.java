@@ -8,13 +8,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -85,7 +84,6 @@ public class MainActivity extends AppCompatActivity{
         setupSettings();
         setupFromSharedPrefs();
 
-//        replaceListFragment(new ListFragment(background, pageNames[activePage]));
         replaceFragment(new ListFragment(background, pageNames[activePage]));
 
         Log.d("myTest", "test: " + "main");
@@ -99,8 +97,10 @@ public class MainActivity extends AppCompatActivity{
 
     public void backgroundClick(View v) {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0); // hide keyboard
-        getCurrentFocus().clearFocus();
+        if (getCurrentFocus() != null && getCurrentFocus().getWindowToken() != null) {
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0); // hide keyboard
+            getCurrentFocus().clearFocus();
+        }
         //Log.d("myTest", "test: " + ++testCounter);
     }
 
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity{
                 editor.putInt("currentPage", finalI);
                 editor.apply();
 
-                background.requestFocus();
+                background.callOnClick();
                 rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
                 rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 

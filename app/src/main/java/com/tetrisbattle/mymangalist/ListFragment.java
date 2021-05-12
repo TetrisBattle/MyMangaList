@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
-import java.util.Objects;
 
 public class ListFragment extends Fragment {
 
@@ -51,6 +51,8 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_list, container, false);
 
+        requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
         recyclerView = view.findViewById(R.id.recyclerView);
         addNewMangaView = view.findViewById(R.id.addNewMangaView);
         addNewMangaButton = view.findViewById(R.id.addNewMangaButton);
@@ -61,14 +63,14 @@ public class ListFragment extends Fragment {
         cancelButton = view.findViewById(R.id.cancelButton);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        inputMethodManager = (InputMethodManager) Objects.requireNonNull(getContext()).getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         myDatabaseHelper = new MyDatabaseHelper(getContext());
         myDatabaseHelper.setTable(table);
         db = FirebaseDatabase.getInstance();
         ref = db.getReference();
 
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
-        myRecyclerAdapter = new MyRecyclerAdapter(getContext(), myMangaList, myDatabaseHelper, table, background);
+        myRecyclerAdapter = new MyRecyclerAdapter(requireContext(), myMangaList, myDatabaseHelper, table, background);
         recyclerView.setAdapter(myRecyclerAdapter);
 
         setupNewMangaFunction();
@@ -121,6 +123,7 @@ public class ListFragment extends Fragment {
                 myDatabaseHelper.insertData(String.valueOf(newName.getText()), String.valueOf(newChapter.getText()), String.valueOf(newUrl.getText()));
                 refresh();
                 background.callOnClick();
+
                 addNewMangaView.setVisibility(View.INVISIBLE);
                 addNewMangaButton.setVisibility(View.VISIBLE);
                 newName.setText("");
