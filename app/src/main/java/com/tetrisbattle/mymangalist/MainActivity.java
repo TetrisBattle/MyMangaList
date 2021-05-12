@@ -4,28 +4,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,27 +56,16 @@ public class MainActivity extends AppCompatActivity{
     };
 
     ConstraintLayout background;
-    ConstraintLayout addNewMangaView;
-    EditText newUrl, newName, newChapter;
-    ImageButton addNewMangaButton;
-    Button addButton, cancelButton;
-    RecyclerView recyclerView;
     ImageButton settingsIcon;
 
     PopupMenu settingsIconPopupMenu;
-    MenuInflater inflater;
-    InputMethodManager inputMethodManager;
+    MenuInflater settingsIconPopupInflater;
     SharedPreferences sharedPreferences;
-
-    MyRecyclerAdapter myRecyclerAdapter;
-    MyDatabaseHelper myDatabaseHelper;
-    FirebaseDatabase db;
-    DatabaseReference ref;
 
     String currentUser;
     int activePage = 0;
 
-    int testCounter = 0;
+//    int testCounter = 0;
     //endregion
 
     @Override
@@ -88,41 +74,22 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = FirebaseDatabase.getInstance();
-        ref = db.getReference();
-
-        background = findViewById(R.id.background);
-        addNewMangaView = findViewById(R.id.addNewMangaView);
-        newUrl = findViewById(R.id.newUrl);
-        newName = findViewById(R.id.newName);
-        newChapter = findViewById(R.id.newChapter);
-        addNewMangaButton = findViewById(R.id.addNewMangaButton);
-        addButton = findViewById(R.id.addButton);
-        cancelButton = findViewById(R.id.cancelButton);
-        recyclerView = findViewById(R.id.recyclerView);
         rankButtons = new ArrayList<>(pageIds.length);
+        background = findViewById(R.id.background);
         settingsIcon = findViewById(R.id.settingsIcon);
 
         settingsIconPopupMenu = new PopupMenu(this, settingsIcon);
-        inflater = settingsIconPopupMenu.getMenuInflater();
-        inflater.inflate(R.menu.popup_settings, settingsIconPopupMenu.getMenu());
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        settingsIconPopupInflater = settingsIconPopupMenu.getMenuInflater();
+        settingsIconPopupInflater.inflate(R.menu.popup_settings, settingsIconPopupMenu.getMenu());
         sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        myDatabaseHelper = new MyDatabaseHelper(this);
-        myDatabaseHelper.setTable(pageNames[activePage]);
 
         login();
         setupButtons();
-        setupEditTexts();
         setupSettings();
-
-        List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
-        myRecyclerAdapter = new MyRecyclerAdapter(this, myMangaList, myDatabaseHelper, pageNames[activePage], background);
-        recyclerView.setAdapter(myRecyclerAdapter);
-
         setupFromSharedPrefs();
+
+        replaceListFragment(new ListFragment(background, pageNames[activePage]));
+
         Log.d("myTest", "test: " + "main");
     }
 
@@ -133,10 +100,40 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void backgroundClick(View v) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0); // hide keyboard
         getCurrentFocus().clearFocus();
         //Log.d("myTest", "test: " + ++testCounter);
     }
+
+    //region functions
+    public void login() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+        if (firebaseUser == null) {
+            firebaseAuth.signInAnonymously().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    currentUser = String.valueOf(firebaseAuth.getCurrentUser());
+                    Log.d("myTest", "new user: " + currentUser);
+                } else {
+                    Toast.makeText(MainActivity.this, "No internet connection!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            currentUser = firebaseUser.getUid();
+            //Log.d("myTest", "already signed in: " + currentUser);
+            //firebaseAuth.signOut();
+        }
+    }
+
+    public void replaceListFragment(Fragment listFragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, listFragment);
+        fragmentTransaction.commit();
+    }
+    //endregion
 
     //region setup
     public void setupButtons() {
@@ -148,77 +145,15 @@ public class MainActivity extends AppCompatActivity{
                 editor.putInt("currentPage", finalI);
                 editor.apply();
 
-                if (addNewMangaView.getVisibility() == View.VISIBLE) {
-                    cancelButton.callOnClick();
-                }
-
                 background.requestFocus();
                 rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
                 rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
                 activePage = finalI;
-                myDatabaseHelper.setTable(pageNames[activePage]);
-                refresh();
+                replaceListFragment(new ListFragment(background, pageNames[activePage]));
             });
             rankButtons.add(rankButton);
         }
-
-        addNewMangaButton.setOnClickListener(v -> {
-            addNewMangaButton.setVisibility(View.INVISIBLE);
-            addNewMangaView.setVisibility(View.VISIBLE);
-            newName.requestFocus();
-        });
-
-        addButton.setOnClickListener(v -> {
-            if (newName.getText().toString().equals("")) {
-                Toast.makeText(this, "Name can't be empty", Toast.LENGTH_SHORT).show();
-            } else {
-                myDatabaseHelper.insertData(String.valueOf(newName.getText()), String.valueOf(newChapter.getText()), String.valueOf(newUrl.getText()));
-                refresh();
-                background.callOnClick();
-                addNewMangaView.setVisibility(View.INVISIBLE);
-                addNewMangaButton.setVisibility(View.VISIBLE);
-                newName.setText("");
-                newChapter.setText("");
-                newUrl.setText("");
-            }
-        });
-
-        cancelButton.setOnClickListener(v -> {
-            background.callOnClick();
-            addNewMangaView.setVisibility(View.INVISIBLE);
-            addNewMangaButton.setVisibility(View.VISIBLE);
-            newName.setText("");
-            newChapter.setText("");
-            newUrl.setText("");
-        });
-    }
-
-    public void setupEditTexts() {
-        newName.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                newChapter.requestFocus();
-                return true;
-            }
-            return false;
-        });
-
-        newChapter.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                inputMethodManager.hideSoftInputFromWindow(newChapter.getWindowToken(), 0); // hide keyboard
-                newChapter.clearFocus();
-                return true;
-            }
-            return false;
-        });
-
-        newUrl.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                newName.requestFocus();
-                return true;
-            }
-            return false;
-        });
     }
 
     public void setupSettings() {
@@ -305,34 +240,6 @@ public class MainActivity extends AppCompatActivity{
         }
 
         rankButtons.get(currentPage).callOnClick();
-    }
-    //endregion
-
-    //region functions
-    public void login() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-
-        if (firebaseUser == null) {
-            firebaseAuth.signInAnonymously().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    currentUser = String.valueOf(firebaseAuth.getCurrentUser());
-                    Log.d("myTest", "new user: " + currentUser);
-                } else {
-                    Toast.makeText(MainActivity.this, "No internet connection!", Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            currentUser = firebaseUser.getUid();
-            //Log.d("myTest", "already signed in: " + currentUser);
-            //firebaseAuth.signOut();
-        }
-    }
-
-    public void refresh() {
-        List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
-        myRecyclerAdapter.setMangaList(myMangaList);
-        myRecyclerAdapter.notifyDataSetChanged();
     }
     //endregion
 }
