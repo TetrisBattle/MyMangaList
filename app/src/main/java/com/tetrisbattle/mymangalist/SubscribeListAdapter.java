@@ -1,25 +1,27 @@
 package com.tetrisbattle.mymangalist;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdapter.MyViewHolder> {
 
     Context context;
-    String[] data;
+    ArrayList<String> publicLists;
+    ArrayList<String> privateLists;
 
-    public SubscribeListAdapter(Context context, String[] data) {
+    public SubscribeListAdapter(Context context, ArrayList<String> publicLists, ArrayList<String> privateLists) {
         this.context = context;
-        this.data = data;
+        this.publicLists = publicLists;
+        this.privateLists = privateLists;
     }
 
     @NonNull
@@ -32,21 +34,28 @@ public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdap
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.mangaListName.setText(data[position]);
+        if (position < publicLists.size())
+        holder.mangaListName.setText(publicLists.get(position));
+        else {
+            holder.mangaListName.setText(privateLists.get(position - publicLists.size()));
+            holder.lockIcon.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return data.length;
+        return publicLists.size() + privateLists.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         CheckBox mangaListName;
+        ImageView lockIcon;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             mangaListName = itemView.findViewById(R.id.mangaListName);
+            lockIcon = itemView.findViewById(R.id.lockIcon);
         }
     }
 }
