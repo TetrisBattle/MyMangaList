@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity{
             "planToRead"
     };
 
-    private List<Button> rankButtons;
     private static final int[] pageIds = {
             R.id.rankButtonS,
             R.id.rankButtonA,
@@ -55,11 +53,11 @@ public class MainActivity extends AppCompatActivity{
             R.id.planToReadButton
     };
 
+    private List<Button> rankButtons;
     ConstraintLayout background;
     ImageButton settingsIcon;
 
     PopupMenu settingsIconPopupMenu;
-    MenuInflater settingsIconPopupInflater;
     SharedPreferences sharedPreferences;
 
     String currentUser;
@@ -79,8 +77,7 @@ public class MainActivity extends AppCompatActivity{
         settingsIcon = findViewById(R.id.settingsIcon);
 
         settingsIconPopupMenu = new PopupMenu(this, settingsIcon);
-        settingsIconPopupInflater = settingsIconPopupMenu.getMenuInflater();
-        settingsIconPopupInflater.inflate(R.menu.popup_settings, settingsIconPopupMenu.getMenu());
+        settingsIconPopupMenu.getMenuInflater().inflate(R.menu.popup_settings, settingsIconPopupMenu.getMenu());
         sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
 
         login();
@@ -88,7 +85,8 @@ public class MainActivity extends AppCompatActivity{
         setupSettings();
         setupFromSharedPrefs();
 
-        replaceListFragment(new ListFragment(background, pageNames[activePage]));
+//        replaceListFragment(new ListFragment(background, pageNames[activePage]));
+        replaceFragment(new ListFragment(background, pageNames[activePage]));
 
         Log.d("myTest", "test: " + "main");
     }
@@ -106,7 +104,6 @@ public class MainActivity extends AppCompatActivity{
         //Log.d("myTest", "test: " + ++testCounter);
     }
 
-    //region functions
     public void login() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
@@ -127,15 +124,12 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public void replaceListFragment(Fragment listFragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, listFragment);
+    public void replaceFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
     }
-    //endregion
 
-    //region setup
     public void setupButtons() {
         for (int i = 0; i< pageIds.length; i++) {
             Button rankButton = findViewById(pageIds[i]);
@@ -150,7 +144,7 @@ public class MainActivity extends AppCompatActivity{
                 rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
                 activePage = finalI;
-                replaceListFragment(new ListFragment(background, pageNames[activePage]));
+                replaceFragment(new ListFragment(background, pageNames[activePage]));
             });
             rankButtons.add(rankButton);
         }
@@ -208,9 +202,11 @@ public class MainActivity extends AppCompatActivity{
                     item.setActionView(new View(this));
                     return false;
                 } else if (item.getItemId() == R.id.popupPublish) {
-                    Intent intent = new Intent(this, PublishActivity.class);
-                    intent.putExtra("currentUser", currentUser);
-                    startActivity(intent);
+//                    Intent intent = new Intent(this, PublishActivity.class);
+//                    intent.putExtra("currentUser", currentUser);
+//                    startActivity(intent);
+                    rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
+                    replaceFragment(new PublishFragment(currentUser));
                     return true;
                 } else if (item.getItemId() == R.id.popupImport) {
                     Toast.makeText(this, "import: empty", Toast.LENGTH_SHORT).show();
@@ -241,5 +237,4 @@ public class MainActivity extends AppCompatActivity{
 
         rankButtons.get(currentPage).callOnClick();
     }
-    //endregion
 }
