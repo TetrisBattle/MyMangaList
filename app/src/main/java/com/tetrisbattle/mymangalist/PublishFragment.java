@@ -200,7 +200,7 @@ public class PublishFragment extends Fragment {
                     deleteList();
                 }
 
-                editor.putBoolean("publish", publish.isChecked());
+                editor.putBoolean("published", publish.isChecked());
                 editor.putBoolean("privateList", privateList.isChecked());
                 if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
                 else editor.putString("password", "");

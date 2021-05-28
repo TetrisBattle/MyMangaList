@@ -26,8 +26,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "rankE",
             "rankF",
             "special",
-            "planToRead",
-            "secret"
+            "planToRead"
     };
 
     public MyDatabaseHelper(Context context) {
@@ -36,10 +35,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        for(String table : tables) {
+        for(String table : tables)
             db.execSQL("CREATE TABLE " + table + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-            Log.d("myTest", "test: " + table);
-        }
+        db.execSQL("CREATE TABLE " + "secret" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
     }
 
     @Override

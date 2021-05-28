@@ -21,6 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class SubscribeFragment extends Fragment {
 
     View view;
@@ -35,7 +37,6 @@ public class SubscribeFragment extends Fragment {
     ArrayList<String> privateLists;
 
     SharedPreferences sharedPreferences;
-    String sharedPrefsListName;
 
     public SubscribeFragment() {}
 
@@ -51,8 +52,8 @@ public class SubscribeFragment extends Fragment {
 
         db = FirebaseDatabase.getInstance();
 
-        boolean sharedPrefsPublished = sharedPreferences.getBoolean("published", false);
-        sharedPrefsListName = sharedPreferences.getString("listName", "");
+        sharedPreferences = requireContext().getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        String sharedPrefsListName = sharedPreferences.getString("listName", "");
 
         publicRef = db.getReference("publishedMangaListNames/publicLists");
         ValueEventListener publicEventListener = publicRef.addValueEventListener(new ValueEventListener() {
@@ -61,7 +62,8 @@ public class SubscribeFragment extends Fragment {
                 ArrayList<String> data = new ArrayList<>();
                 for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                     String value = singleSnapshot.getKey();
-                    if (sharedPrefsPublished && !value.equals(sharedPrefsListName)) data.add(value);
+                    if (value != null && !value.equals(sharedPrefsListName))
+                        data.add(value);
                 }
                 publicLists = data;
                 subscribeListAdapter = new SubscribeListAdapter(getContext(), publicLists, privateLists);
@@ -81,7 +83,8 @@ public class SubscribeFragment extends Fragment {
                 ArrayList<String> data = new ArrayList<>();
                 for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                     String value = singleSnapshot.getKey();
-                    data.add(value);
+                    if (value != null && !value.equals(sharedPrefsListName))
+                        data.add(value);
                 }
                 privateLists = data;
                 subscribeListAdapter = new SubscribeListAdapter(getContext(), publicLists, privateLists);
