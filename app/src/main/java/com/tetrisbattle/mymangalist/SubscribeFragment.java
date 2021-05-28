@@ -45,7 +45,6 @@ public class SubscribeFragment extends Fragment {
         publicLists = new ArrayList<>();
         privateLists = new ArrayList<>();
 
-
         db = FirebaseDatabase.getInstance();
 
         publicRef = db.getReference("publishedMangaListNames/publicLists");

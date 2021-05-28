@@ -89,6 +89,7 @@ public class MangaListFragment extends Fragment {
             addNewMangaButton.setVisibility(View.INVISIBLE);
             addNewMangaView.setVisibility(View.VISIBLE);
             newName.requestFocus();
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0); // show keyboard
         });
 
         newName.setOnKeyListener((v, keyCode, event) -> {

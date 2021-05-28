@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity{
     String currentUser;
     int activePage = 0;
 
-//    int testCounter = 0;
+    int[] secretCode;
+    int secretCodeInputPos = 0;
     //endregion
 
     @Override
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity{
         background = findViewById(R.id.background);
         settingsIcon = findViewById(R.id.settingsIcon);
 
+        secretCode = new int[7];
         settingsIconPopupMenu = new PopupMenu(this, settingsIcon);
         settingsIconPopupMenu.getMenuInflater().inflate(R.menu.popup_settings, settingsIconPopupMenu.getMenu());
         sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity{
         setupFromSharedPrefs();
 
         replaceFragment(new MangaListFragment(background, pageNames[activePage]));
+//        replaceFragment(new MangaListFragment(background, "secret"));
     }
 
     @Override
@@ -98,7 +101,6 @@ public class MainActivity extends AppCompatActivity{
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0); // hide keyboard
             getCurrentFocus().clearFocus();
         }
-        //Log.d("myTest", "test: " + ++testCounter);
     }
 
     public void login() {
@@ -130,18 +132,50 @@ public class MainActivity extends AppCompatActivity{
     public void setupButtons() {
         for (int i = 0; i< pageIds.length; i++) {
             Button rankButton = findViewById(pageIds[i]);
-            int finalI = i;
+            int newActivePage = i;
             rankButton.setOnClickListener(v -> {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("currentPage", finalI);
+                editor.putInt("currentPage", newActivePage);
                 editor.apply();
 
                 background.callOnClick();
                 rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
-                rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
-                activePage = finalI;
-                replaceFragment(new MangaListFragment(background, pageNames[activePage]));
+
+                if (secretCodeInputPos == 6) secretCodeInputPos = 0;
+                else secretCodeInputPos++;
+
+                secretCode[secretCodeInputPos] = newActivePage;
+
+                if (newActivePage == 5) {
+                    int[] currentSecretCode = new int[7];
+                    int k = 0;
+                    for (int j=secretCodeInputPos+1-secretCode.length; j<secretCodeInputPos+1; j++) {
+                        if (j >= 0) currentSecretCode[k] = secretCode[j];
+                        else currentSecretCode[k] = secretCode[7+j];
+                        k++;
+                    }
+
+                    if (currentSecretCode[0] == 0 &&
+                        currentSecretCode[1] == 2 &&
+                        currentSecretCode[2] == 4 &&
+                        currentSecretCode[3] == 6 &&
+                        currentSecretCode[4] == 1 &&
+                        currentSecretCode[5] == 3 &&
+                        currentSecretCode[6] == 5
+                    ) {
+                        replaceFragment(new MangaListFragment(background, "secret"));
+                        secretCodeInputPos = 0;
+                    } else {
+                        rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
+                        replaceFragment(new MangaListFragment(background, pageNames[newActivePage]));
+                    }
+                } else {
+                    rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
+                    replaceFragment(new MangaListFragment(background, pageNames[newActivePage]));
+                }
+
+                activePage = newActivePage;
             });
             rankButtons.add(rankButton);
         }

@@ -26,7 +26,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             "rankE",
             "rankF",
             "special",
-            "planToRead"
+            "planToRead",
+            "secret"
     };
 
     public MyDatabaseHelper(Context context) {
@@ -43,7 +44,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + myTable);
+//        db.execSQL("DROP TABLE IF EXISTS " + myTable);
+        Log.d("myTest", "upgrade SQLite");
     }
 
     public void setTable(String myTable) {
