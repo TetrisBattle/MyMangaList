@@ -1,5 +1,6 @@
 package com.tetrisbattle.mymangalist;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,9 @@ public class SubscribeFragment extends Fragment {
     ArrayList<String> publicLists;
     ArrayList<String> privateLists;
 
+    SharedPreferences sharedPreferences;
+    String sharedPrefsListName;
+
     public SubscribeFragment() {}
 
     @Override
@@ -47,6 +51,9 @@ public class SubscribeFragment extends Fragment {
 
         db = FirebaseDatabase.getInstance();
 
+        boolean sharedPrefsPublished = sharedPreferences.getBoolean("published", false);
+        sharedPrefsListName = sharedPreferences.getString("listName", "");
+
         publicRef = db.getReference("publishedMangaListNames/publicLists");
         ValueEventListener publicEventListener = publicRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -54,7 +61,7 @@ public class SubscribeFragment extends Fragment {
                 ArrayList<String> data = new ArrayList<>();
                 for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                     String value = singleSnapshot.getKey();
-                    data.add(value);
+                    if (sharedPrefsPublished && !value.equals(sharedPrefsListName)) data.add(value);
                 }
                 publicLists = data;
                 subscribeListAdapter = new SubscribeListAdapter(getContext(), publicLists, privateLists);

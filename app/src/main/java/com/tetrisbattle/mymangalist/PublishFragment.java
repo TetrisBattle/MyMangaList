@@ -113,9 +113,9 @@ public class PublishFragment extends Fragment {
         String sharedPrefsListName = sharedPreferences.getString("listName", "");
         listName.setText(sharedPrefsListName);
 
-        boolean sharedPrefsPublish = sharedPreferences.getBoolean("publish", false);
+        boolean sharedPrefsPublished = sharedPreferences.getBoolean("published", false);
 
-        if(sharedPrefsPublish) {
+        if(sharedPrefsPublished) {
             publish.setChecked(true);
             publishGroup.setVisibility(View.VISIBLE);
             nameLayout.setVisibility(View.VISIBLE);
