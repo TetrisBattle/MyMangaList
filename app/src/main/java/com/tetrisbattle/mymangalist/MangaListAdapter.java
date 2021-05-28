@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -87,10 +88,10 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
                     myDatabaseHelper.updateName(String.valueOf(holder.name.getText()), selectedId);
 
 //                data.get(position).name = String.valueOf(holder.name.getText());
-//                notifyItemChanged(position); // remake item at pos
 
                     data = myDatabaseHelper.getMyMangaList();
-                    notifyDataSetChanged();
+//                    notifyDataSetChanged();
+//                    notifyItemChanged(position); // remake item at pos
                 }
             }
         });
