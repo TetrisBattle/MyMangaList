@@ -22,13 +22,11 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.IOError;
-import java.io.IOException;
 import java.util.List;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
 
-public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.MyViewHolder> {
+public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyViewHolder> {
 
     Context context;
     List<MyManga> data;
@@ -37,27 +35,28 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
     ConstraintLayout background;
 
     InputMethodManager inputMethodManager;
-    AlertDialog.Builder myDialog;
+    AlertDialog.Builder deleteDialog;
 
     int selectedId;
     String selectedName;
     String selectedChapter;
+    String selectedUrl;
 
-    public MyRecyclerAdapter(Context context, List<MyManga> myManga, MyDatabaseHelper myDatabaseHelper, String myTable, ConstraintLayout background) {
+    public MangaListAdapter(Context context, List<MyManga> myManga, MyDatabaseHelper myDatabaseHelper, String myTable, ConstraintLayout background) {
         this.context = context;
         this.data = myManga;
         this.myDatabaseHelper = myDatabaseHelper;
         this.myTable = myTable;
         this.background = background;
         inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        myDialog = new AlertDialog.Builder(context);
+        deleteDialog = new AlertDialog.Builder(context);
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.manga_list_design, parent, false);
+        View view = layoutInflater.inflate(R.layout.cardview_manga, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -71,16 +70,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         holder.chapter.setText(data.get(position).chapter);
 
         holder.id.setOnClickListener(v -> {
-            background.requestFocus();
-            Toast.makeText(context, holder.chapter.getText(), Toast.LENGTH_SHORT).show();
-        });
-
-        holder.name.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                holder.name.clearFocus();
-                return true;
-            }
-            return false;
+            background.callOnClick();
+//            ClipboardManager clipboardManager;
+//            clipboardManager = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
+//
+//            ClipData clipData;
+//            clipData = ClipData.newPlainText("Name", selectedName);
+//            clipboardManager.setPrimaryClip(clipData);
         });
 
         holder.name.setOnFocusChangeListener((v, hasFocus) -> {
@@ -92,29 +88,28 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                     myDatabaseHelper.updateName(String.valueOf(holder.name.getText()), selectedId);
 
 //                data.get(position).name = String.valueOf(holder.name.getText());
-//                notifyItemChanged(position); // remake item at pos
 
                     data = myDatabaseHelper.getMyMangaList();
-                    notifyDataSetChanged();
+//                    notifyDataSetChanged();
+//                    notifyItemChanged(position); // remake item at pos
                 }
-                inputMethodManager.hideSoftInputFromWindow(holder.name.getWindowToken(), 0); // hide keyboard
             }
         });
 
+        holder.name.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                holder.name.clearFocus();
+                return true;
+            }
+            return false;
+        });
+
         holder.name.setOnLongClickListener(v -> {
-            background.requestFocus();
+            background.callOnClick();
             selectedId = data.get(position).id;
             selectedName = String.valueOf(holder.name.getText());
             showPopupMenu(v, holder, myDatabaseHelper.getUrl(selectedId));
             return true;
-        });
-
-        holder.chapter.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                holder.chapter.clearFocus();
-                return true;
-            }
-            return false;
         });
 
         holder.chapter.setOnFocusChangeListener((v, hasFocus) -> {
@@ -125,16 +120,32 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                 if (!String.valueOf(holder.chapter.getText()).equals(selectedChapter)){
                     myDatabaseHelper.updateChapter(String.valueOf(holder.chapter.getText()), selectedId);
                 }
-                inputMethodManager.hideSoftInputFromWindow(holder.chapter.getWindowToken(), 0); // hide keyboard
             }
+        });
+
+        holder.chapter.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                holder.chapter.clearFocus();
+                return true;
+            }
+            return false;
         });
 
         holder.changeUrl.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
+                if (!String.valueOf(holder.changeUrl.getText()).equals(selectedUrl)){
+                    myDatabaseHelper.updateUrl(String.valueOf(holder.changeUrl.getText()), selectedId);
+                }
                 holder.changeUrl.setVisibility(View.GONE);
-                myDatabaseHelper.updateUrl(String.valueOf(holder.changeUrl.getText()), selectedId);
-                holder.changeUrl.setText("");
             }
+        });
+
+        holder.changeUrl.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                holder.changeUrl.clearFocus();
+                return true;
+            }
+            return false;
         });
     }
 
@@ -154,7 +165,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             id = itemView.findViewById(R.id.counter);
-            name = itemView.findViewById(R.id.name);
+            name = itemView.findViewById(R.id.listName);
             chapter = itemView.findViewById(R.id.chapter);
             footer = itemView.findViewById(R.id.footer);
             changeUrl = itemView.findViewById(R.id.changeUrl);
@@ -189,17 +200,19 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                         Intent browse = new Intent( Intent.ACTION_VIEW, Uri.parse(url));
                         context.startActivity( browse );
                     } catch (Exception exception) {
-                        Toast.makeText(context, "Url is not available", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Website is not available", Toast.LENGTH_SHORT).show();
                     }
                 }
                 return true;
             } else if (item.getItemId() == R.id.popupChangeLink) {
                 holder.changeUrl.setVisibility(View.VISIBLE);
-                holder.changeUrl.setText(myDatabaseHelper.getUrl(selectedId));
+                selectedUrl = myDatabaseHelper.getUrl(selectedId);
+                holder.changeUrl.setText(selectedUrl);
                 holder.changeUrl.requestFocus();
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0); // show keyboard
                 return true;
             } else if (item.getItemId() == R.id.popupDelete) {
-                myDialog.setTitle("DELETE")
+                deleteDialog.setTitle("DELETE")
                         .setMessage("Are you sure you want to delete " + selectedName + " from the list?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             myDatabaseHelper.deleteData(selectedId);
@@ -207,7 +220,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
                             notifyDataSetChanged();
                         })
                         .setNegativeButton("No", (dialog, which) -> {});
-                myDialog.show();
+                deleteDialog.show();
                 return true;
             } else {
                 return false;

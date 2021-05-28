@@ -9,255 +9,212 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:onClick="backgroundClick"
+    tools:ignore="HardcodedText"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/rankButtonX"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/colorRankButton"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="@string/rankButtonXText"
-        android:textColor="@color/white"
-        android:textSize="@dimen/rankButtonTextSize"
-        app:cornerRadius="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@id/rankButtonS"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/rankButtonS"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/colorRankButton"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="@string/rankButtonSText"
-        android:textColor="@color/white"
-        android:textSize="@dimen/rankButtonTextSize"
-        app:cornerRadius="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@id/rankButtonA"
-        app:layout_constraintStart_toEndOf="@id/rankButtonX"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/rankButtonA"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/colorRankButton"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="@string/rankButtonAText"
-        android:textColor="@color/white"
-        android:textSize="@dimen/rankButtonTextSize"
-        app:cornerRadius="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@id/rankButtonB"
-        app:layout_constraintStart_toEndOf="@id/rankButtonS"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/rankButtonB"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/colorRankButton"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="@string/rankButtonBText"
-        android:textColor="@color/white"
-        android:textSize="@dimen/rankButtonTextSize"
-        app:cornerRadius="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@id/rankButtonC"
-        app:layout_constraintStart_toEndOf="@id/rankButtonA"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/rankButtonC"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/colorRankButton"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="@string/rankButtonCText"
-        android:textColor="@color/white"
-        android:textSize="@dimen/rankButtonTextSize"
-        app:cornerRadius="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toEndOf="@id/rankButtonD"
-        app:layout_constraintStart_toEndOf="@id/rankButtonB"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/rankButtonD"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/colorRankButton"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="@string/rankButtonDText"
-        android:textColor="@color/white"
-        android:textSize="@dimen/rankButtonTextSize"
-        app:cornerRadius="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@id/rankButtonE"
-        app:layout_constraintStart_toEndOf="@id/rankButtonC"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/rankButtonE"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/colorRankButton"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="@string/rankButtonEText"
-        android:textColor="@color/white"
-        android:textSize="@dimen/rankButtonTextSize"
-        app:cornerRadius="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toEndOf="@id/planToReadButton"
-        app:layout_constraintStart_toEndOf="@id/rankButtonD"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/planToReadButton"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/colorRankButtonSelected"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="@string/planToReadButtonText"
-        android:textColor="@color/white"
-        android:textSize="@dimen/rankButtonTextSize"
-        app:cornerRadius="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toStartOf="@id/settings"
-        app:layout_constraintStart_toEndOf="@id/rankButtonE"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/settings"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/black"
-        android:src="@drawable/ic_baseline_settings_24"
-        android:textColor="@color/white"
-        android:textSize="@dimen/rankButtonTextSize"
-        app:cornerRadius="0dp"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/planToReadButton"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/menuBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        android:layout_height="0dp"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/rankButtons"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rankButtonS" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:background="#000000"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toBottomOf="@+id/menuBar"
+            app:layout_constraintEnd_toStartOf="@+id/specialButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/specialButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorRankButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="X"
+            android:textColor="@color/white"
+            android:textSize="@dimen/rankButtonTextSize"
+            app:cornerRadius="0dp"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/planToReadButton"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/planToReadButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorRankButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="\?"
+            android:textColor="@color/white"
+            android:textSize="@dimen/rankButtonTextSize"
+            app:cornerRadius="0dp"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/settingsIcon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/settingsIcon"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/black"
+            android:src="@drawable/ic_baseline_settings_24"
+            android:textColor="@color/white"
+            android:textSize="@dimen/rankButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="Settings" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/addNewMangaView"
+        android:id="@+id/rankButtons"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/black"
-        android:visibility="gone"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuBar">
+
+        <Button
+            android:id="@+id/rankButtonS"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorRankButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="S"
+            android:textColor="@color/white"
+            android:textSize="@dimen/rankButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toStartOf="@+id/rankButtonA"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/rankButtonA"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorRankButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="A"
+            android:textColor="@color/white"
+            android:textSize="@dimen/rankButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toStartOf="@+id/rankButtonB"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonS"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/rankButtonB"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorRankButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="B"
+            android:textColor="@color/white"
+            android:textSize="@dimen/rankButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toStartOf="@+id/rankButtonC"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonA"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/rankButtonC"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorRankButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="C"
+            android:textColor="@color/white"
+            android:textSize="@dimen/rankButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toEndOf="@+id/rankButtonD"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonB"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/rankButtonD"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorRankButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="D"
+            android:textColor="@color/white"
+            android:textSize="@dimen/rankButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toStartOf="@+id/rankButtonE"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonC"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/rankButtonE"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorRankButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="E"
+            android:textColor="@color/white"
+            android:textSize="@dimen/rankButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toStartOf="@+id/rankButtonF"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonD"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/rankButtonF"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorRankButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="F"
+            android:textColor="@color/white"
+            android:textSize="@dimen/rankButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rankButtonE"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <EditText
-            android:id="@+id/newUrl"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Url"
-            android:textSize="@dimen/newMangaTextSize"
-            android:textColorHint="@color/white"
-            android:inputType="textMultiLine|textVisiblePassword"
-            android:textColor="@color/white"
-            android:autofillHints="Name"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/newName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/newChapter" />
-
-        <EditText
-            android:id="@+id/newName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_weight="2"
-            android:hint="@string/newMangaNameHint"
-            android:textSize="@dimen/newMangaTextSize"
-            android:textColorHint="@color/white"
-            android:inputType="textMultiLine|textVisiblePassword"
-            android:textColor="@color/white"
-            android:autofillHints="Name"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/newChapter" />
-
-        <EditText
-            android:id="@+id/newChapter"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_weight="1"
-            android:hint="@string/newMangaChapterHint"
-            android:textSize="@dimen/newMangaTextSize"
-            android:inputType="number"
-            android:textColorHint="@color/white"
-            android:textColor="@color/white"
-            android:autofillHints="Chapter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/addButton"
-            app:layout_constraintStart_toEndOf="@+id/newName" />
-
-        <Button
-            android:id="@+id/cancelButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:backgroundTint="@color/colorCancelButton"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:text="Cancel"
-            android:textSize="@dimen/newMangaButtonTextSize"
-            app:cornerRadius="0dp"
-            app:layout_constraintBottom_toTopOf="@id/addButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/newChapter"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_weight="1" />
-
-        <Button
-            android:id="@+id/addButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:backgroundTint="@color/colorAddButton"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:text="@string/addButtonText"
-            android:textSize="@dimen/newMangaButtonTextSize"
-            app:cornerRadius="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/newChapter"
-            app:layout_constraintTop_toBottomOf="@id/cancelButton"
-            app:layout_constraintVertical_weight="1" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rankButtons" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

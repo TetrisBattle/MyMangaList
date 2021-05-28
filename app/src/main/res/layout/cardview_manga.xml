@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="HardcodedText">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -16,42 +18,42 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/counter"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@color/colorId"
+                android:background="@color/colorSecondary"
                 android:gravity="center"
-                android:padding="@dimen/myMangaListPadding"
-                android:text="@string/myMangaListSampleId"
+                android:text="1"
                 android:textColor="@color/white"
                 android:textSize="@dimen/myMangaListTextSize"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/name"
-                app:layout_constraintEnd_toStartOf="@id/name"
+                app:layout_constraintBottom_toBottomOf="@+id/listName"
+                app:layout_constraintEnd_toStartOf="@+id/listName"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/name" />
+                app:layout_constraintTop_toTopOf="@+id/listName" />
 
             <EditText
-                android:id="@+id/name"
+                android:id="@+id/listName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/myMangaListPadding"
                 android:autofillHints="Name"
-                android:background="@color/colorName"
-                android:text="@string/myMangaListSampleName"
+                android:background="@color/colorSecondary"
+                android:text="Solo Leveling"
+                android:hint="Name"
                 android:inputType="textMultiLine|textVisiblePassword"
-                android:padding="4dp"
+                android:padding="@dimen/myMangaListPadding"
                 android:textColor="@color/white"
-                android:textColorHint="@color/white"
+                android:textColorHint="@color/colorHint"
                 android:textSize="@dimen/myMangaListTextSize"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@id/chapter"
+                android:layout_marginLeft="@dimen/myMangaListMargin"
+                android:layout_marginRight="@dimen/myMangaListMargin"
+                app:layout_constraintEnd_toStartOf="@+id/chapter"
                 app:layout_constraintHorizontal_weight="5"
                 app:layout_constraintStart_toEndOf="@+id/counter"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -61,28 +63,28 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:autofillHints="Chapter"
-                android:background="@color/colorChapter"
+                android:background="@color/colorSecondary"
                 android:gravity="center"
                 android:inputType="number"
-                android:padding="@dimen/myMangaListPadding"
                 android:selectAllOnFocus="true"
-                android:text="@string/myMangaListSampleChapter"
+                android:text="1234"
+                android:labelFor="@+id/chapter"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
                 android:textSize="@dimen/myMangaListTextSize"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/name"
+                app:layout_constraintBottom_toBottomOf="@+id/listName"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_weight="1.2"
-                app:layout_constraintStart_toEndOf="@id/name"
-                app:layout_constraintTop_toTopOf="@+id/name" />
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/listName"
+                app:layout_constraintTop_toTopOf="@+id/listName" />
 
             <View
                 android:id="@+id/footer"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:onClick="backgroundClick"
-                app:layout_constraintTop_toBottomOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/listName"
                 app:layout_constraintEnd_toEndOf="@+id/chapter"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -96,16 +98,16 @@
                 android:selectAllOnFocus="true"
                 android:background="@color/colorChangeUrl"
                 android:hint="https://website.com/manga"
-                android:inputType="textUri|textMultiLine"
+                android:inputType="textUri|textMultiLine|textVisiblePassword"
                 android:padding="4dp"
                 android:textColor="@color/white"
-                android:textColorHint="@color/colorChangeUrlHint"
+                android:textColorHint="@color/colorHint"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@id/name"
+                app:layout_constraintEnd_toEndOf="@+id/listName"
                 app:layout_constraintHorizontal_weight="5"
-                app:layout_constraintStart_toStartOf="@id/name"
-                app:layout_constraintTop_toTopOf="@id/name" />
+                app:layout_constraintStart_toStartOf="@+id/listName"
+                app:layout_constraintTop_toTopOf="@+id/listName" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

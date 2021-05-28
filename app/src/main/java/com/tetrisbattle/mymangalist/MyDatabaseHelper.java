@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,26 +17,36 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     String chapter = "chapter";
     String url = "url";
 
-    public MyDatabaseHelper(Context context, String myTable) {
-        super(context, "myAnimeListDatabase", null, 1);
-        this.myTable = myTable;
+    String[] tables = {
+            "rankS",
+            "rankA",
+            "rankB",
+            "rankC",
+            "rankD",
+            "rankE",
+            "rankF",
+            "special",
+            "planToRead",
+            "secret"
+    };
+
+    public MyDatabaseHelper(Context context) {
+        super(context, "myMangaListDatabase", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + "myAnimeListTable" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableX" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableS" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableA" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableB" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableC" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableD" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
-        db.execSQL("CREATE TABLE " + "myAnimeListTableE" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+        for(String table : tables) {
+            db.execSQL("CREATE TABLE " + table + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + name + " TEXT, " + chapter + " TEXT, " + url + " TEXT)");
+            Log.d("myTest", "test: " + table);
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + myTable);
+//        db.execSQL("DROP TABLE IF EXISTS " + myTable);
+        onCreate(db);
+        Log.d("myTest", "upgrade SQLite");
     }
 
     public void setTable(String myTable) {
@@ -83,7 +94,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery(queryString, null);
         cursor.moveToFirst();
-        return cursor.getString(0);
+        String myUrl = cursor.getString(0);
+
+        cursor.close();
+        db.close();
+
+        return myUrl;
     }
 
 //    public void deleteData(MyMangaListModel pos) {
@@ -103,13 +119,42 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             int id = cursor.getInt(0);
             String mangaName = cursor.getString(1);
             String mangaChapter = cursor.getString(2);
+            String mangaUrl = cursor.getString(3);
 
-            MyManga myManga = new MyManga(id, mangaName, mangaChapter);
+            MyManga myManga = new MyManga(id, mangaName, mangaChapter, mangaUrl);
             myMangaList.add(myManga);
         }
 
         cursor.close();
         db.close();
         return myMangaList;
+    }
+
+    public List<ArrayList<MyManga>> getMyMangaListDb() {
+        ArrayList<ArrayList<MyManga>> myMangalistDb = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        for(String table : tables) {
+            ArrayList<MyManga> myMangaList = new ArrayList<>();
+            String queryString = "SELECT * FROM " + table + " ORDER BY " + name;
+            cursor = db.rawQuery(queryString, null);
+
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(0);
+                String mangaName = cursor.getString(1);
+                String mangaChapter = cursor.getString(2);
+                String mangaUrl = cursor.getString(3);
+
+                MyManga myManga = new MyManga(id, mangaName, mangaChapter, mangaUrl);
+                myMangaList.add(myManga);
+            }
+
+            myMangalistDb.add(myMangaList);
+        }
+
+        if (cursor != null) cursor.close();
+        db.close();
+        return myMangalistDb;
     }
 }

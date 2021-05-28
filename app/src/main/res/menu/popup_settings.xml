@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:ignore="HardcodedText">
+
+    <group android:checkableBehavior="all">
+        <item android:id="@+id/popupPlanToRead" android:title="Plan To Read"/>
+        <item android:id="@+id/popupSpecial" android:title="Special"/>
+    </group>
+
+    <item android:id="@+id/popupPublish" android:title="Publish"/>
+    <item android:id="@+id/popupSubscribe" android:title="Subscribe"/>
+</menu>

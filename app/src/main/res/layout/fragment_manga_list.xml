@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:ignore="HardcodedText"
+    tools:context=".MangaListFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mangaListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/addNewMangaView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/newUrl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Url"
+            android:textSize="@dimen/newMangaTextSize"
+            android:textColorHint="@color/colorHint"
+            android:inputType="textUri|textMultiLine"
+            android:textColor="@color/white"
+            android:autofillHints="Name"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/newName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/newChapter" />
+
+        <EditText
+            android:id="@+id/newName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_weight="2"
+            android:hint="Name"
+            android:textSize="@dimen/newMangaTextSize"
+            android:textColorHint="@color/colorHint"
+            android:inputType="textMultiLine|textCapWords|textNoSuggestions"
+            android:textColor="@color/white"
+            android:autofillHints="Name"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/newChapter" />
+
+        <EditText
+            android:id="@+id/newChapter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_weight="1"
+            android:hint="Chapter"
+            android:textColorHint="@color/colorHint"
+            android:textSize="@dimen/newMangaTextSize"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:autofillHints="Chapter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/addButton"
+            app:layout_constraintStart_toEndOf="@+id/newName" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:text="Cancel"
+            android:textSize="@dimen/newMangaButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/addButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/newChapter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="1" />
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorAddButton"
+            android:textColor="@color/white"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:text="Add"
+            android:textSize="@dimen/newMangaButtonTextSize"
+            app:cornerRadius="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/newChapter"
+            app:layout_constraintTop_toBottomOf="@+id/cancelButton"
+            app:layout_constraintVertical_weight="1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/addNewMangaButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/round_shape"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_add_24"
+        android:contentDescription="Add new manga" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

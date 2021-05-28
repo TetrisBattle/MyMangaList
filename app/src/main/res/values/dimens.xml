@@ -3,6 +3,7 @@
     <dimen name="rankButtonTextSize">24sp</dimen>
 
     <dimen name="myMangaListPadding">4dp</dimen>
+    <dimen name="myMangaListMargin">2dp</dimen>
     <dimen name="myMangaListTextSize">22sp</dimen>
 
     <dimen name="newMangaTextSize">18sp</dimen>
