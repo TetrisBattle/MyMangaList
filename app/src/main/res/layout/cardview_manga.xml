@@ -79,15 +79,6 @@
                 app:layout_constraintStart_toEndOf="@+id/listName"
                 app:layout_constraintTop_toTopOf="@+id/listName" />
 
-            <View
-                android:id="@+id/footer"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:onClick="backgroundClick"
-                app:layout_constraintTop_toBottomOf="@+id/listName"
-                app:layout_constraintEnd_toEndOf="@+id/chapter"
-                app:layout_constraintStart_toStartOf="parent" />
-
             <EditText
                 android:id="@+id/changeUrl"
                 android:layout_width="0dp"
@@ -108,6 +99,15 @@
                 app:layout_constraintHorizontal_weight="5"
                 app:layout_constraintStart_toStartOf="@+id/listName"
                 app:layout_constraintTop_toTopOf="@+id/listName" />
+
+            <View
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:onClick="backgroundClick"
+                app:layout_constraintTop_toBottomOf="@+id/listName"
+                app:layout_constraintEnd_toEndOf="@+id/chapter"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

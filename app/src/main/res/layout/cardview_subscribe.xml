@@ -17,41 +17,100 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/round_shape"
-            android:backgroundTint="@color/colorSecondary"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
 
-            <CheckBox
-                android:id="@+id/mangaListName"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layoutDirection="rtl"
-                android:paddingStart="8dp"
-                android:paddingEnd="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="MyMangaList"
-                android:textColor="@color/white"
-                android:textSize="26sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/round_shape"
+                android:backgroundTint="@color/colorSecondary"
+                app:layout_constraintBottom_toTopOf="@+id/passwordView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/lockIcon"
-                android:layout_width="wrap_content"
+                <CheckBox
+                    android:id="@+id/mangaListName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="MyMangaList"
+                    android:textColor="@color/white"
+                    android:textSize="26sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/lockIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:layout_marginEnd="50dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/mangaListName"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_lock_24"
+                    android:contentDescription="Password required" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/passwordView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:layout_marginEnd="50dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/mangaListName"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_lock_24"
-                android:contentDescription="Password required" />
+                android:background="@color/colorSecondary"
+                android:visibility="gone"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card">
+
+                <EditText
+                    android:id="@+id/setPassword"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textVisiblePassword"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/colorHint"
+                    android:textSize="26sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/sendPassword"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:autofillHints="password"
+                    android:hint="password"/>
+
+                <Button
+                    android:id="@+id/sendPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OK"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/subscribeFooter"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:onClick="backgroundClick"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/passwordView" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

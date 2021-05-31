@@ -159,16 +159,16 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
         TextView id;
         EditText name;
         EditText chapter;
-        View footer;
         EditText changeUrl;
+        View footer;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             id = itemView.findViewById(R.id.counter);
             name = itemView.findViewById(R.id.listName);
             chapter = itemView.findViewById(R.id.chapter);
-            footer = itemView.findViewById(R.id.footer);
             changeUrl = itemView.findViewById(R.id.changeUrl);
+            footer = itemView.findViewById(R.id.footer);
         }
     }
 

@@ -105,7 +105,8 @@ public class SubscribeFragment extends Fragment {
             subscribedPrivateRef = db.getReference("users/" + currentUser + "/subscribed/privateLists");
 
             //ValueEventListener subscribedPublicEventListener =
-                    subscribedPublicRef.addValueEventListener(new ValueEventListener() {
+                subscribedPublicRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    subscribedPublicRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     publicListNames = new ArrayList<>();
@@ -114,7 +115,6 @@ public class SubscribeFragment extends Fragment {
                         if (value != null)
                             publicListNames.add(value);
                     }
-                    Log.d("myTest", "public size: : " + publicListNames.size());
                     setupPublicCards();
                 }
 
@@ -125,7 +125,8 @@ public class SubscribeFragment extends Fragment {
             });
 
             //ValueEventListener subscribedPrivateEventListener =
-                    subscribedPrivateRef.addValueEventListener(new ValueEventListener() {
+                    subscribedPrivateRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    subscribedPrivateRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     privateListNames = new ArrayList<>();
@@ -151,9 +152,12 @@ public class SubscribeFragment extends Fragment {
     public void setupPublicCards() {
         publicRef = db.getReference("publishedMangaListNames/publicLists");
         //ValueEventListener publicEventListener =
+//                publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 publicRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("myTest", "public lists changed");
+
                 ArrayList<String> data = new ArrayList<>();
                 for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                     String value = singleSnapshot.getKey();
@@ -161,7 +165,7 @@ public class SubscribeFragment extends Fragment {
                         data.add(value);
                 }
                 publicLists = data;
-                subscribeListAdapter = new SubscribeListAdapter(requireContext(), publicLists, privateLists, userRef);
+                subscribeListAdapter = new SubscribeListAdapter(requireContext(), publicLists, privateLists, publicListNames, privateListNames, userRef);
                 subscribeList.setAdapter(subscribeListAdapter);
             }
 
@@ -175,6 +179,7 @@ public class SubscribeFragment extends Fragment {
     public void setupPrivateCards() {
         privateRef = db.getReference("publishedMangaListNames/privateLists");
         //ValueEventListener privateEventListener =
+//                privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 privateRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -185,7 +190,7 @@ public class SubscribeFragment extends Fragment {
                         data.add(value);
                 }
                 privateLists = data;
-                subscribeListAdapter = new SubscribeListAdapter(requireContext(), publicLists, privateLists, userRef);
+                subscribeListAdapter = new SubscribeListAdapter(requireContext(), publicLists, privateLists, publicListNames, privateListNames, userRef);
                 subscribeList.setAdapter(subscribeListAdapter);
             }
 
