@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity{
         setupFromSharedPrefs();
 
         replaceFragment(new MangaListFragment(background, pageNames[activePage]));
-//        replaceFragment(new MangaListFragment(background, "secret"));
+        replaceFragment(new SubscribeFragment());
     }
 
     @Override
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity{
                     currentUser = String.valueOf(firebaseAuth.getCurrentUser());
                     Log.d("myTest", "new user: " + currentUser);
                 } else {
-                    Toast.makeText(MainActivity.this, "No internet connection!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "No internet connection!", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void replaceFragment(Fragment fragment) {
+        rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
