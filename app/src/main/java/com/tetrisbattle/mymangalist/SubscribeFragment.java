@@ -99,7 +99,6 @@ public class SubscribeFragment extends Fragment {
         login();
 
         if (currentUser != null) {
-            db = FirebaseDatabase.getInstance();
             userRef = db.getReference("users/" + currentUser);
             subscribedPublicRef = db.getReference("users/" + currentUser + "/subscribed/publicLists");
             subscribedPrivateRef = db.getReference("users/" + currentUser + "/subscribed/privateLists");
