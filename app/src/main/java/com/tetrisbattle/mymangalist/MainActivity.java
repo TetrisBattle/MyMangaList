@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity{
         setupFromSharedPrefs();
 
         replaceFragment(new MangaListFragment(background, pageNames[activePage]));
-        replaceFragment(new SubscribeFragment());
+        replaceFragment(new PublishFragment(currentUser));
     }
 
     @Override

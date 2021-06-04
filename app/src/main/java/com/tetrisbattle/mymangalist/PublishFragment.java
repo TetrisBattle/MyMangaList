@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
@@ -24,8 +25,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,32 +183,87 @@ public class PublishFragment extends Fragment {
                         Toast toast = Toast.makeText(getContext(), "List name can't be empty", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.BOTTOM, 0, 400);
                         toast.show();
-                    }
-
-                    else {
+                    } else {
+                        ArrayList<String> listNames = new ArrayList<>();
                         String previousListName = sharedPreferences.getString("listName", "");
-                        String newListName = String.valueOf(listName.getText());
-                        boolean previousPrivateList = sharedPreferences.getBoolean("privateList", false);
 
-                        if (!previousListName.equals(newListName)) {
-                            deleteList();
-                            editor.putString("listName", newListName);
-                        } else if (previousPrivateList != privateList.isChecked()) {
-                            deleteList();
-                        }
+                        DatabaseReference publicRef = db.getReference("publishedMangaListNames/publicLists");
+                        publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                                    String value = singleSnapshot.getKey();
+                                    if (value != null && !value.equals(previousListName))
+                                        listNames.add(value);
+                                }
 
-                        if (publicList.isChecked()) publishPublicList(newListName);
-                        else publishPrivateList(newListName, String.valueOf(password.getText()));
+                                DatabaseReference privateRef = db.getReference("publishedMangaListNames/privateLists");
+                                privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                                            String value = singleSnapshot.getKey();
+                                            if (value != null && !value.equals(previousListName))
+                                                listNames.add(value);
+                                        }
+
+                                        boolean nameIsReserved = false;
+                                        for (int i=0; i<listNames.size(); i++) {
+                                            if (String.valueOf(listNames.get(i)).equals(String.valueOf(listName.getText()))) {
+                                                nameIsReserved = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!nameIsReserved) {
+                                            String newListName = String.valueOf(listName.getText());
+                                            boolean previousPrivateList = sharedPreferences.getBoolean("privateList", false);
+
+                                            if (!previousListName.equals(newListName)) {
+                                                deleteList();
+                                                editor.putString("listName", newListName);
+                                            } else if (previousPrivateList != privateList.isChecked()) {
+                                                deleteList();
+                                            }
+
+                                            if (publicList.isChecked()) publishPublicList(newListName);
+                                            else publishPrivateList(newListName, String.valueOf(password.getText()));
+
+                                            editor.putString("listName", newListName);
+                                            editor.putBoolean("published", publish.isChecked());
+                                            editor.putBoolean("privateList", privateList.isChecked());
+                                            if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
+                                            else editor.putString("password", "");
+                                            editor.apply();
+                                        } else {
+                                            Toast toast = Toast.makeText(getContext(), "List name is already taken", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.BOTTOM, 0, 400);
+                                            toast.show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Log.d("myTest", "Failed to read value.", error.toException());
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.d("myTest", "Failed to read value.", error.toException());
+                            }
+                        });
                     }
                 } else {
                     deleteList();
+                    editor.putString("listName", "");
+                    editor.putBoolean("published", publish.isChecked());
+                    editor.putBoolean("privateList", privateList.isChecked());
+                    if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
+                    else editor.putString("password", "");
+                    editor.apply();
                 }
-
-                editor.putBoolean("published", publish.isChecked());
-                editor.putBoolean("privateList", privateList.isChecked());
-                if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
-                else editor.putString("password", "");
-                editor.apply();
             } else {
                 Toast toast = Toast.makeText(getContext(), "Internet is not available", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, 400);
