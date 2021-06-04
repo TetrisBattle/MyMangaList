@@ -35,6 +35,8 @@ public class SubscribeFragment extends Fragment {
     FirebaseDatabase db;
     DatabaseReference publicRef;
     DatabaseReference privateRef;
+    ValueEventListener publicEventListener;
+    ValueEventListener privateEventListener;
 
     ArrayList<String> publicLists;
     ArrayList<String> privateLists;
@@ -44,8 +46,6 @@ public class SubscribeFragment extends Fragment {
     String currentUser;
 
     DatabaseReference userRef;
-    DatabaseReference subscribedPublicRef;
-    DatabaseReference subscribedPrivateRef;
 
     ArrayList<String> publicListNames;
     ArrayList<String> privateListNames;
@@ -69,10 +69,14 @@ public class SubscribeFragment extends Fragment {
 
         setupCards();
 
-//        privateRef.removeEventListener(publicEventListener);
-//        privateRef.removeEventListener(privateEventListener);
-
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        publicRef.removeEventListener(publicEventListener);
+        privateRef.removeEventListener(privateEventListener);
     }
 
     public void login() {
@@ -100,12 +104,11 @@ public class SubscribeFragment extends Fragment {
 
         if (currentUser != null) {
             userRef = db.getReference("users/" + currentUser);
-            subscribedPublicRef = db.getReference("users/" + currentUser + "/subscribed/publicLists");
-            subscribedPrivateRef = db.getReference("users/" + currentUser + "/subscribed/privateLists");
 
-            //ValueEventListener subscribedPublicEventListener =
-                subscribedPublicRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    subscribedPublicRef.addValueEventListener(new ValueEventListener() {
+            DatabaseReference subscribedPublicRef = db.getReference("users/" + currentUser + "/subscribed/publicLists");
+            DatabaseReference subscribedPrivateRef = db.getReference("users/" + currentUser + "/subscribed/privateLists");
+
+            subscribedPublicRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     publicListNames = new ArrayList<>();
@@ -123,9 +126,7 @@ public class SubscribeFragment extends Fragment {
                 }
             });
 
-            //ValueEventListener subscribedPrivateEventListener =
-                    subscribedPrivateRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    subscribedPrivateRef.addValueEventListener(new ValueEventListener() {
+            subscribedPrivateRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     privateListNames = new ArrayList<>();
@@ -143,20 +144,13 @@ public class SubscribeFragment extends Fragment {
                 }
             });
         }
-
-        //db.getReference("publishedMangaListNames/privateLists/" + listName + "/owner").setValue(currentUser);
-        //db.getReference("publishedMangaLists/privateLists/" + listName).removeValue();
     }
 
     public void setupPublicCards() {
         publicRef = db.getReference("publishedMangaListNames/publicLists");
-        //ValueEventListener publicEventListener =
-//                publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                publicRef.addValueEventListener(new ValueEventListener() {
+        publicEventListener = publicRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d("myTest", "public lists changed");
-
                 ArrayList<String> data = new ArrayList<>();
                 for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                     String value = singleSnapshot.getKey();
@@ -177,9 +171,7 @@ public class SubscribeFragment extends Fragment {
 
     public void setupPrivateCards() {
         privateRef = db.getReference("publishedMangaListNames/privateLists");
-        //ValueEventListener privateEventListener =
-//                privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                privateRef.addValueEventListener(new ValueEventListener() {
+        privateEventListener = privateRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ArrayList<String> data = new ArrayList<>();
