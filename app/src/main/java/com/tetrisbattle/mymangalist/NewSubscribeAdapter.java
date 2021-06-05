@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdapter.MyViewHolder> {
+public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<String> publicLists;
@@ -37,8 +37,8 @@ public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdap
     FirebaseDatabase db;
     SharedPreferences sharedPreferences;
 
-    public SubscribeListAdapter(Context context, ArrayList<String> publicLists, ArrayList<String> privateLists,
-                                ArrayList<String> publicListNames, ArrayList<String> privateListNames, DatabaseReference userRef) {
+    public NewSubscribeAdapter(Context context, ArrayList<String> publicLists, ArrayList<String> privateLists,
+                               ArrayList<String> publicListNames, ArrayList<String> privateListNames, DatabaseReference userRef) {
         this.context = context;
         this.publicLists = publicLists;
         this.privateLists = privateLists;
@@ -51,51 +51,51 @@ public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdap
 
     @NonNull
     @Override
-    public SubscribeListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public NewSubscribeAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.cardview_subscribe, parent, false);
+        View view = layoutInflater.inflate(R.layout.cardview_subscribe_new, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         if (position == publicLists.size()+privateLists.size()-1)
-            holder.subscribeFooter.setVisibility(View.VISIBLE);
+            holder.footer.setVisibility(View.VISIBLE);
 
         if (position < publicLists.size()){
-            holder.mangaListName.setText(publicLists.get(position));
+            holder.name.setText(publicLists.get(position));
 
             for (int i=0; i<publicListNames.size(); i++) {
                 if (publicLists.get(position).equals(publicListNames.get(i))) {
-                    holder.mangaListName.setChecked(true);
+                    holder.name.setChecked(true);
                 }
             }
 
-            holder.mangaListName.setOnClickListener(v -> {
-                if (holder.mangaListName.isChecked()) {
-                    userRef.child("subscribed/publicLists/" + holder.mangaListName.getText()).setValue("null");
+            holder.name.setOnClickListener(v -> {
+                if (holder.name.isChecked()) {
+                    userRef.child("subscribed/publicLists/" + holder.name.getText()).setValue("null");
                 } else {
-                    userRef.child("subscribed/publicLists/" + holder.mangaListName.getText()).removeValue();
+                    userRef.child("subscribed/publicLists/" + holder.name.getText()).removeValue();
                 }
             });
         } else {
-            holder.mangaListName.setText(privateLists.get(position - publicLists.size()));
+            holder.name.setText(privateLists.get(position - publicLists.size()));
             holder.lockIcon.setVisibility(View.VISIBLE);
 
             for (int i=0; i<privateListNames.size(); i++) {
                 if (privateLists.get(position - publicLists.size()).equals(privateListNames.get(i))) {
-                    holder.mangaListName.setChecked(true);
+                    holder.name.setChecked(true);
                 }
             }
 
-            holder.mangaListName.setOnClickListener(v -> {
-                if (holder.mangaListName.isChecked()) {
+            holder.name.setOnClickListener(v -> {
+                if (holder.name.isChecked()) {
                     if (holder.passwordLayout.getVisibility() == View.GONE) {
-                        holder.mangaListName.setChecked(false);
+                        holder.name.setChecked(false);
                         holder.passwordLayout.setVisibility(View.VISIBLE);
 
                         holder.passwordOkButton.setOnClickListener(v2 -> {
-                            DatabaseReference passwordRef = db.getReference("publishedMangaLists/privateLists/" + holder.mangaListName.getText() + "/password");
+                            DatabaseReference passwordRef = db.getReference("publishedMangaLists/privateLists/" + holder.name.getText() + "/password");
 
                             passwordRef.child("").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -104,8 +104,8 @@ public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdap
                                     String password = String.valueOf(snapshot.getValue());
                                     if(passwordInput.equals(password)) {
                                         holder.passwordLayout.setVisibility(View.GONE);
-                                        holder.mangaListName.setChecked(true);
-                                        userRef.child("subscribed/privateLists/" + holder.mangaListName.getText()).setValue("password");
+                                        holder.name.setChecked(true);
+                                        userRef.child("subscribed/privateLists/" + holder.name.getText()).setValue("password");
                                     } else {
                                         Toast.makeText(context, "Wrong password", Toast.LENGTH_SHORT).show();
                                     }
@@ -118,11 +118,11 @@ public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdap
                             });
                         });
                     } else {
-                        holder.mangaListName.setChecked(false);
+                        holder.name.setChecked(false);
                         holder.passwordLayout.setVisibility(View.GONE);
                     }
                 } else {
-                    userRef.child("subscribed/privateLists/" + holder.mangaListName.getText()).removeValue();
+                    userRef.child("subscribed/privateLists/" + holder.name.getText()).removeValue();
                 }
             });
         }
@@ -135,21 +135,21 @@ public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdap
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        CheckBox mangaListName;
+        CheckBox name;
         ImageView lockIcon;
         EditText passwordEditText;
         ConstraintLayout passwordLayout;
         Button passwordOkButton;
-        View subscribeFooter;
+        View footer;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            mangaListName = itemView.findViewById(R.id.mangaListName);
+            name = itemView.findViewById(R.id.mangaListName);
             lockIcon = itemView.findViewById(R.id.lockIcon);
             passwordEditText = itemView.findViewById(R.id.setPassword);
             passwordLayout = itemView.findViewById(R.id.passwordView);
             passwordOkButton = itemView.findViewById(R.id.sendPassword);
-            subscribeFooter = itemView.findViewById(R.id.subscribeFooter);
+            footer = itemView.findViewById(R.id.subscribeFooter);
         }
     }
 }

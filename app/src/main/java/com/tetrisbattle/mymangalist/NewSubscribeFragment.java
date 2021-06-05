@@ -26,11 +26,11 @@ import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class SubscribeFragment extends Fragment {
+public class NewSubscribeFragment extends Fragment {
 
     View view;
-    RecyclerView subscribeList;
-    SubscribeListAdapter subscribeListAdapter;
+    RecyclerView newSubscribeListView;
+    NewSubscribeAdapter newSubscribeAdapter;
 
     FirebaseDatabase db;
     DatabaseReference publicRef;
@@ -50,22 +50,22 @@ public class SubscribeFragment extends Fragment {
     ArrayList<String> publicListNames;
     ArrayList<String> privateListNames;
 
-    public SubscribeFragment() {}
+    public NewSubscribeFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_subscribe, container, false);
+        view = inflater.inflate(R.layout.fragment_subscribe_new, container, false);
 
-        subscribeList = view.findViewById(R.id.subscribeList);
-        subscribeList.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        publicLists = new ArrayList<>();
-        privateLists = new ArrayList<>();
+        newSubscribeListView = view.findViewById(R.id.newSubscribeListView);
+        newSubscribeListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         db = FirebaseDatabase.getInstance();
 
         sharedPreferences = requireContext().getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         sharedPrefsListName = sharedPreferences.getString("listName", "");
+
+        publicLists = new ArrayList<>();
+        privateLists = new ArrayList<>();
 
         setupCards();
 
@@ -158,8 +158,8 @@ public class SubscribeFragment extends Fragment {
                         data.add(value);
                 }
                 publicLists = data;
-                subscribeListAdapter = new SubscribeListAdapter(requireContext(), publicLists, privateLists, publicListNames, privateListNames, userRef);
-                subscribeList.setAdapter(subscribeListAdapter);
+                newSubscribeAdapter = new NewSubscribeAdapter(requireContext(), publicLists, privateLists, publicListNames, privateListNames, userRef);
+                newSubscribeListView.setAdapter(newSubscribeAdapter);
             }
 
             @Override
@@ -181,8 +181,8 @@ public class SubscribeFragment extends Fragment {
                         data.add(value);
                 }
                 privateLists = data;
-                subscribeListAdapter = new SubscribeListAdapter(requireContext(), publicLists, privateLists, publicListNames, privateListNames, userRef);
-                subscribeList.setAdapter(subscribeListAdapter);
+                newSubscribeAdapter = new NewSubscribeAdapter(requireContext(), publicLists, privateLists, publicListNames, privateListNames, userRef);
+                newSubscribeListView.setAdapter(newSubscribeAdapter);
             }
 
             @Override

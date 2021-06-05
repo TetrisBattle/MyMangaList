@@ -20,8 +20,6 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +86,8 @@ public class MainActivity extends AppCompatActivity{
         setupFromSharedPrefs();
 
         replaceFragment(new MangaListFragment(background, pageNames[activePage]));
-        replaceFragment(new PublishFragment(currentUser));
+
+        replaceFragment(new SubscribedFragment());
     }
 
     @Override
@@ -240,7 +239,7 @@ public class MainActivity extends AppCompatActivity{
                     replaceFragment(new PublishFragment(currentUser));
                     return true;
                 } else if (item.getItemId() == R.id.popupSubscribe) {
-                    replaceFragment(new SubscribeFragment());
+                    replaceFragment(new SubscribedFragment());
                     return true;
                 } else {
                     return false;
@@ -250,8 +249,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void setupFromSharedPrefs() {
-//        sharedPreferences.getStringSet()
-
         boolean showPlanToReadPage = sharedPreferences.getBoolean("showPlanToReadPage", false);
         boolean showSpecialPage = sharedPreferences.getBoolean("showSpecialPage", false);
         int currentPage = sharedPreferences.getInt("currentPage", 0);
