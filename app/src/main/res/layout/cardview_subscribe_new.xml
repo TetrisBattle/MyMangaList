@@ -27,7 +27,7 @@
                 android:id="@+id/newSubscribeCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/round_shape"
+                android:background="@drawable/round_button"
                 android:backgroundTint="@color/colorSecondary"
                 app:layout_constraintBottom_toTopOf="@+id/passwordView"
                 app:layout_constraintEnd_toEndOf="parent"
