@@ -29,8 +29,8 @@ public class MangaListFragment extends Fragment {
 
     View view;
     RecyclerView mangaListView;
-    ConstraintLayout addNewMangaView;
     ImageButton addNewMangaButton;
+    ConstraintLayout addNewMangaView;
     EditText newUrl, newName, newChapter;
     Button addButton, cancelButton;
 
@@ -61,36 +61,44 @@ public class MangaListFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_manga_list, container, false);
 
         mangaListView = view.findViewById(R.id.mangaListView);
+        addNewMangaButton = view.findViewById(R.id.addNewMangaButton);
 
         if (!table.equals("subscribedList")) {
-            addNewMangaView = view.findViewById(R.id.addNewMangaView);
-            addNewMangaButton = view.findViewById(R.id.addNewMangaButton);
-            newUrl = view.findViewById(R.id.newUrl);
-            newName = view.findViewById(R.id.newName);
-            newChapter = view.findViewById(R.id.newChapter);
-            addButton = view.findViewById(R.id.addButton);
-            cancelButton = view.findViewById(R.id.cancelButton);
-
-            requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-            inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            myDatabaseHelper = new MyDatabaseHelper(getContext());
-            myDatabaseHelper.setTable(table);
-
-            List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
-            mangaListAdapter = new MangaListAdapter(requireContext(), myMangaList, myDatabaseHelper, table, background);
-
-            setupNewMangaFunction();
+            loadFromMySql();
         } else {
+            addNewMangaButton.setVisibility(View.INVISIBLE);
             db = FirebaseDatabase.getInstance();
             ref = db.getReference();
 
             // get the list from firebase
+
+//            List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
+//            mangaListAdapter = new MangaListAdapter(requireContext(), myMangaList, myDatabaseHelper, table, background);
         }
 
         mangaListView.setLayoutManager(new LinearLayoutManager(getContext()));
         mangaListView.setAdapter(mangaListAdapter);
 
         return view;
+    }
+
+    public void loadFromMySql() {
+        addNewMangaView = view.findViewById(R.id.addNewMangaView);
+        newUrl = view.findViewById(R.id.newUrl);
+        newName = view.findViewById(R.id.newName);
+        newChapter = view.findViewById(R.id.newChapter);
+        addButton = view.findViewById(R.id.addButton);
+        cancelButton = view.findViewById(R.id.cancelButton);
+
+        requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        myDatabaseHelper = new MyDatabaseHelper(getContext());
+        myDatabaseHelper.setTable(table);
+
+        List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
+        mangaListAdapter = new MangaListAdapter(requireContext(), myMangaList, myDatabaseHelper, table, background);
+
+        setupNewMangaFunction();
     }
 
     public void refresh() {
