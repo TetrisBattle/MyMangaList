@@ -30,7 +30,6 @@ public class SubscribedFragment extends Fragment {
     SubscribedAdapter subscribedAdapter;
 
     String currentUser;
-    ArrayList<String> subscribedList;
 
     public SubscribedFragment() {}
 
@@ -41,7 +40,8 @@ public class SubscribedFragment extends Fragment {
         subscribedListView = view.findViewById(R.id.subscribedListView);
         subscribedListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        subscribedList = new ArrayList<>();
+        ArrayList<String> subscribedPublicList = new ArrayList<>();
+        ArrayList<String> subscribedPrivateList = new ArrayList<>();
 
         login();
 
@@ -55,9 +55,9 @@ public class SubscribedFragment extends Fragment {
                 for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                     String value = singleSnapshot.getKey();
                     if (value != null)
-                        subscribedList.add(value);
+                        subscribedPublicList.add(value);
                 }
-                subscribedAdapter = new SubscribedAdapter(getContext(), subscribedList);
+                subscribedAdapter = new SubscribedAdapter(getContext(), subscribedPublicList, subscribedPrivateList);
                 subscribedListView.setAdapter(subscribedAdapter);
             }
 
@@ -73,9 +73,9 @@ public class SubscribedFragment extends Fragment {
                 for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                     String value = singleSnapshot.getKey();
                     if (value != null)
-                        subscribedList.add(value);
+                        subscribedPrivateList.add(value);
                 }
-                subscribedAdapter = new SubscribedAdapter(getContext(), subscribedList);
+                subscribedAdapter = new SubscribedAdapter(getContext(), subscribedPublicList, subscribedPrivateList);
                 subscribedListView.setAdapter(subscribedAdapter);
             }
 
