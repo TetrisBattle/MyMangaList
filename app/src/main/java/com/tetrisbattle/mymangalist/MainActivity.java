@@ -145,7 +145,6 @@ public class MainActivity extends AppCompatActivity{
                 background.callOnClick();
                 rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
 
-
                 if (secretCodeInputPos == 6) secretCodeInputPos = 0;
                 else secretCodeInputPos++;
 

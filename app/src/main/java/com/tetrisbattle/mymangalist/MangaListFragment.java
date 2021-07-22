@@ -73,7 +73,7 @@ public class MangaListFragment extends Fragment {
             addButton = view.findViewById(R.id.addButton);
             cancelButton = view.findViewById(R.id.cancelButton);
 
-            requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+//            requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             myDatabaseHelper = new MyDatabaseHelper(getContext());
             myDatabaseHelper.setTable(table);
