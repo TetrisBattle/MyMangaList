@@ -52,6 +52,7 @@ public class MangaListFragment extends Fragment {
     }
 
     public MangaListFragment(boolean isPrivate, String subscribedListName) {
+        //missing background
         this.isPrivate = isPrivate;
         this.subscribedListName = subscribedListName;
         this.table = "subscribedList";
