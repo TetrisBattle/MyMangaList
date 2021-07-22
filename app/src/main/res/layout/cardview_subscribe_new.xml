@@ -101,6 +101,22 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <TextView
+                android:id="@+id/returnButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/round_button"
+                android:padding="6dp"
+                android:text="Return"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="26sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/passwordView" />
+
             <View
                 android:id="@+id/subscribeFooter"
                 android:layout_width="match_parent"
@@ -109,7 +125,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/passwordView" />
+                app:layout_constraintTop_toBottomOf="@+id/returnButton" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

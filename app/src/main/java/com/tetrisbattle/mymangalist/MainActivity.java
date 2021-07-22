@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity{
 //        replaceFragment(new MangaListFragment(pageNames[activePage]));
         rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
-//        replaceFragment(new SubscribedFragment());
+        replaceFragment(new SubscribeFragment());
     }
 
     @Override
@@ -177,7 +177,6 @@ public class MainActivity extends AppCompatActivity{
                     rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
                     replaceFragment(new MangaListFragment(background, pageNames[newActivePage]));
                 }
-
                 activePage = newActivePage;
             });
             rankButtons.add(rankButton);
@@ -240,7 +239,7 @@ public class MainActivity extends AppCompatActivity{
                     replaceFragment(new PublishFragment(currentUser));
                     return true;
                 } else if (item.getItemId() == R.id.popupSubscribe) {
-                    replaceFragment(new SubscribedFragment());
+                    replaceFragment(new SubscribeFragment());
                     return true;
                 } else {
                     return false;

@@ -10,10 +10,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -59,8 +63,16 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        if (position == publicLists.size()+privateLists.size()-1)
+        if (position == publicLists.size()+privateLists.size()-1) {
+            holder.returnButton.setVisibility(View.VISIBLE);
             holder.footer.setVisibility(View.VISIBLE);
+        }
+
+        holder.returnButton.setOnClickListener(v -> {
+            FragmentTransaction fragmentTransaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.frameLayout, new SubscribeFragment());
+            fragmentTransaction.commit();
+        });
 
         if (position < publicLists.size()){
             holder.name.setText(publicLists.get(position));
@@ -140,6 +152,7 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
         EditText passwordEditText;
         ConstraintLayout passwordLayout;
         Button passwordOkButton;
+        TextView returnButton;
         View footer;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -149,6 +162,7 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
             passwordEditText = itemView.findViewById(R.id.setPassword);
             passwordLayout = itemView.findViewById(R.id.passwordView);
             passwordOkButton = itemView.findViewById(R.id.sendPassword);
+            returnButton = itemView.findViewById(R.id.returnButton);
             footer = itemView.findViewById(R.id.subscribeFooter);
         }
     }
