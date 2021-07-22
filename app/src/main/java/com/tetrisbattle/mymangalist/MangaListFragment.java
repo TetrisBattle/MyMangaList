@@ -42,6 +42,9 @@ public class MangaListFragment extends Fragment {
     ConstraintLayout background;
     String table;
 
+    boolean isPrivate;
+    String subscribedListName;
+
     public MangaListFragment(ConstraintLayout background, String table) {
         this.background = background;
         this.table = table;

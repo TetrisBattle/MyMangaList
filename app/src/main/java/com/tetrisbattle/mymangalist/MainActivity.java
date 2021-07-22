@@ -86,8 +86,10 @@ public class MainActivity extends AppCompatActivity{
         setupFromSharedPrefs();
 
         replaceFragment(new MangaListFragment(background, pageNames[activePage]));
+//        replaceFragment(new MangaListFragment(pageNames[activePage]));
+        rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
-        replaceFragment(new SubscribedFragment());
+//        replaceFragment(new SubscribedFragment());
     }
 
     @Override
