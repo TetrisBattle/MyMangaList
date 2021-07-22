@@ -168,15 +168,15 @@ public class MainActivity extends AppCompatActivity{
                         currentSecretCode[5] == 3 &&
                         currentSecretCode[6] == 5
                     ) {
-                        replaceFragment(new MangaListFragment(background, "secret"));
+                        replaceFragment(new MangaListFragment("secret"));
                         secretCodeInputPos = 0;
                     } else {
                         rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
-                        replaceFragment(new MangaListFragment(background, pageNames[newActivePage]));
+                        replaceFragment(new MangaListFragment(pageNames[newActivePage]));
                     }
                 } else {
                     rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
-                    replaceFragment(new MangaListFragment(background, pageNames[newActivePage]));
+                    replaceFragment(new MangaListFragment(pageNames[newActivePage]));
                 }
 
                 activePage = newActivePage;

@@ -29,8 +29,8 @@ public class MangaListFragment extends Fragment {
 
     View view;
     RecyclerView mangaListView;
-    ConstraintLayout addNewMangaView;
     ImageButton addNewMangaButton;
+    ConstraintLayout addNewMangaView;
     EditText newUrl, newName, newChapter;
     Button addButton, cancelButton;
 
