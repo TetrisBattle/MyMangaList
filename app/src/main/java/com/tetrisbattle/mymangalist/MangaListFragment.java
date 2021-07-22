@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,33 +51,45 @@ public class MangaListFragment extends Fragment {
         this.table = table;
     }
 
+    public MangaListFragment(boolean isPrivate, String subscribedListName) {
+        this.isPrivate = isPrivate;
+        this.subscribedListName = subscribedListName;
+        this.table = "subscribedList";
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_manga_list, container, false);
 
-        requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
         mangaListView = view.findViewById(R.id.mangaListView);
-        addNewMangaView = view.findViewById(R.id.addNewMangaView);
-        addNewMangaButton = view.findViewById(R.id.addNewMangaButton);
-        newUrl = view.findViewById(R.id.newUrl);
-        newName = view.findViewById(R.id.newName);
-        newChapter = view.findViewById(R.id.newChapter);
-        addButton = view.findViewById(R.id.addButton);
-        cancelButton = view.findViewById(R.id.cancelButton);
 
-        inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        myDatabaseHelper = new MyDatabaseHelper(getContext());
-        myDatabaseHelper.setTable(table);
-        db = FirebaseDatabase.getInstance();
-        ref = db.getReference();
+        if (!table.equals("subscribedList")) {
+            addNewMangaView = view.findViewById(R.id.addNewMangaView);
+            addNewMangaButton = view.findViewById(R.id.addNewMangaButton);
+            newUrl = view.findViewById(R.id.newUrl);
+            newName = view.findViewById(R.id.newName);
+            newChapter = view.findViewById(R.id.newChapter);
+            addButton = view.findViewById(R.id.addButton);
+            cancelButton = view.findViewById(R.id.cancelButton);
 
-        List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
-        mangaListAdapter = new MangaListAdapter(requireContext(), myMangaList, myDatabaseHelper, table, background);
-        mangaListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mangaListView.setAdapter(mangaListAdapter);
+            requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            myDatabaseHelper = new MyDatabaseHelper(getContext());
+            myDatabaseHelper.setTable(table);
 
-        setupNewMangaFunction();
+            List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
+            mangaListAdapter = new MangaListAdapter(requireContext(), myMangaList, myDatabaseHelper, table, background);
+
+            mangaListView.setLayoutManager(new LinearLayoutManager(getContext()));
+            mangaListView.setAdapter(mangaListAdapter);
+
+            setupNewMangaFunction();
+        } else {
+            db = FirebaseDatabase.getInstance();
+            ref = db.getReference();
+
+            // get the list from firebase
+        }
 
         return view;
     }
