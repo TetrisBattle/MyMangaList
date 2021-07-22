@@ -1,7 +1,6 @@
 package com.tetrisbattle.mymangalist;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +59,7 @@ public class SubscribedAdapter extends RecyclerView.Adapter<SubscribedAdapter.My
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.subscribedName);
-            addNewSubscribeButton = itemView.findViewById(R.id.addNewSubscribeButton);
+            addNewSubscribeButton = itemView.findViewById(R.id.addNewSubscribeList);
         }
     }
 }

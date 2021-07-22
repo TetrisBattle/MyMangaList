@@ -25,7 +25,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/round_shape"
+                android:background="@drawable/round_button"
                 android:backgroundTint="@color/colorSecondary"
                 android:padding="6dp"
                 android:text="Subscribed"
@@ -36,19 +36,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/addNewSubscribeButton"
+            <TextView
+                android:id="@+id/addNewSubscribeList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/round_shape"
+                android:background="@drawable/round_button"
                 android:padding="6dp"
                 android:text="Add new"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="22sp"
+                android:textSize="26sp"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
