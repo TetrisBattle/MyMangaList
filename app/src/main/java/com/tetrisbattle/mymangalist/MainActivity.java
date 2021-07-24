@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity{
         for (int i = 0; i< pageIds.length; i++) {
             Button rankButton = findViewById(pageIds[i]);
             int newActivePage = i;
+
             rankButton.setOnClickListener(v -> {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt("currentPage", newActivePage);

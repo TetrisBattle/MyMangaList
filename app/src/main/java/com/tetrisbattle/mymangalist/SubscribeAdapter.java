@@ -1,6 +1,8 @@
 package com.tetrisbattle.mymangalist;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,18 +41,24 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
             holder.name.setText(subscribedPublicList.get(position));
 
             holder.name.setOnClickListener(v -> {
-                FragmentTransaction fragmentTransaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.frameLayout, new MangaListFragment(false, String.valueOf(holder.name.getText())));
-                fragmentTransaction.commit();
+//                FragmentTransaction fragmentTransaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
+//                fragmentTransaction.replace(R.id.frameLayout, new MangaListFragment(false, String.valueOf(holder.name.getText())));
+//                fragmentTransaction.commit();
+
+                String listName = "PublicList";
+                openActivity(listName, false);
             });
         } else {
             holder.name.setText(subscribedPrivateList.get(position - subscribedPublicList.size()));
 //            holder.name.setBackground(ContextCompat.getDrawable(context, R.drawable.round_button2)); // to change background color
 
             holder.name.setOnClickListener(v -> {
-                FragmentTransaction fragmentTransaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.frameLayout, new MangaListFragment(true, String.valueOf(holder.name.getText())));
-                fragmentTransaction.commit();
+//                FragmentTransaction fragmentTransaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
+//                fragmentTransaction.replace(R.id.frameLayout, new MangaListFragment(true, String.valueOf(holder.name.getText())));
+//                fragmentTransaction.commit();
+
+                String listName = "PrivateList";
+                openActivity(listName, true);
             });
         }
     }
@@ -68,5 +76,12 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
             super(itemView);
             name = itemView.findViewById(R.id.subscribedName);
         }
+    }
+
+    public void openActivity(String listName, boolean isPrivate) {
+        Intent intent = new Intent(context, SubscribedListActivity.class);
+        intent.putExtra("listName", listName);
+        intent.putExtra("isPrivate", isPrivate);
+        context.startActivity(intent);
     }
 }

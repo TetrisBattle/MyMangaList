@@ -63,10 +63,10 @@ public class MangaListFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_manga_list, container, false);
 
         mangaListView = view.findViewById(R.id.mangaListView);
+        addNewMangaButton = view.findViewById(R.id.addNewMangaButton);
 
         if (!table.equals("subscribedList")) {
             addNewMangaView = view.findViewById(R.id.addNewMangaView);
-            addNewMangaButton = view.findViewById(R.id.addNewMangaButton);
             newUrl = view.findViewById(R.id.newUrl);
             newName = view.findViewById(R.id.newName);
             newChapter = view.findViewById(R.id.newChapter);
@@ -89,7 +89,10 @@ public class MangaListFragment extends Fragment {
             db = FirebaseDatabase.getInstance();
             ref = db.getReference();
 
+            addNewMangaButton.setVisibility(View.INVISIBLE);
+
             // get the list from firebase
+
         }
 
         return view;
