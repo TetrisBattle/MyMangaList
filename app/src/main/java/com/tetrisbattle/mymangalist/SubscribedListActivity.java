@@ -7,20 +7,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +59,7 @@ public class SubscribedListActivity extends AppCompatActivity {
 
     String currentUser;
     int activePage = 0;
-    String listName;
+    String subscribedListName;
     boolean isPrivate;
 
     int[] secretCode;
@@ -76,17 +72,15 @@ public class SubscribedListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribed_list);
 
-        Log.d("myTest", "sub list");
-
         rankButtons = new ArrayList<>(pageIds.length);
         settingsIcon = findViewById(R.id.settingsIcon);
         title = findViewById(R.id.title);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            listName = extras.getString("listName");
+            subscribedListName = extras.getString("listName");
             isPrivate = extras.getBoolean("isPrivate");
-            title.setText(listName);
+            title.setText(subscribedListName);
         }
 
         settingsIconPopupMenu = new PopupMenu(this, settingsIcon);
@@ -102,7 +96,6 @@ public class SubscribedListActivity extends AppCompatActivity {
     }
 
     public void replaceFragment(Fragment fragment) {
-        rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
@@ -117,7 +110,7 @@ public class SubscribedListActivity extends AppCompatActivity {
                 rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
 
                 rankButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
-                replaceFragment(new MangaListFragment(background, pageNames[newActivePage]));
+                replaceFragment(new MangaListFragment(subscribedListName, isPrivate, pageNames[newActivePage]));
 
                 activePage = newActivePage;
             });
@@ -181,6 +174,7 @@ public class SubscribedListActivity extends AppCompatActivity {
                     replaceFragment(new PublishFragment(currentUser));
                     return true;
                 } else if (item.getItemId() == R.id.popupSubscribe) {
+                    rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
                     replaceFragment(new SubscribeFragment());
                     return true;
                 } else {

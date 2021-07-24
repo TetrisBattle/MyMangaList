@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity{
         setupFromSharedPrefs();
 
         replaceFragment(new MangaListFragment(background, pageNames[activePage]));
-//        replaceFragment(new MangaListFragment(pageNames[activePage]));
         rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
         replaceFragment(new SubscribeFragment());
@@ -127,7 +126,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void replaceFragment(Fragment fragment) {
-        rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
@@ -240,6 +238,7 @@ public class MainActivity extends AppCompatActivity{
                     replaceFragment(new PublishFragment(currentUser));
                     return true;
                 } else if (item.getItemId() == R.id.popupSubscribe) {
+                    rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
                     replaceFragment(new SubscribeFragment());
                     return true;
                 } else {

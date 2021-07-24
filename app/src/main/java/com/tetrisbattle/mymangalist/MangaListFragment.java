@@ -1,8 +1,11 @@
 package com.tetrisbattle.mymangalist;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,9 +23,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MangaListFragment extends Fragment {
@@ -43,18 +50,19 @@ public class MangaListFragment extends Fragment {
     ConstraintLayout background;
     String table;
 
-    boolean isPrivate;
     String subscribedListName;
+    boolean isPrivate;
+    String page;
 
     public MangaListFragment(ConstraintLayout background, String table) {
         this.background = background;
         this.table = table;
     }
 
-    public MangaListFragment(boolean isPrivate, String subscribedListName) {
-        //missing background
-        this.isPrivate = isPrivate;
+    public MangaListFragment(String subscribedListName, boolean isPrivate, String page) {
         this.subscribedListName = subscribedListName;
+        this.isPrivate = isPrivate;
+        this.page = page;
         this.table = "subscribedList";
     }
 
@@ -64,6 +72,8 @@ public class MangaListFragment extends Fragment {
 
         mangaListView = view.findViewById(R.id.mangaListView);
         addNewMangaButton = view.findViewById(R.id.addNewMangaButton);
+
+        mangaListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         if (!table.equals("subscribedList")) {
             addNewMangaView = view.findViewById(R.id.addNewMangaView);
@@ -75,24 +85,18 @@ public class MangaListFragment extends Fragment {
 
 //            requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             inputMethodManager = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            setupNewMangaFunction();
             myDatabaseHelper = new MyDatabaseHelper(getContext());
             myDatabaseHelper.setTable(table);
 
             List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
             mangaListAdapter = new MangaListAdapter(requireContext(), myMangaList, myDatabaseHelper, table, background);
-
-            mangaListView.setLayoutManager(new LinearLayoutManager(getContext()));
             mangaListView.setAdapter(mangaListAdapter);
-
-            setupNewMangaFunction();
         } else {
+            addNewMangaButton.setVisibility(View.INVISIBLE);
             db = FirebaseDatabase.getInstance();
             ref = db.getReference();
-
-            addNewMangaButton.setVisibility(View.INVISIBLE);
-
-            // get the list from firebase
-
+            getSubscribedList();
         }
 
         return view;
@@ -160,6 +164,51 @@ public class MangaListFragment extends Fragment {
             newName.setText("");
             newChapter.setText("");
             newUrl.setText("");
+        });
+    }
+
+    public void getSubscribedList() {
+        ArrayList<MyManga> subscribedList = new ArrayList<>();
+        ArrayList<String> mangaName = new ArrayList<>();
+        ArrayList<String> mangaChapter = new ArrayList<>();
+        DatabaseReference ref;
+
+        if (isPrivate) {
+            ref = db.getReference("publishedMangaLists/privateLists/" + subscribedListName + "/" + page);
+        } else {
+            ref = db.getReference("publishedMangaLists/publicLists/" + subscribedListName + "/" + page);
+        }
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                    String name = singleSnapshot.getKey();
+//                    String chapter = String.valueOf(singleSnapshot.child(name).child("chapter").getValue());
+
+                    if (name != null)
+                        mangaName.add(name);
+
+//                    if (chapter != null)
+//                        mangaChapter.add(chapter);
+//                    else
+//                        mangaChapter.add("");
+                }
+
+                for(int i=0; i<mangaName.size(); i++) {
+                    MyManga myManga = new MyManga(i, mangaName.get(i), "13", "");
+                    subscribedList.add(myManga);
+                }
+
+                mangaListAdapter = new MangaListAdapter(requireContext(), subscribedList, table);
+                mangaListAdapter.setMangaList(subscribedList);
+                mangaListView.setAdapter(mangaListAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("myTest", "Failed to read value.", error.toException());
+            }
         });
     }
 }

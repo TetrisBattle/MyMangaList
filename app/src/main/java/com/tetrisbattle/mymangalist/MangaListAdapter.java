@@ -52,6 +52,12 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
         deleteDialog = new AlertDialog.Builder(context);
     }
 
+    public MangaListAdapter(Context context, List<MyManga> myManga, String myTable) {
+        this.context = context;
+        this.data = myManga;
+        this.myTable = myTable;
+    }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -62,91 +68,100 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        if (position != data.size()-1) holder.footer.setVisibility(View.GONE);
-        else holder.footer.setVisibility(View.VISIBLE);
+        if (!myTable.equals("subscribedList")) {
+            if (position != data.size()-1) holder.footer.setVisibility(View.GONE);
+            else holder.footer.setVisibility(View.VISIBLE);
 
-        holder.id.setText(String.valueOf(position+1));
-        holder.name.setText(data.get(position).name);
-        holder.chapter.setText(data.get(position).chapter);
+            holder.id.setText(String.valueOf(position+1));
+            holder.name.setText(data.get(position).name);
+            holder.chapter.setText(data.get(position).chapter);
 
-        holder.id.setOnClickListener(v -> {
-            background.callOnClick();
+            holder.id.setOnClickListener(v -> {
+                background.callOnClick();
 //            ClipboardManager clipboardManager;
 //            clipboardManager = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
 //
 //            ClipData clipData;
 //            clipData = ClipData.newPlainText("Name", selectedName);
 //            clipboardManager.setPrimaryClip(clipData);
-        });
+            });
 
-        holder.name.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                selectedId = data.get(position).id;
-                selectedName = String.valueOf(holder.name.getText());
-            } else {
-                if (!String.valueOf(holder.name.getText()).equals(selectedName)){
-                    myDatabaseHelper.updateName(String.valueOf(holder.name.getText()), selectedId);
+            holder.name.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    selectedId = data.get(position).id;
+                    selectedName = String.valueOf(holder.name.getText());
+                } else {
+                    if (!String.valueOf(holder.name.getText()).equals(selectedName)){
+                        myDatabaseHelper.updateName(String.valueOf(holder.name.getText()), selectedId);
 
 //                data.get(position).name = String.valueOf(holder.name.getText());
 
-                    data = myDatabaseHelper.getMyMangaList();
+                        data = myDatabaseHelper.getMyMangaList();
 //                    notifyDataSetChanged();
 //                    notifyItemChanged(position); // remake item at pos
+                    }
                 }
-            }
-        });
+            });
 
-        holder.name.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                holder.name.clearFocus();
-                return true;
-            }
-            return false;
-        });
+            holder.name.setOnKeyListener((v, keyCode, event) -> {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    holder.name.clearFocus();
+                    return true;
+                }
+                return false;
+            });
 
-        holder.name.setOnLongClickListener(v -> {
-            background.callOnClick();
-            selectedId = data.get(position).id;
-            selectedName = String.valueOf(holder.name.getText());
-            showPopupMenu(v, holder, myDatabaseHelper.getUrl(selectedId));
-            return true;
-        });
-
-        holder.chapter.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
+            holder.name.setOnLongClickListener(v -> {
+                background.callOnClick();
                 selectedId = data.get(position).id;
-                selectedChapter = String.valueOf(holder.chapter.getText());
-            } else {
-                if (!String.valueOf(holder.chapter.getText()).equals(selectedChapter)){
-                    myDatabaseHelper.updateChapter(String.valueOf(holder.chapter.getText()), selectedId);
-                }
-            }
-        });
-
-        holder.chapter.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                holder.chapter.clearFocus();
+                selectedName = String.valueOf(holder.name.getText());
+                showPopupMenu(v, holder, myDatabaseHelper.getUrl(selectedId));
                 return true;
-            }
-            return false;
-        });
+            });
 
-        holder.changeUrl.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                if (!String.valueOf(holder.changeUrl.getText()).equals(selectedUrl)){
-                    myDatabaseHelper.updateUrl(String.valueOf(holder.changeUrl.getText()), selectedId);
+            holder.chapter.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    selectedId = data.get(position).id;
+                    selectedChapter = String.valueOf(holder.chapter.getText());
+                } else {
+                    if (!String.valueOf(holder.chapter.getText()).equals(selectedChapter)){
+                        myDatabaseHelper.updateChapter(String.valueOf(holder.chapter.getText()), selectedId);
+                    }
                 }
-                holder.changeUrl.setVisibility(View.GONE);
-            }
-        });
+            });
 
-        holder.changeUrl.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                holder.changeUrl.clearFocus();
-                return true;
-            }
-            return false;
-        });
+            holder.chapter.setOnKeyListener((v, keyCode, event) -> {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    holder.chapter.clearFocus();
+                    return true;
+                }
+                return false;
+            });
+
+            holder.changeUrl.setOnFocusChangeListener((v, hasFocus) -> {
+                if (!hasFocus) {
+                    if (!String.valueOf(holder.changeUrl.getText()).equals(selectedUrl)){
+                        myDatabaseHelper.updateUrl(String.valueOf(holder.changeUrl.getText()), selectedId);
+                    }
+                    holder.changeUrl.setVisibility(View.GONE);
+                }
+            });
+
+            holder.changeUrl.setOnKeyListener((v, keyCode, event) -> {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    holder.changeUrl.clearFocus();
+                    return true;
+                }
+                return false;
+            });
+        } else {
+            if (position != data.size()-1) holder.footer.setVisibility(View.GONE);
+            else holder.footer.setVisibility(View.VISIBLE);
+
+            holder.id.setText(String.valueOf(position+1));
+            holder.name.setText(data.get(position).name);
+            holder.chapter.setText(data.get(position).chapter);
+        }
     }
 
     @Override

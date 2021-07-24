@@ -45,8 +45,7 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
 //                fragmentTransaction.replace(R.id.frameLayout, new MangaListFragment(false, String.valueOf(holder.name.getText())));
 //                fragmentTransaction.commit();
 
-                String listName = "PublicList";
-                openActivity(listName, false);
+                openActivity(String.valueOf(holder.name.getText()), false);
             });
         } else {
             holder.name.setText(subscribedPrivateList.get(position - subscribedPublicList.size()));
@@ -57,8 +56,7 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
 //                fragmentTransaction.replace(R.id.frameLayout, new MangaListFragment(true, String.valueOf(holder.name.getText())));
 //                fragmentTransaction.commit();
 
-                String listName = "PrivateList";
-                openActivity(listName, true);
+                openActivity(String.valueOf(holder.name.getText()), true);
             });
         }
     }
