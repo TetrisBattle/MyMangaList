@@ -208,38 +208,37 @@ public class PublishFragment extends Fragment {
                                                 listNames.add(value);
                                         }
 
-                                        boolean nameIsReserved = false;
-                                        for (int i=0; i<listNames.size(); i++) {
-                                            if (String.valueOf(listNames.get(i)).equals(newListName)) {
-                                                nameIsReserved = true;
-                                                break;
+                                        boolean previousPrivateList = sharedPreferences.getBoolean("privateList", false);
+                                        if (currentListName.equals(newListName) &&
+                                                previousPrivateList == privateList.isChecked()) {
+                                            Toast.makeText(getContext(), "List is already published", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            boolean nameIsReserved = false;
+                                            for (int i=0; i<listNames.size(); i++) {
+                                                if (!listNames.get(i).equals(currentListName) &&
+                                                        String.valueOf(listNames.get(i)).equals(newListName)) {
+                                                    nameIsReserved = true;
+                                                    break;
+                                                }
                                             }
-                                        }
 
-                                        if (!nameIsReserved) {
-                                            boolean previousPrivateList = sharedPreferences.getBoolean("privateList", false);
-
-                                            if (currentListName.equals(newListName) &&
-                                                    previousPrivateList == privateList.isChecked()) {
-                                                Toast.makeText(getContext(), "List is already published", Toast.LENGTH_SHORT).show();
-                                            } else {
+                                            if (!nameIsReserved) {
                                                 deleteList();
-
                                                 if (publicList.isChecked()) publishPublicList(newListName);
                                                 else publishPrivateList(newListName, String.valueOf(password.getText()));
-
-                                                editor.putString("listName", newListName);
-                                                editor.putBoolean("published", publish.isChecked());
-                                                editor.putBoolean("privateList", privateList.isChecked());
-                                                if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
-                                                else editor.putString("password", "");
-                                                editor.apply();
+                                            } else {
+                                                Toast toast = Toast.makeText(getContext(), "List name is already taken", Toast.LENGTH_SHORT);
+                                                toast.setGravity(Gravity.BOTTOM, 0, 400);
+                                                toast.show();
                                             }
-                                        } else {
-                                            Toast toast = Toast.makeText(getContext(), "List name is already taken", Toast.LENGTH_SHORT);
-                                            toast.setGravity(Gravity.BOTTOM, 0, 400);
-                                            toast.show();
                                         }
+
+                                        editor.putString("listName", "");
+                                        editor.putBoolean("published", publish.isChecked());
+                                        editor.putBoolean("privateList", privateList.isChecked());
+                                        if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
+                                        else editor.putString("password", "");
+                                        editor.apply();
                                     }
 
                                     @Override

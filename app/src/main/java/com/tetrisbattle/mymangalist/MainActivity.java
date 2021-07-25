@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity{
         if (firebaseUser == null) {
             firebaseAuth.signInAnonymously().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    currentUser = String.valueOf(firebaseAuth.getCurrentUser());
+                    //currentUser = String.valueOf(firebaseAuth.getCurrentUser());
+                    currentUser = firebaseAuth.getCurrentUser().getUid();
                     Log.d("myTest", "new user: " + currentUser);
                 } else {
                     Toast.makeText(this, "No internet connection!", Toast.LENGTH_SHORT).show();

@@ -117,7 +117,7 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
                                     if(passwordInput.equals(password)) {
                                         holder.passwordLayout.setVisibility(View.GONE);
                                         holder.name.setChecked(true);
-                                        userRef.child("subscribed/privateLists/" + holder.name.getText()).setValue("password");
+                                        userRef.child("subscribed/privateLists/" + holder.name.getText()).setValue(passwordInput);
                                     } else {
                                         Toast.makeText(context, "Wrong password", Toast.LENGTH_SHORT).show();
                                     }

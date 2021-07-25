@@ -67,7 +67,7 @@ public class SubscribeFragment extends Fragment {
         if (firebaseUser == null) {
             firebaseAuth.signInAnonymously().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    currentUser = String.valueOf(firebaseAuth.getCurrentUser());
+                    currentUser = firebaseAuth.getCurrentUser().getUid();
                     Log.d("myTest", "new user: " + currentUser);
                 } else {
                     Toast.makeText(requireContext(), "No internet connection!", Toast.LENGTH_SHORT).show();
@@ -75,8 +75,6 @@ public class SubscribeFragment extends Fragment {
             });
         } else {
             currentUser = firebaseUser.getUid();
-            //Log.d("myTest", "already signed in: " + currentUser);
-            //firebaseAuth.signOut();
         }
     }
 
@@ -95,7 +93,7 @@ public class SubscribeFragment extends Fragment {
                     if (value != null)
                         publicList.add(value);
                 }
-                subscribeAdapter = new SubscribeAdapter(getContext(), publicList, privateList);
+                subscribeAdapter = new SubscribeAdapter(getContext(), currentUser, publicList, privateList);
                 subscribeListView.setAdapter(subscribeAdapter);
             }
 
@@ -113,7 +111,7 @@ public class SubscribeFragment extends Fragment {
                     if (value != null)
                         privateList.add(value);
                 }
-                subscribeAdapter = new SubscribeAdapter(getContext(), publicList, privateList);
+                subscribeAdapter = new SubscribeAdapter(getContext(), currentUser, publicList, privateList);
                 subscribeListView.setAdapter(subscribeAdapter);
             }
 

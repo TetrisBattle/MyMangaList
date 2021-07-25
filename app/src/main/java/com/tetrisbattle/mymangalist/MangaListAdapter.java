@@ -161,6 +161,9 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
             holder.id.setText(String.valueOf(position+1));
             holder.name.setText(data.get(position).name);
             holder.chapter.setText(data.get(position).chapter);
+
+            holder.name.setEnabled(false);
+            holder.chapter.setEnabled(false);
         }
     }
 

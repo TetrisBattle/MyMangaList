@@ -24,11 +24,13 @@ import java.util.ArrayList;
 public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolder> {
 
     Context context;
+    String currentUser;
     ArrayList<String> subscribedPublicList;
     ArrayList<String> subscribedPrivateList;
 
-    public SubscribeAdapter(Context context, ArrayList<String> subscribedPublicList, ArrayList<String> subscribedPrivateList) {
+    public SubscribeAdapter(Context context, String currentUser, ArrayList<String> subscribedPublicList, ArrayList<String> subscribedPrivateList) {
         this.context = context;
+        this.currentUser = currentUser;
         this.subscribedPublicList = subscribedPublicList;
         this.subscribedPrivateList = subscribedPrivateList;
     }
@@ -48,15 +50,18 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
             holder.name.setText(selectedName);
             holder.name.setOnClickListener(v -> {
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
-                DatabaseReference ref = db.getReference("publishedMangaLists/publicLists/" + selectedName);
+                DatabaseReference ref = db.getReference("publishedMangaLists/publicLists");
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String value = snapshot.getKey();
-                        if (value != null && value.equals(selectedName)){
-                            openActivity(String.valueOf(holder.name.getText()), false);
-                        } else {
-                            Log.d("myTest", "test: " + value + " doesnt exist");
+                        for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                            String value = singleSnapshot.getKey();
+                            if (value != null && value.equals(selectedName)){
+                                openActivity(String.valueOf(holder.name.getText()), false);
+                            } else {
+                                Log.d("myTest", "test: " + value + " doesnt exist x");
+                                db.getReference("users/" + currentUser + "subscribed/publicLists/" + holder.name.getText()).removeValue();
+                            }
                         }
                     }
 
@@ -75,11 +80,11 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String value = snapshot.getKey();
+                        String value = (String) snapshot.getValue();
                         if (value != null && value.equals(selectedName)){
                             openActivity(String.valueOf(holder.name.getText()), false);
                         } else {
-                            Log.d("myTest", "test: " + value + " doesnt exist");
+                            db.getReference("users/" + currentUser + "subscribed/privateLists/" + holder.name.getText()).removeValue();
                         }
                     }
 

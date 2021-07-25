@@ -47,8 +47,8 @@ public class NewSubscribeFragment extends Fragment {
 
     DatabaseReference userRef;
 
-    ArrayList<String> publicListNames;
-    ArrayList<String> privateListNames;
+    ArrayList<String> subscribedPublicListNames;
+    ArrayList<String> subscribedPrivateListNames;
 
     public NewSubscribeFragment() {}
 
@@ -86,7 +86,7 @@ public class NewSubscribeFragment extends Fragment {
         if (firebaseUser == null) {
             firebaseAuth.signInAnonymously().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    currentUser = String.valueOf(firebaseAuth.getCurrentUser());
+                    currentUser = firebaseAuth.getCurrentUser().getUid();
                     Log.d("myTest", "new user: " + currentUser);
                 } else {
                     Toast.makeText(requireContext(), "No internet connection!", Toast.LENGTH_SHORT).show();
@@ -94,8 +94,6 @@ public class NewSubscribeFragment extends Fragment {
             });
         } else {
             currentUser = firebaseUser.getUid();
-            //Log.d("myTest", "already signed in: " + currentUser);
-            //firebaseAuth.signOut();
         }
     }
 
@@ -111,11 +109,11 @@ public class NewSubscribeFragment extends Fragment {
             subscribedPublicRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    publicListNames = new ArrayList<>();
+                    subscribedPublicListNames = new ArrayList<>();
                     for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                         String value = singleSnapshot.getKey();
                         if (value != null)
-                            publicListNames.add(value);
+                            subscribedPublicListNames.add(value);
                     }
                     setupPublicCards();
                 }
@@ -129,11 +127,11 @@ public class NewSubscribeFragment extends Fragment {
             subscribedPrivateRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    privateListNames = new ArrayList<>();
+                    subscribedPrivateListNames = new ArrayList<>();
                     for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                         String value = singleSnapshot.getKey();
                         if (value != null)
-                            privateListNames.add(value);
+                            subscribedPrivateListNames.add(value);
                     }
                     setupPrivateCards();
                 }
@@ -147,7 +145,7 @@ public class NewSubscribeFragment extends Fragment {
     }
 
     public void setupPublicCards() {
-        publicRef = db.getReference("publishedMangaListNames/publicLists");
+        publicRef = db.getReference("publishedMangaLists/publicLists");
         publicEventListener = publicRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -158,7 +156,7 @@ public class NewSubscribeFragment extends Fragment {
                         data.add(value);
                 }
                 publicLists = data;
-                newSubscribeAdapter = new NewSubscribeAdapter(requireContext(), publicLists, privateLists, publicListNames, privateListNames, userRef);
+                newSubscribeAdapter = new NewSubscribeAdapter(requireContext(), publicLists, privateLists, subscribedPublicListNames, subscribedPrivateListNames, userRef);
                 newSubscribeListView.setAdapter(newSubscribeAdapter);
             }
 
@@ -170,7 +168,7 @@ public class NewSubscribeFragment extends Fragment {
     }
 
     public void setupPrivateCards() {
-        privateRef = db.getReference("publishedMangaListNames/privateLists");
+        privateRef = db.getReference("publishedMangaLists/privateLists");
         privateEventListener = privateRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -181,7 +179,7 @@ public class NewSubscribeFragment extends Fragment {
                         data.add(value);
                 }
                 privateLists = data;
-                newSubscribeAdapter = new NewSubscribeAdapter(requireContext(), publicLists, privateLists, publicListNames, privateListNames, userRef);
+                newSubscribeAdapter = new NewSubscribeAdapter(requireContext(), publicLists, privateLists, subscribedPublicListNames, subscribedPrivateListNames, userRef);
                 newSubscribeListView.setAdapter(newSubscribeAdapter);
             }
 
