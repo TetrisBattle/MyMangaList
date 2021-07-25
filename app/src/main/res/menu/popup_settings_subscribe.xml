@@ -5,9 +5,5 @@
 
     <item android:id="@+id/popupPublish" android:title="Publish"/>
     <item android:id="@+id/popupSubscribe" android:title="Subscribe"/>
-
-    <group android:checkableBehavior="all">
-        <item android:id="@+id/popupPlanToRead" android:title="Plan To Read"/>
-        <item android:id="@+id/popupSpecial" android:title="Special"/>
-    </group>
+    <item android:id="@+id/popupReturn" android:title="Return"/>
 </menu>

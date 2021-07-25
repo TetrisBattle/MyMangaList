@@ -7,6 +7,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -84,15 +86,22 @@ public class SubscribedListActivity extends AppCompatActivity {
         }
 
         settingsIconPopupMenu = new PopupMenu(this, settingsIcon);
-        settingsIconPopupMenu.getMenuInflater().inflate(R.menu.popup_settings, settingsIconPopupMenu.getMenu());
+        settingsIconPopupMenu.getMenuInflater().inflate(R.menu.popup_settings_subscribe, settingsIconPopupMenu.getMenu());
 
         currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         setupExtraPages();
         setupButtons();
         setupSettings();
 
-        //replaceFragment(new MangaListFragment(background, pageNames[activePage]));
+        replaceFragment(new MangaListFragment(subscribedListName, isPrivate, pageNames[activePage]));
         rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
     }
 
     public void replaceFragment(Fragment fragment) {
@@ -123,59 +132,20 @@ public class SubscribedListActivity extends AppCompatActivity {
             settingsIconPopupMenu.show();
 
             settingsIconPopupMenu.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.popupPlanToRead) {
-                    item.setChecked(!item.isChecked());
-
-                    if (item.isChecked()) {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("showPlanToReadPage", true);
-                        editor.apply();
-                        rankButtons.get(rankButtons.size()-1).setVisibility(View.VISIBLE);
-                    } else {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("showPlanToReadPage", false);
-                        editor.apply();
-                        rankButtons.get(rankButtons.size()-1).setVisibility(View.GONE);
-
-                        if (activePage == rankButtons.size()-1) {
-                            rankButtons.get(0).callOnClick();
-                        }
-                    }
-
-                    // prevent popup menu from closing
-                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-                    item.setActionView(new View(this));
-                    return false;
-                } else if (item.getItemId() == R.id.popupSpecial) {
-                    item.setChecked(!item.isChecked());
-
-                    if (item.isChecked()) {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("showSpecialPage", true);
-                        editor.apply();
-                        rankButtons.get(rankButtons.size()-2).setVisibility(View.VISIBLE);
-                    } else {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("showSpecialPage", false);
-                        editor.apply();
-                        rankButtons.get(rankButtons.size()-2).setVisibility(View.GONE);
-
-                        if (activePage == rankButtons.size()-2) {
-                            rankButtons.get(0).callOnClick();
-                        }
-                    }
-
-                    // prevent popup menu from closing
-                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-                    item.setActionView(new View(this));
-                    return false;
-                } else if (item.getItemId() == R.id.popupPublish) {
+                if (item.getItemId() == R.id.popupPublish) {
+                    title.setText(R.string.app_name);
                     rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
                     replaceFragment(new PublishFragment(currentUser));
                     return true;
                 } else if (item.getItemId() == R.id.popupSubscribe) {
+                    title.setText(R.string.app_name);
                     rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
                     replaceFragment(new SubscribeFragment());
+                    return true;
+                } else if (item.getItemId() == R.id.popupReturn) {
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getApplicationContext().startActivity(intent);
                     return true;
                 } else {
                     return false;

@@ -187,7 +187,7 @@ public class PublishFragment extends Fragment {
                         ArrayList<String> listNames = new ArrayList<>();
                         String previousListName = sharedPreferences.getString("listName", "");
 
-                        DatabaseReference publicRef = db.getReference("publishedMangaListNames/publicLists");
+                        DatabaseReference publicRef = db.getReference("publishedMangaList/publicLists");
                         publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -197,7 +197,7 @@ public class PublishFragment extends Fragment {
                                         listNames.add(value);
                                 }
 
-                                DatabaseReference privateRef = db.getReference("publishedMangaListNames/privateLists");
+                                DatabaseReference privateRef = db.getReference("publishedMangaList/privateLists");
                                 privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -273,7 +273,6 @@ public class PublishFragment extends Fragment {
     }
 
     public void publishPublicList(String listName) {
-        db.getReference("publishedMangaListNames/publicLists/" + listName + "/owner").setValue(currentUser);
         db.getReference("publishedMangaLists/publicLists/" + listName + "/owner").setValue(currentUser);
 
         MyDatabaseHelper myDatabaseHelper = new MyDatabaseHelper(getContext());
@@ -294,7 +293,6 @@ public class PublishFragment extends Fragment {
     }
 
     public void publishPrivateList(String listName, String password) {
-        db.getReference("publishedMangaListNames/privateLists/" + listName + "/owner").setValue(currentUser);
         db.getReference("publishedMangaLists/privateLists/" + listName + "/owner").setValue(currentUser);
         db.getReference("publishedMangaLists/privateLists/" + listName + "/password").setValue(password);
 
@@ -320,10 +318,8 @@ public class PublishFragment extends Fragment {
         boolean sharedPrefsPrivateList = sharedPreferences.getBoolean("privateList", false);
 
         if (sharedPrefsPrivateList) {
-            db.getReference("publishedMangaListNames/privateLists/" + listName).removeValue();
             db.getReference("publishedMangaLists/privateLists/" + listName).removeValue();
         } else {
-            db.getReference("publishedMangaListNames/publicLists/" + listName).removeValue();
             db.getReference("publishedMangaLists/publicLists/" + listName).removeValue();
         }
     }

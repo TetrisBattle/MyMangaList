@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        setTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -88,13 +90,30 @@ public class MainActivity extends AppCompatActivity{
         replaceFragment(new MangaListFragment(background, pageNames[activePage]));
         rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
-        replaceFragment(new SubscribeFragment());
+//        replaceFragment(new SubscribeFragment());
+        settingsIconPopupMenu.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         background.requestFocus();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    public void setTheme() {
+        int phoneTheme = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (phoneTheme == Configuration.UI_MODE_NIGHT_YES)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     public void backgroundClick(View v) {
@@ -187,7 +206,15 @@ public class MainActivity extends AppCompatActivity{
             settingsIconPopupMenu.show();
 
             settingsIconPopupMenu.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.popupPlanToRead) {
+                if (item.getItemId() == R.id.popupPublish) {
+                    rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
+                    replaceFragment(new PublishFragment(currentUser));
+                    return true;
+                } else if (item.getItemId() == R.id.popupSubscribe) {
+                    rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
+                    replaceFragment(new SubscribeFragment());
+                    return true;
+                } else if (item.getItemId() == R.id.popupPlanToRead) {
                     item.setChecked(!item.isChecked());
 
                     if (item.isChecked()) {
@@ -233,14 +260,6 @@ public class MainActivity extends AppCompatActivity{
                     item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
                     item.setActionView(new View(this));
                     return false;
-                } else if (item.getItemId() == R.id.popupPublish) {
-                    rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
-                    replaceFragment(new PublishFragment(currentUser));
-                    return true;
-                } else if (item.getItemId() == R.id.popupSubscribe) {
-                    rankButtons.get(activePage).setBackgroundColor(getResources().getColor(R.color.colorRankButton, null));
-                    replaceFragment(new SubscribeFragment());
-                    return true;
                 } else {
                     return false;
                 }
@@ -255,12 +274,12 @@ public class MainActivity extends AppCompatActivity{
 
         if (showPlanToReadPage) {
             rankButtons.get(rankButtons.size()-1).setVisibility(View.VISIBLE);
-            settingsIconPopupMenu.getMenu().getItem(0).setChecked(true);
+            settingsIconPopupMenu.getMenu().getItem(2).setChecked(true);
         }
 
         if (showSpecialPage) {
             rankButtons.get(rankButtons.size()-2).setVisibility(View.VISIBLE);
-            settingsIconPopupMenu.getMenu().getItem(1).setChecked(true);
+            settingsIconPopupMenu.getMenu().getItem(3).setChecked(true);
         }
 
         rankButtons.get(currentPage).callOnClick();

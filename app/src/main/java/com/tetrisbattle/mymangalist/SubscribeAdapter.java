@@ -13,6 +13,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyViewHolder> {
@@ -38,25 +44,50 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull SubscribeAdapter.MyViewHolder holder, int position) {
         if (position < subscribedPublicList.size()){
-            holder.name.setText(subscribedPublicList.get(position));
-
+            String selectedName = subscribedPublicList.get(position);
+            holder.name.setText(selectedName);
             holder.name.setOnClickListener(v -> {
-//                FragmentTransaction fragmentTransaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
-//                fragmentTransaction.replace(R.id.frameLayout, new MangaListFragment(false, String.valueOf(holder.name.getText())));
-//                fragmentTransaction.commit();
+                FirebaseDatabase db = FirebaseDatabase.getInstance();
+                DatabaseReference ref = db.getReference("publishedMangaLists/publicLists/" + selectedName);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String value = snapshot.getKey();
+                        if (value != null && value.equals(selectedName)){
+                            openActivity(String.valueOf(holder.name.getText()), false);
+                        } else {
+                            Log.d("myTest", "test: " + value + " doesnt exist");
+                        }
+                    }
 
-                openActivity(String.valueOf(holder.name.getText()), false);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.d("myTest", "Failed to read value.", error.toException());
+                    }
+                });
             });
         } else {
-            holder.name.setText(subscribedPrivateList.get(position - subscribedPublicList.size()));
-//            holder.name.setBackground(ContextCompat.getDrawable(context, R.drawable.round_button2)); // to change background color
-
+            String selectedName = subscribedPrivateList.get(position - subscribedPublicList.size());
+            holder.name.setText(selectedName);
             holder.name.setOnClickListener(v -> {
-//                FragmentTransaction fragmentTransaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
-//                fragmentTransaction.replace(R.id.frameLayout, new MangaListFragment(true, String.valueOf(holder.name.getText())));
-//                fragmentTransaction.commit();
+                FirebaseDatabase db = FirebaseDatabase.getInstance();
+                DatabaseReference ref = db.getReference("publishedMangaLists/privateLists/" + selectedName);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String value = snapshot.getKey();
+                        if (value != null && value.equals(selectedName)){
+                            openActivity(String.valueOf(holder.name.getText()), false);
+                        } else {
+                            Log.d("myTest", "test: " + value + " doesnt exist");
+                        }
+                    }
 
-                openActivity(String.valueOf(holder.name.getText()), true);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.d("myTest", "Failed to read value.", error.toException());
+                    }
+                });
             });
         }
     }

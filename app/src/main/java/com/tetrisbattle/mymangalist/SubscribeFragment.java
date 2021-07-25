@@ -56,7 +56,6 @@ public class SubscribeFragment extends Fragment {
         db = FirebaseDatabase.getInstance();
 
         getSubscribedList();
-//        getSubscribeLists();
 
         return view;
     }
