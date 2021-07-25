@@ -66,6 +66,7 @@ public class PublishFragment extends Fragment {
     FirebaseDatabase db;
     DatabaseReference ref;
     String currentUser;
+    String currentListName;
 
     public PublishFragment(String currentUser) {
         this.currentUser = currentUser;
@@ -114,8 +115,8 @@ public class PublishFragment extends Fragment {
     }
 
     public void setupFromSharedPrefs() {
-        String sharedPrefsListName = sharedPreferences.getString("listName", "");
-        listName.setText(sharedPrefsListName);
+        currentListName = sharedPreferences.getString("listName", "");
+        listName.setText(currentListName);
 
         boolean sharedPrefsPublished = sharedPreferences.getBoolean("published", false);
 
@@ -179,62 +180,61 @@ public class PublishFragment extends Fragment {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
                 if (publish.isChecked()) {
-                    if (listName.getText().toString().equals("")) {
+                    String newListName = String.valueOf(listName.getText());
+                    if (newListName.equals("")) {
                         Toast toast = Toast.makeText(getContext(), "List name can't be empty", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.BOTTOM, 0, 400);
                         toast.show();
                     } else {
                         ArrayList<String> listNames = new ArrayList<>();
-                        String previousListName = sharedPreferences.getString("listName", "");
 
-                        DatabaseReference publicRef = db.getReference("publishedMangaList/publicLists");
+                        DatabaseReference publicRef = db.getReference("publishedMangaLists/publicLists");
                         publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                                     String value = singleSnapshot.getKey();
-                                    if (value != null && !value.equals(previousListName))
+                                    if (value != null && !value.equals(currentListName))
                                         listNames.add(value);
                                 }
 
-                                DatabaseReference privateRef = db.getReference("publishedMangaList/privateLists");
+                                DatabaseReference privateRef = db.getReference("publishedMangaLists/privateLists");
                                 privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                                             String value = singleSnapshot.getKey();
-                                            if (value != null && !value.equals(previousListName))
+                                            if (value != null && !value.equals(currentListName))
                                                 listNames.add(value);
                                         }
 
                                         boolean nameIsReserved = false;
                                         for (int i=0; i<listNames.size(); i++) {
-                                            if (String.valueOf(listNames.get(i)).equals(String.valueOf(listName.getText()))) {
+                                            if (String.valueOf(listNames.get(i)).equals(newListName)) {
                                                 nameIsReserved = true;
                                                 break;
                                             }
                                         }
 
                                         if (!nameIsReserved) {
-                                            String newListName = String.valueOf(listName.getText());
                                             boolean previousPrivateList = sharedPreferences.getBoolean("privateList", false);
 
-                                            if (!previousListName.equals(newListName)) {
+                                            if (currentListName.equals(newListName) &&
+                                                    previousPrivateList == privateList.isChecked()) {
+                                                Toast.makeText(getContext(), "List is already published", Toast.LENGTH_SHORT).show();
+                                            } else {
                                                 deleteList();
+
+                                                if (publicList.isChecked()) publishPublicList(newListName);
+                                                else publishPrivateList(newListName, String.valueOf(password.getText()));
+
                                                 editor.putString("listName", newListName);
-                                            } else if (previousPrivateList != privateList.isChecked()) {
-                                                deleteList();
+                                                editor.putBoolean("published", publish.isChecked());
+                                                editor.putBoolean("privateList", privateList.isChecked());
+                                                if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
+                                                else editor.putString("password", "");
+                                                editor.apply();
                                             }
-
-                                            if (publicList.isChecked()) publishPublicList(newListName);
-                                            else publishPrivateList(newListName, String.valueOf(password.getText()));
-
-                                            editor.putString("listName", newListName);
-                                            editor.putBoolean("published", publish.isChecked());
-                                            editor.putBoolean("privateList", privateList.isChecked());
-                                            if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
-                                            else editor.putString("password", "");
-                                            editor.apply();
                                         } else {
                                             Toast toast = Toast.makeText(getContext(), "List name is already taken", Toast.LENGTH_SHORT);
                                             toast.setGravity(Gravity.BOTTOM, 0, 400);
@@ -276,7 +276,6 @@ public class PublishFragment extends Fragment {
         db.getReference("publishedMangaLists/publicLists/" + listName + "/owner").setValue(currentUser);
 
         MyDatabaseHelper myDatabaseHelper = new MyDatabaseHelper(getContext());
-
         List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
         for (int i=0; i<myMangaListDb.size(); i++) {
             List<MyManga> myMangaList = myMangaListDb.get(i);

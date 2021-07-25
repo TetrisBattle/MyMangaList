@@ -123,48 +123,4 @@ public class SubscribeFragment extends Fragment {
             }
         });
     }
-
-    public void getSubscribeLists() {
-        ArrayList<String> publicList = new ArrayList<>();
-        ArrayList<String> privateList = new ArrayList<>();
-
-        DatabaseReference publicRef = db.getReference("publishedMangaListNames/publicLists");
-        DatabaseReference privateRef = db.getReference("publishedMangaListNames/privateLists");
-
-        publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
-                    String value = singleSnapshot.getKey();
-                    if (value != null)
-                        publicList.add(value);
-                }
-                subscribeAdapter = new SubscribeAdapter(getContext(), publicList, privateList);
-                subscribeListView.setAdapter(subscribeAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("myTest", "Failed to read value.", error.toException());
-            }
-        });
-
-        privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
-                    String value = singleSnapshot.getKey();
-                    if (value != null)
-                        privateList.add(value);
-                }
-                subscribeAdapter = new SubscribeAdapter(getContext(), publicList, privateList);
-                subscribeListView.setAdapter(subscribeAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("myTest", "Failed to read value.", error.toException());
-            }
-        });
-    }
 }

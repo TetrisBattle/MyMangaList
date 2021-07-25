@@ -15,7 +15,7 @@
         android:layout_marginTop="32dp"
         android:text="Publish"
         android:textSize="32sp"
-        android:textColor="@color/white"
+        android:textColor="@color/colorText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +36,7 @@
             android:checked="true"
             android:text="Public"
             android:textSize="24sp"
-            android:textColor="@color/white" />
+            android:textColor="@color/colorText" />
 
         <RadioButton
             android:id="@+id/privateList"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="Private"
             android:textSize="24sp"
-            android:textColor="@color/white" />
+            android:textColor="@color/colorText" />
     </RadioGroup>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="List name:"
-            android:textColor="@color/white"
+            android:textColor="@color/colorText"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/listName"
@@ -80,6 +80,7 @@
             android:hint="name"
             android:inputType="textVisiblePassword"
             android:labelFor="@id/nameText"
+            android:textColor="@color/colorText"
             android:textColorHint="@color/colorHint"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -102,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Password:"
-            android:textColor="@color/white"
+            android:textColor="@color/colorText"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/password"
@@ -120,6 +121,7 @@
             android:hint="password"
             android:inputType="textVisiblePassword"
             android:labelFor="@id/passwordText"
+            android:textColor="@color/colorText"
             android:textColorHint="@color/colorHint"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -135,7 +137,7 @@
         android:layout_marginBottom="32dp"
         android:backgroundTint="@color/colorPrimary"
         android:text="Save"
-        android:textColor="@color/white"
+        android:textColor="@color/colorText"
         android:textSize="26sp"
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"

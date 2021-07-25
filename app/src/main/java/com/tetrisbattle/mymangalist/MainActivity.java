@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -81,6 +82,8 @@ public class MainActivity extends AppCompatActivity{
         settingsIconPopupMenu = new PopupMenu(this, settingsIcon);
         settingsIconPopupMenu.getMenuInflater().inflate(R.menu.popup_settings, settingsIconPopupMenu.getMenu());
         sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         login();
         setupButtons();
