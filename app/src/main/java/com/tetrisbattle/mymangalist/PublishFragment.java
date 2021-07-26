@@ -15,7 +15,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -52,21 +51,27 @@ public class PublishFragment extends Fragment {
             "planToRead"
     };
 
-    CheckBox publish;
+    CheckBox publishCheckBox;
     RadioGroup publishGroup;
     RadioButton publicList, privateList;
     ConstraintLayout nameLayout;
     ConstraintLayout passwordLayout;
-    EditText listName, password;
+    EditText listNameEditText, passwordEditText;
     Button saveButton;
 
     SharedPreferences sharedPreferences;
+    boolean sharedPrefsPublished;
+    boolean sharedPrefsPrivateList;
+    String currentListName;
+    String sharedPrefsPassword;
+
     Animation animationAppear, animationDisappear;
 
     FirebaseDatabase db;
     DatabaseReference ref;
     String currentUser;
-    String currentListName;
+    String newListName;
+    String newPassword;
 
     public PublishFragment(String currentUser) {
         this.currentUser = currentUser;
@@ -78,14 +83,14 @@ public class PublishFragment extends Fragment {
 
 //        requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        publish = view.findViewById(R.id.publish);
+        publishCheckBox = view.findViewById(R.id.publish);
         publishGroup = view.findViewById(R.id.publishGroup);
         publicList = view.findViewById(R.id.publicList);
         privateList = view.findViewById(R.id.privateList);
         nameLayout = view.findViewById(R.id.nameLayout);
         passwordLayout = view.findViewById(R.id.passwordLayout);
-        listName = view.findViewById(R.id.listName);
-        password = view.findViewById(R.id.password);
+        listNameEditText = view.findViewById(R.id.listName);
+        passwordEditText = view.findViewById(R.id.password);
         saveButton = view.findViewById(R.id.saveButton);
 
         db = FirebaseDatabase.getInstance();
@@ -116,28 +121,28 @@ public class PublishFragment extends Fragment {
 
     public void setupFromSharedPrefs() {
         currentListName = sharedPreferences.getString("listName", "");
-        listName.setText(currentListName);
+        listNameEditText.setText(currentListName);
 
-        boolean sharedPrefsPublished = sharedPreferences.getBoolean("published", false);
+        sharedPrefsPublished = sharedPreferences.getBoolean("published", false);
 
         if(sharedPrefsPublished) {
-            publish.setChecked(true);
+            publishCheckBox.setChecked(true);
             publishGroup.setVisibility(View.VISIBLE);
             nameLayout.setVisibility(View.VISIBLE);
 
-            boolean sharedPrefsPrivateList = sharedPreferences.getBoolean("privateList", false);
+            sharedPrefsPrivateList = sharedPreferences.getBoolean("privateList", false);
             if (sharedPrefsPrivateList) {
                 privateList.setChecked(true);
                 passwordLayout.setVisibility(View.VISIBLE);
 
-                String sharedPrefsPassword = sharedPreferences.getString("password", "");
-                password.setText(sharedPrefsPassword);
+                sharedPrefsPassword = sharedPreferences.getString("password", "");
+                passwordEditText.setText(sharedPrefsPassword);
             }
         }
     }
 
     private void setupFunctions() {
-        publish.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        publishCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 publishGroup.setVisibility(View.VISIBLE);
                 publishGroup.startAnimation(animationAppear);
@@ -148,7 +153,7 @@ public class PublishFragment extends Fragment {
                 if (privateList.isChecked()) {
                     passwordLayout.startAnimation(animationAppear);
                     passwordLayout.setVisibility(View.VISIBLE);
-                    password.setText("");
+                    passwordEditText.setText("");
                 }
             } else {
                 publishGroup.startAnimation(animationDisappear);
@@ -168,7 +173,7 @@ public class PublishFragment extends Fragment {
             if (isChecked) {
                 passwordLayout.setVisibility(View.VISIBLE);
                 passwordLayout.startAnimation(animationAppear);
-                password.setText("");
+                passwordEditText.setText("");
             } else {
                 passwordLayout.startAnimation(animationDisappear);
                 passwordLayout.setVisibility(View.INVISIBLE);
@@ -177,91 +182,36 @@ public class PublishFragment extends Fragment {
 
         saveButton.setOnClickListener(v -> {
             if (isNetworkAvailable()) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+                if (publishCheckBox.isChecked()) {
+                    newListName = String.valueOf(listNameEditText.getText());
+                    newPassword = String.valueOf(passwordEditText.getText());
 
-                if (publish.isChecked()) {
-                    String newListName = String.valueOf(listName.getText());
                     if (newListName.equals("")) {
                         Toast toast = Toast.makeText(getContext(), "List name can't be empty", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.BOTTOM, 0, 400);
                         toast.show();
                     } else {
-                        ArrayList<String> listNames = new ArrayList<>();
+                        // if already published
+                        if(sharedPrefsPublished == publishCheckBox.isChecked()) {
+                            // if name is same
+                            if (currentListName.equals(newListName)) {
+                                // if isPrivate is same
+                                if (sharedPrefsPrivateList == privateList.isChecked()) {
+                                    // if password is same
+                                    if (sharedPrefsPassword.equals(newPassword)) {
+                                        Toast.makeText(getContext(), "List is already published", Toast.LENGTH_SHORT).show();
+                                    } else updatePassword();
+                                } else publish();
+                            } else publish();
+                        } else {
+                            ArrayList<String> listNames = new ArrayList<>();
 
-                        DatabaseReference publicRef = db.getReference("publishedMangaLists/publicLists");
-                        publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
-                                    String value = singleSnapshot.getKey();
-                                    if (value != null && !value.equals(currentListName))
-                                        listNames.add(value);
-                                }
 
-                                DatabaseReference privateRef = db.getReference("publishedMangaLists/privateLists");
-                                privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        for(DataSnapshot singleSnapshot : snapshot.getChildren()){
-                                            String value = singleSnapshot.getKey();
-                                            if (value != null && !value.equals(currentListName))
-                                                listNames.add(value);
-                                        }
-
-                                        boolean previousPrivateList = sharedPreferences.getBoolean("privateList", false);
-                                        if (currentListName.equals(newListName) &&
-                                                previousPrivateList == privateList.isChecked()) {
-                                            Toast.makeText(getContext(), "List is already published", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            boolean nameIsReserved = false;
-                                            for (int i=0; i<listNames.size(); i++) {
-                                                if (!listNames.get(i).equals(currentListName) &&
-                                                        String.valueOf(listNames.get(i)).equals(newListName)) {
-                                                    nameIsReserved = true;
-                                                    break;
-                                                }
-                                            }
-
-                                            if (!nameIsReserved) {
-                                                deleteList();
-                                                if (publicList.isChecked()) publishPublicList(newListName);
-                                                else publishPrivateList(newListName, String.valueOf(password.getText()));
-                                            } else {
-                                                Toast toast = Toast.makeText(getContext(), "List name is already taken", Toast.LENGTH_SHORT);
-                                                toast.setGravity(Gravity.BOTTOM, 0, 400);
-                                                toast.show();
-                                            }
-                                        }
-
-                                        editor.putString("listName", "");
-                                        editor.putBoolean("published", publish.isChecked());
-                                        editor.putBoolean("privateList", privateList.isChecked());
-                                        if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
-                                        else editor.putString("password", "");
-                                        editor.apply();
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                        Log.d("myTest", "Failed to read value.", error.toException());
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Log.d("myTest", "Failed to read value.", error.toException());
-                            }
-                        });
+                        }
                     }
                 } else {
                     deleteList();
-                    editor.putString("listName", "");
-                    editor.putBoolean("published", publish.isChecked());
-                    editor.putBoolean("privateList", privateList.isChecked());
-                    if (privateList.isChecked()) editor.putString("password", String.valueOf(password.getText()));
-                    else editor.putString("password", "");
-                    editor.apply();
+                    updateSharedPrefs();
                 }
             } else {
                 Toast toast = Toast.makeText(getContext(), "Internet is not available", Toast.LENGTH_SHORT);
@@ -271,8 +221,8 @@ public class PublishFragment extends Fragment {
         });
     }
 
-    public void publishPublicList(String listName) {
-        db.getReference("publishedMangaLists/publicLists/" + listName + "/owner").setValue(currentUser);
+    public void publishPublicList() {
+        db.getReference("publishedMangaLists/publicLists/" + newListName + "/owner").setValue(currentUser);
 
         MyDatabaseHelper myDatabaseHelper = new MyDatabaseHelper(getContext());
         List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
@@ -281,7 +231,7 @@ public class PublishFragment extends Fragment {
             for (int j=0; j<myMangaList.size(); j++) {
                 MyManga myManga = myMangaList.get(j);
 
-                ref = db.getReference("publishedMangaLists/publicLists/" + listName +
+                ref = db.getReference("publishedMangaLists/publicLists/" + newListName +
                         "/" + pageNames[i] + "/" + myManga.name);
 
                 ref.child("chapter").setValue(myManga.chapter);
@@ -290,9 +240,9 @@ public class PublishFragment extends Fragment {
         }
     }
 
-    public void publishPrivateList(String listName, String password) {
-        db.getReference("publishedMangaLists/privateLists/" + listName + "/owner").setValue(currentUser);
-        db.getReference("publishedMangaLists/privateLists/" + listName + "/password").setValue(password);
+    public void publishPrivateList() {
+        db.getReference("publishedMangaLists/privateLists/" + newListName + "/owner").setValue(currentUser);
+        db.getReference("publishedMangaLists/privateLists/" + newListName + "/password").setValue(newPassword);
 
         MyDatabaseHelper myDatabaseHelper = new MyDatabaseHelper(getContext());
 
@@ -302,7 +252,7 @@ public class PublishFragment extends Fragment {
             for (int j=0; j<myMangaList.size(); j++) {
                 MyManga myManga = myMangaList.get(j);
 
-                ref = db.getReference("publishedMangaLists/privateLists/" + listName +
+                ref = db.getReference("publishedMangaLists/privateLists/" + listNameEditText +
                         "/" + pageNames[i] + "/" + myManga.name);
 
                 ref.child("chapter").setValue(myManga.chapter);
@@ -312,13 +262,46 @@ public class PublishFragment extends Fragment {
     }
 
     public void deleteList() {
-        String listName = sharedPreferences.getString("listName", "");
-        boolean sharedPrefsPrivateList = sharedPreferences.getBoolean("privateList", false);
-
-        if (sharedPrefsPrivateList) {
-            db.getReference("publishedMangaLists/privateLists/" + listName).removeValue();
-        } else {
-            db.getReference("publishedMangaLists/publicLists/" + listName).removeValue();
+        sharedPrefsPublished = sharedPreferences.getBoolean("published", false);
+        if (sharedPrefsPublished) { // if the list was published
+            if (sharedPrefsPrivateList) {
+                db.getReference("publishedMangaLists/privateLists/" + currentListName).removeValue();
+            } else {
+                db.getReference("publishedMangaLists/publicLists/" + currentListName).removeValue();
+            }
         }
+    }
+
+    public void publish() {
+        deleteList();
+        if (privateList.isChecked()) publishPrivateList();
+        else publishPublicList();
+        updateSharedPrefs();
+    }
+
+    public void updateSharedPrefs() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("published", publishCheckBox.isChecked());
+        editor.putBoolean("privateList", privateList.isChecked());
+        editor.putString("listName", newListName);
+
+        if (!publishCheckBox.isChecked()) editor.putString("password", "");
+        else if (!privateList.isChecked()) editor.putString("password", "");
+        else editor.putString("password", newPassword);
+        editor.apply();
+    }
+
+    public void updatePassword() {
+        if(privateList.isChecked()) {
+            db.getReference("publishedMangaLists/privateLists/" +
+                    newListName + "/password").setValue(newPassword);
+        } else {
+            db.getReference("publishedMangaLists/publicLists/" +
+                    newListName + "/password").setValue(newPassword);
+        }
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("password", newPassword);
+        editor.apply();
     }
 }
