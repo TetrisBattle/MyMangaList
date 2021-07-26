@@ -60,8 +60,8 @@ public class PublishFragment extends Fragment {
     Button saveButton;
 
     SharedPreferences sharedPreferences;
-    boolean sharedPrefsPublished;
-    boolean sharedPrefsPrivateList;
+    boolean sharedPrefsIsPublished;
+    boolean sharedPrefsIsPrivateList;
     String sharedPrefsListName;
     String sharedPrefsPassword;
 
@@ -121,15 +121,15 @@ public class PublishFragment extends Fragment {
         sharedPrefsListName = sharedPreferences.getString("listName", "");
         listNameEditText.setText(sharedPrefsListName);
 
-        sharedPrefsPublished = sharedPreferences.getBoolean("published", false);
+        sharedPrefsIsPublished = sharedPreferences.getBoolean("published", false);
 
-        if(sharedPrefsPublished) {
+        if(sharedPrefsIsPublished) {
             publishCheckBox.setChecked(true);
             publishGroup.setVisibility(View.VISIBLE);
             nameLayout.setVisibility(View.VISIBLE);
 
-            sharedPrefsPrivateList = sharedPreferences.getBoolean("privateList", false);
-            if (sharedPrefsPrivateList) {
+            sharedPrefsIsPrivateList = sharedPreferences.getBoolean("privateList", false);
+            if (sharedPrefsIsPrivateList) {
                 privateList.setChecked(true);
                 passwordLayout.setVisibility(View.VISIBLE);
 
@@ -190,72 +190,24 @@ public class PublishFragment extends Fragment {
                         toast.show();
                     } else {
                         // if list was published before
-                        if(sharedPrefsPublished == publishCheckBox.isChecked()) {
+                        if(sharedPrefsIsPublished == publishCheckBox.isChecked()) {
                             // if name is same
                             if (sharedPrefsListName.equals(newListName)) {
                                 // if list was private and its still private
-                                if (sharedPrefsPrivateList && privateList.isChecked()) {
+                                if (sharedPrefsIsPrivateList && privateList.isChecked()) {
                                     // if password is same
                                     if (sharedPrefsPassword.equals(newPassword)) {
                                         Toast.makeText(getContext(), "List is already published", Toast.LENGTH_SHORT).show();
                                     } else updatePassword();
-                                } else publish();
-                            } else publish();
-                        } else { // the list has not been published before
-                            ArrayList<String> listNames = new ArrayList<>();
-
-                            DatabaseReference publicRef = db.getReference("publishedMangaLists/publicLists");
-                            publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for(DataSnapshot singleSnapshot : snapshot.getChildren()){
-                                        String value = singleSnapshot.getKey();
-                                        if (value != null && !value.equals(sharedPrefsListName))
-                                            listNames.add(value);
-                                    }
-
-                                    DatabaseReference privateRef = db.getReference("publishedMangaLists/privateLists");
-                                    privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            for(DataSnapshot singleSnapshot : snapshot.getChildren()){
-                                                String value = singleSnapshot.getKey();
-                                                if (value != null && !value.equals(sharedPrefsListName))
-                                                    listNames.add(value);
-                                            }
-
-                                            boolean nameIsTaken = false;
-                                            for (int i=0; i<listNames.size(); i++) {
-                                                if (!newListName.equals(listNames.get(i))) {
-                                                    Toast toast = Toast.makeText(getContext(), "List name is already taken", Toast.LENGTH_SHORT);
-                                                    toast.setGravity(Gravity.BOTTOM, 0, 400);
-                                                    toast.show();
-
-                                                    nameIsTaken = true;
-                                                    break;
-                                                }
-                                            }
-
-                                            if (!nameIsTaken) publish();
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-                                            Log.d("myTest", "Failed to read value.", error.toException());
-                                        }
-                                    });
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Log.d("myTest", "Failed to read value.", error.toException());
-                                }
-                            });
-                        }
+                                } else if (!sharedPrefsIsPrivateList && !privateList.isChecked()) // if list was public and its still public
+                                    Toast.makeText(getContext(), "List is already published", Toast.LENGTH_SHORT).show();
+                            } else checkNameAndPublish();
+                        } else // the list has not been published before
+                            checkNameAndPublish();
                     }
                 } else {
                     // if the list was published before
-                    if(sharedPrefsPublished != publishCheckBox.isChecked()) {
+                    if(sharedPrefsIsPublished != publishCheckBox.isChecked()) {
                         deleteList();
                         updateSharedPrefs();
                     }
@@ -297,10 +249,63 @@ public class PublishFragment extends Fragment {
         updateSharedPrefs();
     }
 
+    // checks if the name is already taken
+    public void checkNameAndPublish() {
+        ArrayList<String> listNames = new ArrayList<>();
+
+        DatabaseReference publicRef = db.getReference("publishedMangaLists/publicLists");
+        publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                    String value = singleSnapshot.getKey();
+                    if (value != null && !value.equals(sharedPrefsListName))
+                        listNames.add(value);
+                }
+
+                DatabaseReference privateRef = db.getReference("publishedMangaLists/privateLists");
+                privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                            String value = singleSnapshot.getKey();
+                            if (value != null && !value.equals(sharedPrefsListName))
+                                listNames.add(value);
+                        }
+
+                        boolean nameIsTaken = false;
+                        for (int i=0; i<listNames.size(); i++) {
+                            if (newListName.equals(listNames.get(i))) {
+                                Toast toast = Toast.makeText(getContext(), "List name is already taken", Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.BOTTOM, 0, 400);
+                                toast.show();
+
+                                nameIsTaken = true;
+                                break;
+                            }
+                        }
+
+                        if (!nameIsTaken) publish();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.d("myTest", "Failed to read value.", error.toException());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("myTest", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
     public void deleteList() {
-        sharedPrefsPublished = sharedPreferences.getBoolean("published", false);
-        if (sharedPrefsPublished) { // if the list was published
-            if (sharedPrefsPrivateList) {
+        sharedPrefsIsPublished = sharedPreferences.getBoolean("published", false);
+        if (sharedPrefsIsPublished) { // if the list was published
+            if (sharedPrefsIsPrivateList) {
                 db.getReference("publishedMangaLists/privateLists/" + sharedPrefsListName).removeValue();
             } else {
                 db.getReference("publishedMangaLists/publicLists/" + sharedPrefsListName).removeValue();
@@ -319,8 +324,8 @@ public class PublishFragment extends Fragment {
         else editor.putString("password", newPassword);
         editor.apply();
 
-        sharedPrefsPublished = publishCheckBox.isChecked();
-        sharedPrefsPrivateList = privateList.isChecked();
+        sharedPrefsIsPublished = publishCheckBox.isChecked();
+        sharedPrefsIsPrivateList = privateList.isChecked();
         sharedPrefsListName = newListName;
         sharedPrefsPassword = newPassword;
     }
