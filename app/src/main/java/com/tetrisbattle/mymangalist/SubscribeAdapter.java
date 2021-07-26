@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,14 +53,21 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        boolean listExist = false;
                         for(DataSnapshot singleSnapshot : snapshot.getChildren()){
                             String value = singleSnapshot.getKey();
                             if (value != null && value.equals(selectedName)){
+                                listExist = true;
                                 openActivity(String.valueOf(holder.name.getText()), false);
-                            } else {
-                                Log.d("myTest", "test: " + value + " doesnt exist x");
-                                db.getReference("users/" + currentUser + "subscribed/publicLists/" + holder.name.getText()).removeValue();
+                                break;
                             }
+                        }
+
+                        if (!listExist) {
+                            db.getReference("users/" + currentUser + "/subscribed/publicLists/" + selectedName).removeValue();
+                            subscribedPublicList.remove(position);
+                            notifyDataSetChanged();
+                            Toast.makeText(context, "List is no longer in share", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -78,11 +86,21 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String value = (String) snapshot.getValue();
-                        if (value != null && value.equals(selectedName)){
-                            openActivity(String.valueOf(holder.name.getText()), false);
-                        } else {
-                            db.getReference("users/" + currentUser + "subscribed/privateLists/" + holder.name.getText()).removeValue();
+                        boolean listExist = false;
+                        for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                            String value = singleSnapshot.getKey();
+                            if (value != null && value.equals(selectedName)){
+                                listExist = true;
+                                openActivity(String.valueOf(holder.name.getText()), false);
+                                break;
+                            }
+                        }
+
+                        if (!listExist) {
+                            db.getReference("users/" + currentUser + "/subscribed/privateLists/" + holder.name.getText()).removeValue();
+                            subscribedPrivateList.remove(position);
+                            notifyDataSetChanged();
+                            Toast.makeText(context, "List is no longer in share", Toast.LENGTH_SHORT).show();
                         }
                     }
 
