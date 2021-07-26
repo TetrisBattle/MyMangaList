@@ -105,8 +105,8 @@ public class PublishFragment extends Fragment {
         setupFromSharedPrefs();
         setupFunctions();
 
-//        db.getReference("publishedMangaLists/publicLists/" + "testPublic" + "/owner").setValue("testPublic");
-//        db.getReference("publishedMangaLists/privateLists/" + "testPrivate" + "/owner").setValue("testPrivate");
+        //db.getReference("publishedMangaLists/publicLists/" + "testPublic" + "/owner").setValue("testPublic");
+        //db.getReference("publishedMangaLists/privateLists/" + "testPrivate" + "/owner").setValue("testPrivate");
 
         return view;
     }
@@ -137,6 +137,131 @@ public class PublishFragment extends Fragment {
                 passwordEditText.setText(sharedPrefsPassword);
             }
         }
+    }
+
+    public void publish() {
+        deleteList();
+
+        if (privateList.isChecked()) {
+            db.getReference("publishedMangaLists/privateLists/" + newListName + "/owner").setValue(currentUser);
+            db.getReference("publishedMangaLists/privateLists/" + newListName + "/password").setValue(newPassword);
+            ref = db.getReference("publishedMangaLists/privateLists/" + newListName);
+        }
+        else {
+            db.getReference("publishedMangaLists/publicLists/" + newListName + "/owner").setValue(currentUser);
+            ref = db.getReference("publishedMangaLists/publicLists/" + newListName);
+        }
+
+        MyDatabaseHelper myDatabaseHelper = new MyDatabaseHelper(getContext());
+        List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
+
+        for (int i=0; i<myMangaListDb.size(); i++) {
+            List<MyManga> myMangaList = myMangaListDb.get(i);
+            for (int j=0; j<myMangaList.size(); j++) {
+                MyManga myManga = myMangaList.get(j);
+
+                ref.child(pageNames[i] + "/" + myManga.name + "/chapter").setValue(myManga.chapter);
+                ref.child(pageNames[i] + "/" + myManga.name + "/url").setValue(myManga.url);
+            }
+        }
+
+        updateSharedPrefs();
+    }
+
+    public void checkNameAndPublish() {
+        ArrayList<String> listNames = new ArrayList<>();
+
+        DatabaseReference publicRef = db.getReference("publishedMangaLists/publicLists");
+        publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                    String value = singleSnapshot.getKey();
+                    if (value != null && !value.equals(sharedPrefsListName))
+                        listNames.add(value);
+                }
+
+                DatabaseReference privateRef = db.getReference("publishedMangaLists/privateLists");
+                privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot singleSnapshot : snapshot.getChildren()){
+                            String value = singleSnapshot.getKey();
+                            if (value != null && !value.equals(sharedPrefsListName))
+                                listNames.add(value);
+                        }
+
+                        boolean nameIsTaken = false;
+                        for (int i=0; i<listNames.size(); i++) {
+                            if (newListName.toLowerCase().equals(listNames.get(i).toLowerCase())) {
+                                Toast toast = Toast.makeText(getContext(), "List name is already taken", Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.BOTTOM, 0, 400);
+                                toast.show();
+
+                                nameIsTaken = true;
+                                break;
+                            }
+                        }
+
+                        if (!nameIsTaken) publish();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.d("myTest", "Failed to read value.", error.toException());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("myTest", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+    public void deleteList() {
+        sharedPrefsIsPublished = sharedPreferences.getBoolean("published", false);
+        if (sharedPrefsIsPublished) { // if the list was published
+            if (sharedPrefsIsPrivateList) {
+                db.getReference("publishedMangaLists/privateLists/" + sharedPrefsListName).removeValue();
+            } else {
+                db.getReference("publishedMangaLists/publicLists/" + sharedPrefsListName).removeValue();
+            }
+        }
+    }
+
+    public void updateSharedPrefs() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("published", publishCheckBox.isChecked());
+        editor.putBoolean("privateList", privateList.isChecked());
+        editor.putString("listName", newListName);
+
+        if (!publishCheckBox.isChecked()) editor.putString("password", "");
+        else if (!privateList.isChecked()) editor.putString("password", "");
+        else editor.putString("password", newPassword);
+        editor.apply();
+
+        sharedPrefsIsPublished = publishCheckBox.isChecked();
+        sharedPrefsIsPrivateList = privateList.isChecked();
+        sharedPrefsListName = newListName;
+        sharedPrefsPassword = newPassword;
+    }
+
+    public void updatePassword() {
+        if(privateList.isChecked()) {
+            db.getReference("publishedMangaLists/privateLists/" +
+                    newListName + "/password").setValue(newPassword);
+        } else {
+            db.getReference("publishedMangaLists/publicLists/" +
+                    newListName + "/password").setValue(newPassword);
+        }
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("password", newPassword);
+        editor.apply();
+
+        sharedPrefsPassword = newPassword;
     }
 
     private void setupFunctions() {
@@ -218,131 +343,5 @@ public class PublishFragment extends Fragment {
                 toast.show();
             }
         });
-    }
-
-    public void publish() {
-        deleteList();
-
-        if (privateList.isChecked()) {
-            db.getReference("publishedMangaLists/privateLists/" + newListName + "/owner").setValue(currentUser);
-            db.getReference("publishedMangaLists/privateLists/" + newListName + "/password").setValue(newPassword);
-            ref = db.getReference("publishedMangaLists/privateLists/" + newListName);
-        }
-        else {
-            db.getReference("publishedMangaLists/publicLists/" + newListName + "/owner").setValue(currentUser);
-            ref = db.getReference("publishedMangaLists/publicLists/" + newListName);
-        }
-
-        MyDatabaseHelper myDatabaseHelper = new MyDatabaseHelper(getContext());
-        List<ArrayList<MyManga>> myMangaListDb = myDatabaseHelper.getMyMangaListDb();
-
-        for (int i=0; i<myMangaListDb.size(); i++) {
-            List<MyManga> myMangaList = myMangaListDb.get(i);
-            for (int j=0; j<myMangaList.size(); j++) {
-                MyManga myManga = myMangaList.get(j);
-
-                ref.child(pageNames[i] + "/" + myManga.name + "/chapter").setValue(myManga.chapter);
-                ref.child(pageNames[i] + "/" + myManga.name + "/url").setValue(myManga.url);
-            }
-        }
-
-        updateSharedPrefs();
-    }
-
-    // checks if the name is already taken
-    public void checkNameAndPublish() {
-        ArrayList<String> listNames = new ArrayList<>();
-
-        DatabaseReference publicRef = db.getReference("publishedMangaLists/publicLists");
-        publicRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot singleSnapshot : snapshot.getChildren()){
-                    String value = singleSnapshot.getKey();
-                    if (value != null && !value.equals(sharedPrefsListName))
-                        listNames.add(value);
-                }
-
-                DatabaseReference privateRef = db.getReference("publishedMangaLists/privateLists");
-                privateRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot singleSnapshot : snapshot.getChildren()){
-                            String value = singleSnapshot.getKey();
-                            if (value != null && !value.equals(sharedPrefsListName))
-                                listNames.add(value);
-                        }
-
-                        boolean nameIsTaken = false;
-                        for (int i=0; i<listNames.size(); i++) {
-                            if (newListName.equals(listNames.get(i))) {
-                                Toast toast = Toast.makeText(getContext(), "List name is already taken", Toast.LENGTH_SHORT);
-                                toast.setGravity(Gravity.BOTTOM, 0, 400);
-                                toast.show();
-
-                                nameIsTaken = true;
-                                break;
-                            }
-                        }
-
-                        if (!nameIsTaken) publish();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.d("myTest", "Failed to read value.", error.toException());
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("myTest", "Failed to read value.", error.toException());
-            }
-        });
-    }
-
-    public void deleteList() {
-        sharedPrefsIsPublished = sharedPreferences.getBoolean("published", false);
-        if (sharedPrefsIsPublished) { // if the list was published
-            if (sharedPrefsIsPrivateList) {
-                db.getReference("publishedMangaLists/privateLists/" + sharedPrefsListName).removeValue();
-            } else {
-                db.getReference("publishedMangaLists/publicLists/" + sharedPrefsListName).removeValue();
-            }
-        }
-    }
-
-    public void updateSharedPrefs() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("published", publishCheckBox.isChecked());
-        editor.putBoolean("privateList", privateList.isChecked());
-        editor.putString("listName", newListName);
-
-        if (!publishCheckBox.isChecked()) editor.putString("password", "");
-        else if (!privateList.isChecked()) editor.putString("password", "");
-        else editor.putString("password", newPassword);
-        editor.apply();
-
-        sharedPrefsIsPublished = publishCheckBox.isChecked();
-        sharedPrefsIsPrivateList = privateList.isChecked();
-        sharedPrefsListName = newListName;
-        sharedPrefsPassword = newPassword;
-    }
-
-    public void updatePassword() {
-        if(privateList.isChecked()) {
-            db.getReference("publishedMangaLists/privateLists/" +
-                    newListName + "/password").setValue(newPassword);
-        } else {
-            db.getReference("publishedMangaLists/publicLists/" +
-                    newListName + "/password").setValue(newPassword);
-        }
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("password", newPassword);
-        editor.apply();
-
-        sharedPrefsPassword = newPassword;
     }
 }
