@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,30 +29,37 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapter.MyViewHolder> {
+public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapter.MyViewHolder> implements Filterable {
 
     Context context;
     ArrayList<String> publicLists;
     ArrayList<String> privateLists;
-    ArrayList<String> publicListNames;
-    ArrayList<String> privateListNames;
+    ArrayList<String> subscribedPublicListNames;
+    ArrayList<String> subscribedPrivateListNames;
     DatabaseReference userRef;
     FirebaseDatabase db;
     SharedPreferences sharedPreferences;
 
+    ArrayList<String> publicListsCopy;
+    ArrayList<String> privateListsCopy;
+
     public NewSubscribeAdapter(Context context, ArrayList<String> publicLists, ArrayList<String> privateLists,
-                               ArrayList<String> publicListNames, ArrayList<String> privateListNames, DatabaseReference userRef) {
+                               ArrayList<String> subscribedPublicListNames, ArrayList<String> subscribedPrivateListNames, DatabaseReference userRef) {
         this.context = context;
         this.publicLists = publicLists;
         this.privateLists = privateLists;
-        this.publicListNames = publicListNames;
-        this.privateListNames = privateListNames;
+        this.subscribedPublicListNames = subscribedPublicListNames;
+        this.subscribedPrivateListNames = subscribedPrivateListNames;
         this.userRef = userRef;
         db = FirebaseDatabase.getInstance();
         sharedPreferences = context.getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+
+        publicListsCopy = new ArrayList<>(publicLists);
+        privateListsCopy = new ArrayList<>(privateLists);
     }
 
     @NonNull
@@ -76,8 +86,8 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
         if (position < publicLists.size()){
             holder.name.setText(publicLists.get(position));
 
-            for (int i=0; i<publicListNames.size(); i++) {
-                if (publicLists.get(position).equals(publicListNames.get(i))) {
+            for (int i = 0; i< subscribedPublicListNames.size(); i++) {
+                if (publicLists.get(position).equals(subscribedPublicListNames.get(i))) {
                     holder.name.setChecked(true);
                 }
             }
@@ -93,8 +103,8 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
             holder.name.setText(privateLists.get(position - publicLists.size()));
             holder.lockIcon.setVisibility(View.VISIBLE);
 
-            for (int i=0; i<privateListNames.size(); i++) {
-                if (privateLists.get(position - publicLists.size()).equals(privateListNames.get(i))) {
+            for (int i = 0; i< subscribedPrivateListNames.size(); i++) {
+                if (privateLists.get(position - publicLists.size()).equals(subscribedPrivateListNames.get(i))) {
                     holder.name.setChecked(true);
                 }
             }
@@ -144,6 +154,37 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
         return publicLists.size() + privateLists.size();
     }
 
+    @Override
+    public Filter getFilter() {
+        return listFilter;
+    }
+
+    private Filter listFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            ArrayList<String> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(publicListsCopy);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (String item : publicListsCopy) {
+                    if (item.gett) {
+
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+
+        }
+    };
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         CheckBox name;
@@ -154,6 +195,8 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
         TextView returnButton;
         View footer;
 
+        SearchView searchView;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.mangaListName);
@@ -163,6 +206,11 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
             passwordOkButton = itemView.findViewById(R.id.sendPassword);
             returnButton = itemView.findViewById(R.id.returnButton);
             footer = itemView.findViewById(R.id.subscribeFooter);
+
+            searchView = itemView.findViewById(R.id.searchView);
+            searchView.setOnClickListener(v -> {
+                searchView.setIconified(false);
+            });
         }
     }
 }

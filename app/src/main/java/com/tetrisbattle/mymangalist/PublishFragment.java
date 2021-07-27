@@ -193,7 +193,7 @@ public class PublishFragment extends Fragment {
 
                         boolean nameIsTaken = false;
                         for (int i=0; i<listNames.size(); i++) {
-                            if (newListName.toLowerCase().equals(listNames.get(i).toLowerCase())) {
+                            if (newListName.toLowerCase().equals(listNames.get(i).toLowerCase().trim())) {
                                 Toast toast = Toast.makeText(getContext(), "List name is already taken", Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.BOTTOM, 0, 400);
                                 toast.show();
