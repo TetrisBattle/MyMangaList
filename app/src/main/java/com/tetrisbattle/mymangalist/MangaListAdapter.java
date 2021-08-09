@@ -163,6 +163,13 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
 
             holder.name.setEnabled(false);
             holder.chapter.setEnabled(false);
+
+//            holder.name.setOnLongClickListener(v -> {
+//                selectedId = data.get(position).id;
+//                selectedName = String.valueOf(holder.name.getText());
+//                showPopupMenu(v, holder, myDatabaseHelper.getUrl(selectedId));
+//                return true;
+//            });
         }
     }
 

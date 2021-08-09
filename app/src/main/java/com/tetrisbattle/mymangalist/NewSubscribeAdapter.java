@@ -72,6 +72,8 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        //holder.searchView.setVisibility(View.VISIBLE);
+
         if (position == publicLists.size()+privateLists.size()-1) {
             holder.returnButton.setVisibility(View.VISIBLE);
             holder.footer.setVisibility(View.VISIBLE);
@@ -208,9 +210,7 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
             footer = itemView.findViewById(R.id.subscribeFooter);
 
             searchView = itemView.findViewById(R.id.searchView);
-            searchView.setOnClickListener(v -> {
-                searchView.setIconified(false);
-            });
+            searchView.setOnClickListener(v -> searchView.setIconified(false));
         }
     }
 }
