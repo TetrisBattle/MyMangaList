@@ -33,7 +33,7 @@ import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapter.MyViewHolder> implements Filterable {
+public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapter.MyViewHolder> /*implements Filterable*/ {
 
     Context context;
     ArrayList<String> publicLists;
@@ -154,36 +154,36 @@ public class NewSubscribeAdapter extends RecyclerView.Adapter<NewSubscribeAdapte
         return publicLists.size() + privateLists.size();
     }
 
-    @Override
-    public Filter getFilter() {
-        return listFilter;
-    }
-
-    private Filter listFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            ArrayList<String> filteredList = new ArrayList<>();
-
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(publicListsCopy);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (String item : publicListsCopy) {
-                    if (item.gett) {
-
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-
-        }
-    };
+//    @Override
+//    public Filter getFilter() {
+//        return listFilter;
+//    }
+//
+//    private Filter listFilter = new Filter() {
+//        @Override
+//        protected FilterResults performFiltering(CharSequence constraint) {
+//            ArrayList<String> filteredList = new ArrayList<>();
+//
+//            if (constraint == null || constraint.length() == 0) {
+//                filteredList.addAll(publicListsCopy);
+//            } else {
+//                String filterPattern = constraint.toString().toLowerCase().trim();
+//
+//                for (String item : publicListsCopy) {
+//                    if (item.gett) {
+//
+//                    }
+//                }
+//            }
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void publishResults(CharSequence constraint, FilterResults results) {
+//
+//        }
+//    };
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
