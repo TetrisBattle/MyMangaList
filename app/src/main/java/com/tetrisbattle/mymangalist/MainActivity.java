@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         rankButtons = new ArrayList<>(pageIds.length);
-        background = findViewById(R.id.background);
         settingsIcon = findViewById(R.id.settingsIcon);
+        background = findViewById(R.id.background);
 
         secretCode = new int[7];
         settingsIconPopupMenu = new PopupMenu(this, settingsIcon);

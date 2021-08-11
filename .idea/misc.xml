@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/AndroidStudioProjects/MyMangaList/app/src/main/res/layout/activity_main.xml" value="0.31023550724637683" />
+        <entry key="..\:/Projects/AndroidStudioProjects/MyMangaList/app/src/main/res/layout/activity_subscribed_list.xml" value="0.31023550724637683" />
         <entry key="..\:/Projects/AndroidStudioProjects/MyMangaList/app/src/main/res/layout/cardview_subscribe_new.xml" value="0.19954954954954954" />
+        <entry key="..\:/Projects/AndroidStudioProjects/MyMangaList/app/src/main/res/layout/fragment_manga_list.xml" value="0.31023550724637683" />
+        <entry key="..\:/Projects/AndroidStudioProjects/MyMangaList/app/src/main/res/menu/popup_menu_subscribe.xml" value="0.22072072072072071" />
       </map>
     </option>
   </component>

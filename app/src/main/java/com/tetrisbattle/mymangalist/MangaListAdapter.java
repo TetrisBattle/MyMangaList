@@ -5,6 +5,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -161,15 +163,22 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
             holder.name.setText(data.get(position).name);
             holder.chapter.setText(data.get(position).chapter);
 
-            holder.name.setEnabled(false);
+//            holder.name.setEnabled(false);
+            holder.name.setInputType(InputType.TYPE_NULL);
             holder.chapter.setEnabled(false);
 
-//            holder.name.setOnLongClickListener(v -> {
-//                selectedId = data.get(position).id;
-//                selectedName = String.valueOf(holder.name.getText());
-//                showPopupMenu(v, holder, myDatabaseHelper.getUrl(selectedId));
-//                return true;
+
+
+//            holder.name.setOnClickListener(v -> {
+//
 //            });
+
+            holder.name.setOnLongClickListener(v -> {
+                selectedId = data.get(position).id;
+                selectedName = String.valueOf(holder.name.getText());
+                showPopupMenuSubscribedList(v);
+                return true;
+            });
         }
     }
 
@@ -245,6 +254,31 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
                         })
                         .setNegativeButton("No", (dialog, which) -> {});
                 deleteDialog.show();
+                return true;
+            } else {
+                return false;
+            }
+        });
+    }
+
+    public void showPopupMenuSubscribedList(View v) {
+        PopupMenu popupMenu = new PopupMenu(context, v);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.popup_menu_subscribe, popupMenu.getMenu());
+        popupMenu.show();
+
+        popupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.popupCopy) {
+                ClipboardManager clipboardManager;
+                clipboardManager = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
+
+                ClipData clipData;
+                clipData = ClipData.newPlainText("Name", selectedName);
+                clipboardManager.setPrimaryClip(clipData);
+//                Toast.makeText(context, "copy: " + selectedName, Toast.LENGTH_SHORT).show();
+                return true;
+            } else if (item.getItemId() == R.id.popupAddToPlanToRead) {
+                Log.d("myTest", "test: " + "popupAddToPlanToRead");
                 return true;
             } else {
                 return false;

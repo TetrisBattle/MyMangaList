@@ -7,10 +7,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -54,15 +57,11 @@ public class SubscribedListActivity extends AppCompatActivity {
     TextView title;
 
     PopupMenu settingsIconPopupMenu;
-    SharedPreferences sharedPreferences;
 
     String currentUser;
     int activePage = 0;
     String subscribedListName;
     boolean isPrivate;
-
-    int[] secretCode;
-    int secretCodeInputPos = 0;
     //endregion
 
     @Override
@@ -71,9 +70,10 @@ public class SubscribedListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribed_list);
 
+        title = findViewById(R.id.title);
         rankButtons = new ArrayList<>(pageIds.length);
         settingsIcon = findViewById(R.id.settingsIcon);
-        title = findViewById(R.id.title);
+        background = findViewById(R.id.background);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -99,6 +99,14 @@ public class SubscribedListActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
+    }
+
+    public void backgroundClick(View v) {
+        Log.d("myTest", "test: " + "background clicked 1");
+        if (getCurrentFocus() != null && getCurrentFocus().getWindowToken() != null) {
+            getCurrentFocus().clearFocus();
+            Log.d("myTest", "test: " + "background clicked 2");
+        }
     }
 
     public void replaceFragment(Fragment fragment) {
