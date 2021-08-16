@@ -116,7 +116,7 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
                 background.callOnClick();
                 selectedId = data.get(position).id;
                 selectedName = String.valueOf(holder.name.getText());
-                showPopupMenu(v, holder, myDatabaseHelper.getUrl(selectedId));
+                showPopupMenu(v, holder, myDatabaseHelper.getUrl(selectedId), position);
                 return true;
             });
 
@@ -202,7 +202,7 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
         this.data = data;
     }
 
-    public void showPopupMenu(View v, MyViewHolder holder, String url) {
+    public void showPopupMenu(View v, MyViewHolder holder, String url, int pos) {
         PopupMenu popupMenu = new PopupMenu(context, v);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.popup_menu, popupMenu.getMenu());
@@ -243,7 +243,8 @@ public class MangaListAdapter extends RecyclerView.Adapter<MangaListAdapter.MyVi
                         .setPositiveButton("Yes", (dialog, which) -> {
                             myDatabaseHelper.deleteData(selectedId);
                             data = myDatabaseHelper.getMyMangaList();
-                            notifyDataSetChanged();
+                            //notifyDataSetChanged();
+                            notifyItemRemoved(pos);
                         })
                         .setNegativeButton("No", (dialog, which) -> {});
                 deleteDialog.show();

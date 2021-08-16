@@ -65,8 +65,9 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
 
                         if (!listExist) {
                             db.getReference("users/" + currentUser + "/subscribed/publicLists/" + selectedName).removeValue();
-                            subscribedPublicList.remove(position);
-                            notifyDataSetChanged();
+                            subscribedPublicList.remove(holder.getAdapterPosition());
+                            //notifyDataSetChanged();
+                            notifyItemRemoved(holder.getAdapterPosition());
                             Toast.makeText(context, "List is no longer in share", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -98,8 +99,9 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.MyVi
 
                         if (!listExist) {
                             db.getReference("users/" + currentUser + "/subscribed/privateLists/" + holder.name.getText()).removeValue();
-                            subscribedPrivateList.remove(position);
-                            notifyDataSetChanged();
+                            subscribedPrivateList.remove(holder.getAdapterPosition());
+                            //notifyDataSetChanged();
+                            notifyItemRemoved(holder.getAdapterPosition());
                             Toast.makeText(context, "List is no longer in share", Toast.LENGTH_SHORT).show();
                         }
                     }

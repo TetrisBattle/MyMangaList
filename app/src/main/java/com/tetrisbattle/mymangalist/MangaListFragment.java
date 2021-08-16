@@ -1,5 +1,6 @@
 package com.tetrisbattle.mymangalist;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -99,6 +100,7 @@ public class MangaListFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void refresh() {
         List<MyManga> myMangaList = myDatabaseHelper.getMyMangaList();
         mangaListAdapter.setMangaList(myMangaList);
@@ -167,7 +169,6 @@ public class MangaListFragment extends Fragment {
     public void getSubscribedList() {
         ArrayList<MyManga> subscribedList = new ArrayList<>();
         ArrayList<String> mangaName = new ArrayList<>();
-        ArrayList<String> mangaChapter = new ArrayList<>();
         DatabaseReference ref;
 
         if (isPrivate) {
